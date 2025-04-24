@@ -1,0 +1,58 @@
+@startuml Diagrama de Clases: AdoptAR
+
+class Animal {
+  - especie: String
+  - ArrayList: Mascota[]
+  
+  + listar_mascotas() 
+}
+
+class Mascota {
+  - id: Integer /' [PK] '/
+  - nombre: String
+  - sucursal: String
+  - edad: Integer
+  - turno_disponible: ArrayList[]
+  
+  + listar_turnos()
+}
+
+class Usuario {
+  - id: Integer /' [PK] '/
+  - nombre: String
+  - email: String
+  - telefono: String
+  - fecha_visita: Date
+  
+  + agendar_visita()
+  + realizar_donacion()
+}
+
+class Visita {
+  - mascota_id: Integer /' [FK] '/
+  - usuario_id: Integer /' [FK] '/
+  - turno_agendado: Integer
+  - prioridad: Integer
+}
+
+class Donacion {
+  - usuario_id: Integer /' [FK] '/
+  - mascota_id: Integer /' [FK] '/
+  - tipo_donacion: String
+  - importe_donacion: Number
+  - items_seleccion: ArrayList []
+  - lista_necesidades: ArrayList [] 
+}
+
+/' Relaciones '/
+Animal <|-- Mascota   
+Mascota *-d- Visita 
+Usuario *-d- Visita  
+Donacion o-r- Usuario  
+
+/' Cardinalidad '/
+Mascota "1" --> "0..*" Visita /' : "tiene" '/
+Usuario "1" --> "0..*" Visita /' : "realiza" '/
+Usuario "1" --> "0..*" Donacion /' : "realiza" '/
+
+@enduml
