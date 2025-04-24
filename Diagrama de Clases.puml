@@ -1,39 +1,72 @@
 @startuml Diagrama de Clases: AdoptAR
 
-class Animal {
-  - especie: String
-  - ArrayList: Mascota[]
-  
+class App {
+
+  -Usuarios: Usuario[]
+  -Mascotas: Mascota[] 
+  -Agenda: Agenda[]
+
   + listar_mascotas() 
+  + listar_turnos()
+  + *otras_funciones()*
+
 }
 
-class Mascota {
+Abstract class Mascota {
   - id: Integer /' [PK] '/
   - nombre: String
-  - sucursal: String
+  - especie: String
+  - ubicacion_de_transito: String
   - edad: Integer
-  - turno_disponible: ArrayList[]
-  
-  + listar_turnos()
 }
 
-class Usuario {
+class Perro extends Mascota{
+
+}
+
+class Gato extends Mascota {
+
+}
+
+
+Abstract class Usuario {
   - id: Integer /' [PK] '/
   - nombre: String
   - email: String
   - telefono: String
-  - fecha_visita: Date
   
   + agendar_visita()
   + realizar_donacion()
 }
 
+class Administrador extends Usuario {
+
+
+}
+
+class Visitante extends Usuario {
+
+  
+}
+
+class Publicador extends Usuario {
+
+  
+}
+
 class Visita {
+  - id: Integer /' [PK] '/
   - mascota_id: Integer /' [FK] '/
   - usuario_id: Integer /' [FK] '/
-  - turno_agendado: Integer
+  - fecha_visita: Date
   - prioridad: Integer
+  - estado: EstadoVisita
 }
+
+class Agenda {
+  - visitas: Visita[]
+}
+
 
 class Donacion {
   - usuario_id: Integer /' [FK] '/
@@ -44,15 +77,26 @@ class Donacion {
   - lista_necesidades: ArrayList [] 
 }
 
+ENUM EstadoVisita {
+  AGENDADO
+  CONFIRMADO
+  RECHAZADO
+}
+
 /' Relaciones '/
-Animal <|-- Mascota   
-Mascota *-d- Visita 
-Usuario *-d- Visita  
-Donacion o-r- Usuario  
+ 
+Usuario *-d- Agenda  
+Donacion o-r- Usuario
+Agenda o-r- Visita
+
+App *-- Usuario  /' : "tiene" '/
+App *-- Mascota  /' : "tiene" '/
+App ..> Agenda   /' : "usa" '/
+Visita ..> EstadoVisita /' : "usa" '/
 
 /' Cardinalidad '/
-Mascota "1" --> "0..*" Visita /' : "tiene" '/
-Usuario "1" --> "0..*" Visita /' : "realiza" '/
+
+Usuario "1" --> "0..*" Agenda /' : "realiza" '/
 Usuario "1" --> "0..*" Donacion /' : "realiza" '/
 
 @enduml
