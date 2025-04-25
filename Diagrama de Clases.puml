@@ -1,11 +1,32 @@
 @startuml Diagrama de Clases: AdoptAR
 
+!define MyFontColor #000000
+!define MyBorderColor #800080
+!define MyBackgroundColor #E6E6FA
+!define MyArrowColor #800080
+!define MyPackageColor #DDDDDD
+
+skinparam defaultFontName Arial
+skinparam DefaultFontSize 13
+skinparam Linetype ortho
+skinparam Arrowcolor MyArrowColor
+skinparam ArrowThickness 2
+skinparam Classbordercolor MyBorderColor
+skinparam ClassBorderThickness 2
+skinparam ClassBackgroundColor MyBackgroundColor
+skinparam Shadowing true
+skinparam GroupInheritance 1
+skinparam NoteBackgroundColor yellow
+skinparam NoteBorderThickness 2
+skinparam PackageBackgroundColor MyPackageColor
+
 class App {
 
   -Usuarios: Usuario[]
   -Mascotas: Mascota[] 
   -Publicaciones: Publicacion[]
-  -Agenda: Agenda
+  -Visitas: Visita[]
+  -Notificador : Notificador
 
   + listar_mascotas() 
   + listar_turnos()
@@ -37,6 +58,10 @@ class Publicador extends Usuario {
 
 }
 
+class Notificador {
+
+}
+
 Abstract class Mascota {
   - id: Integer /' [PK] '/
   - nombre: String
@@ -60,11 +85,6 @@ class Visita {
   - estado: EstadoVisita
   - formulario: FormularioVisita
 }
-
-class Agenda {
-  - visitas: Visita[]
-}
-
 
 class Publicacion {
   - id: Integer /' [PK] '/
@@ -117,12 +137,12 @@ ENUM EstadoPublicacion {
  ''Donacion o-r- Usuario
 
 Usuario *-- Visita  
-Agenda o-- Visita
 
 App *-- Usuario  /' : "tiene" '/
+App *-- Notificador  /' : "tiene" '/
 App *-- Mascota  /' : "tiene" '/
 App *-- Publicacion  /' : "tiene" '/
-App .left.> Agenda   /' : "usa" '/
+App *-- Visita  /' : "tiene" '/
 App .right.> Abm   /' : "usa" '/
 Visita ..> EstadoVisita /' : "usa" '/
 Visita ..> FormularioVisita  /' : "usa" '/
@@ -133,7 +153,7 @@ Publicador ..> Publicacion /' : "usa" '/
 
 /' Cardinalidad '/
 
-Usuario "1" -left-> "0..*" Visita /' : "realiza" '/
+Usuario "1" -left-> "0..*  " Visita /' : "realiza" '/
 
 
 ''Usuario "1" --> "0..*" Donacion /' : "realiza" '/
