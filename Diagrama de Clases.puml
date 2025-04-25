@@ -4,7 +4,8 @@ class App {
 
   -Usuarios: Usuario[]
   -Mascotas: Mascota[] 
-  -Agenda: Agenda[]
+  -Publicaciones: Publicacion[]
+  -Agenda: Agenda
 
   + listar_mascotas() 
   + listar_turnos()
@@ -12,55 +13,52 @@ class App {
 
 }
 
-Abstract class Mascota {
-  - id: Integer /' [PK] '/
-  - nombre: String
-  - especie: String
-  - ubicacion_de_transito: String
-  - edad: Integer
-}
-
-class Perro extends Mascota{
-
-}
-
-class Gato extends Mascota {
-
-}
-
-
 Abstract class Usuario {
   - id: Integer /' [PK] '/
   - nombre: String
   - email: String
-  - telefono: String
+  - telefono: Integer
   
   + agendar_visita()
-  + realizar_donacion()
+
+
+  /' + realizar_donacion() '/
 }
 
 class Administrador extends Usuario {
 
-
 }
 
 class Visitante extends Usuario {
-
   
 }
 
 class Publicador extends Usuario {
 
-  
 }
 
+Abstract class Mascota {
+  - id: Integer /' [PK] '/
+  - nombre: String
+  - especie: String
+  - imagenes: Imagen[]
+  - ubicacion_de_transito: String
+  - edad: Integer
+  - adoptado: Boolean
+}
+
+class Perro extends Mascota{
+}
+
+class Gato extends Mascota {
+
+}
+  
 class Visita {
   - id: Integer /' [PK] '/
-  - mascota_id: Integer /' [FK] '/
-  - usuario_id: Integer /' [FK] '/
-  - fecha_visita: Date
   - prioridad: Integer
   - estado: EstadoVisita
+  - formulario: FormularioVisita
 }
 
 class Agenda {
@@ -68,13 +66,40 @@ class Agenda {
 }
 
 
-class Donacion {
-  - usuario_id: Integer /' [FK] '/
+class Publicacion {
+  - id: Integer /' [PK] '/
   - mascota_id: Integer /' [FK] '/
+  - publicador_id: Integer /' [FK] '/
+  - fecha_publicacion: Date
+  - ubicacion: String
+  - descripcion: String
+  - estado: EstadoPublicacion
+  
+}
+
+class FormularioVisita { 
+  - id: Integer /' [PK] '/
+  - publicacion_id: Integer /' [FK] '/
+  - usuario_id: Integer /' [FK] '/
+  - fecha_visita: Date
+}
+
+/' En caso de implementar donaciones
+class Donacion {
+  - usuario_id: Integer /' [FK] ' /
+  - mascota_id: Integer /' [FK] ' /
   - tipo_donacion: String
   - importe_donacion: Number
   - items_seleccion: ArrayList []
   - lista_necesidades: ArrayList [] 
+}
+ '/
+
+interface Abm {
+  /' usuarios,mascotas y visitas '/
+  + agregar()
+  + eliminar()
+  + modificar()
 }
 
 ENUM EstadoVisita {
@@ -83,20 +108,34 @@ ENUM EstadoVisita {
   RECHAZADO
 }
 
+ENUM EstadoPublicacion {
+  ACTIVA
+  INACTIVA
+}
+
 /' Relaciones '/
- 
-Usuario *-d- Agenda  
-Donacion o-r- Usuario
-Agenda o-r- Visita
+ ''Donacion o-r- Usuario
+
+Usuario *-- Visita  
+Agenda o-- Visita
 
 App *-- Usuario  /' : "tiene" '/
 App *-- Mascota  /' : "tiene" '/
-App ..> Agenda   /' : "usa" '/
+App *-- Publicacion  /' : "tiene" '/
+App .left.> Agenda   /' : "usa" '/
+App .right.> Abm   /' : "usa" '/
 Visita ..> EstadoVisita /' : "usa" '/
+Visita ..> FormularioVisita  /' : "usa" '/
+Publicacion .left.> EstadoPublicacion /' : "usa" '/
+
+Administrador ..> Publicacion /' : "usa" '/
+Publicador ..> Publicacion /' : "usa" '/
 
 /' Cardinalidad '/
 
-Usuario "1" --> "0..*" Agenda /' : "realiza" '/
-Usuario "1" --> "0..*" Donacion /' : "realiza" '/
+Usuario "1" -left-> "0..*" Visita /' : "realiza" '/
+
+
+''Usuario "1" --> "0..*" Donacion /' : "realiza" '/
 
 @enduml
