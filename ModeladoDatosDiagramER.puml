@@ -1,0 +1,89 @@
+@startuml AdoptDog_Class_Diagram
+
+' ==== Configuración ====
+skinparam class {
+    BackgroundColor #f9f9f9
+    BorderColor #333333
+    ArrowColor #666666
+    FontSize 13
+}
+hide circle
+hide empty members
+
+' ==== Entidades del Backend (NestJS/TypeORM) ====
+
+class Usuario {
+  +id: number <<PK>>
+  +email: string <<unique>> <<not null>>
+  +nombre: string <<not null>>
+  +apellido: string <<not null>>
+  +password: string <<not null>>
+  +role: "admin" | "publicador" <<not null>>
+  +telefono: string 
+  +direccion: string
+  +createdAt: timeStamp
+  +modifyAt: timeStamp
+  +deleteAt: timeStamp
+}
+
+class Publicacion {
+  +id: number <<PK>>
+  +titulo: string <<not null>>
+  +descripcion: string <<not null>>
+  +ubicacion: string <<not null>>
+  +contacto: string <<not null>>
+  +fotos_url: string[] <<not null>>
+  +publicado: timeStamp
+  +estado: "Abierto" | "Cerrado
+  +mascota_id: number <<not null>>
+  +usuario_id: number <<not null>>
+  +createdAt: timeStamp
+  +modifyAt: timeStamp
+  +deleteAt: timeStamp
+}
+
+class Mascota {
+  +id: number <<PK>>
+  +especie: "dog" | "cat" <<not null>>
+  +raza: string <<not null>>
+  +edad: number 
+  +tamanio: "Pequenio" | "Mediano" | "Grande"
+  +condicion: "Casa" | "Refugio" | "Transito"
+  +publicacion_id: number
+  +createdAt: timeStamp
+  +modifyAt: timeStamp
+  +deleteAt: timeStamp
+}
+
+class Visita {
+  +id: number <<PK>>
+  +estado: "pendiente" | "aprobado" | "rechazado"
+  +nombre: string
+  +apellido: string
+  +telefono: string
+  +email: string
+  +disponibilidad_fecha: date;
+  +disponibilidad_hora: "maniana" | "tarde" | "noche"
+  +descripcion: string
+  +publicacion_id: number
+  +createdAt: timeStamp
+  +modifyAt: timeStamp
+  +deleteAt: timeStamp
+}
+
+' ==== Relaciones ====
+
+' Backend
+Usuario "1" *-- "0..*" Publicacion
+Publicacion "1" *-- "1" Mascota
+Publicacion "1" *-- "0..*" Visita 
+
+
+' ==== Notas ====
+note top of Usuario
+  <<Entity>>
+  Tabla: usuarios
+  Autenticación con JWT
+end note
+
+@enduml
