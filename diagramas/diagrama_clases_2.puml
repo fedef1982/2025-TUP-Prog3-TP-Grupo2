@@ -1,0 +1,116 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class Usuario {
+  + id: number 
+  + email: string
+  + nombre: string
+  + apellido: string 
+  + password: string 
+  + role: ROLES
+  + telefono: string 
+  + direccion: string
+  + createdAt: Date
+  + updatedAt: Date
+  + deletedAt: Date
+}
+
+enum ROLES{
+    ADMIN = 'Admin',
+    PUBLICADOR = 'Publicador'
+}
+
+class Publicacion {
+  + id: number
+  + titulo: string
+  + descripcion: string 
+  + ubicacion: string
+  + contacto: string
+  + fotos_url: string[]
+  + publicado: Date
+  + estado: ESTADO_PUBLICACION
+  + mascota: Mascota
+  + usuario_id: number
+  + createdAt: Date
+  + updatedAt: Date
+  + deletedAt: Date
+}
+
+enum ESTADO_PUBLICACION{
+    ABIERTA = 'Abierta',
+    CERRADA = 'Cerrada'
+}
+
+class Mascota {
+  + id: number
+  + especie: ESPECIE
+  + raza: string
+  + edad: number 
+  + tamanio: TAMANIO
+  + condicion: CONDICION
+  + publicacion: Publicacion
+  + createdAt: Date
+  + updatedAt: Date
+  + deletedAt: Date
+}
+
+enum ESPECIE{
+    GATO = 'Gato',
+    PERRO = 'Perro',
+    PAJARO = 'Pajaro'
+}
+
+enum TAMANIO{
+    PEQUENIO = 'Pequeño',
+    MEDIANO = 'Mediano',
+    GRANDE = 'Grande' 
+}
+
+enum CONDICION{
+    CASA = 'Casa',
+    TRANSITO = 'Transito',
+    REFUGIO = 'Refugio'
+}
+
+class Visita {
+  +id: number
+  +estado: ESTADO_VISITA
+  +nombre: string
+  +apellido: string
+  +telefono: string
+  +email: string
+  +disponibilidad_fecha: Date
+  +disponibilidad_horaria: DISP_HORARIA
+  +descripcion: string
+  +publicacion: Publicacion
+  +createdAt: Date
+  +updatedAt: Date
+  +deletedAt: Date
+}
+
+enum ESTADO_VISITA{
+    PENDIENTE = 'Pendiente',
+    APROBADO = 'Aprobado',
+    RECHAZADO = 'Rechazado'
+}
+
+enum DISP_HORARIA{
+    MANIANA = 'Mañana',
+    TARDE = 'Tarde',
+    NOCHE = 'Noche'
+}
+
+/' relaciones'/
+Publicacion "1"--*"1" Usuario
+Publicacion "1"--*"1" Mascota
+Publicacion -- ESTADO_PUBLICACION
+Mascota -- ESPECIE
+Mascota -- TAMANIO
+Mascota -- CONDICION
+Publicacion "1" *-- "0..*" Visita 
+Visita -- ESTADO_VISITA
+Visita -- DISP_HORARIA
+Usuario -- ROLES
+
+@enduml
