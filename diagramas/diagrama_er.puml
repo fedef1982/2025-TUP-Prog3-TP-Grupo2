@@ -10,7 +10,7 @@ skinparam class {
 hide circle
 hide empty members
 
-' ==== Entidades del Backend (NestJS/TypeORM) ====
+' ==== Entidades del Backend ====
 
 class Usuario {
   +id: number <<PK>>
@@ -18,12 +18,12 @@ class Usuario {
   +nombre: string <<not null>>
   +apellido: string <<not null>>
   +password: string <<not null>>
-  +role: "admin" | "publicador" <<not null>>
+  +role: "Admin" | "Publicador" <<not null>>
   +telefono: string 
   +direccion: string
-  +createdAt: timeStamp
-  +modifyAt: timeStamp
-  +deleteAt: timeStamp
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
 }
 
 class Publicacion {
@@ -33,42 +33,42 @@ class Publicacion {
   +ubicacion: string <<not null>>
   +contacto: string <<not null>>
   +fotos_url: string[] <<not null>>
-  +publicado: timeStamp
-  +estado: "Abierto" | "Cerrado
+  +publicado: timestamp
+  +estado: "Abierto" | "Cerrado"
   +mascota_id: number <<not null>>
   +usuario_id: number <<not null>>
-  +createdAt: timeStamp
-  +modifyAt: timeStamp
-  +deleteAt: timeStamp
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
 }
 
 class Mascota {
   +id: number <<PK>>
-  +especie: "dog" | "cat" <<not null>>
+  +especie: "Perro" | "Gato" | "Pájaro" <<not null>>
   +raza: string <<not null>>
   +edad: number 
   +tamanio: "Pequenio" | "Mediano" | "Grande"
   +condicion: "Casa" | "Refugio" | "Transito"
   +publicacion_id: number
-  +createdAt: timeStamp
-  +modifyAt: timeStamp
-  +deleteAt: timeStamp
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
 }
 
 class Visita {
   +id: number <<PK>>
-  +estado: "pendiente" | "aprobado" | "rechazado"
+  +estado: "Pendiente" | "Aprobado" | "Rechazado"
   +nombre: string
   +apellido: string
   +telefono: string
   +email: string
   +disponibilidad_fecha: date;
-  +disponibilidad_hora: "maniana" | "tarde" | "noche"
+  +disponibilidad_horaria: "Maniana" | "Tarde" | "Noche"
   +descripcion: string
   +publicacion_id: number
-  +createdAt: timeStamp
-  +modifyAt: timeStamp
-  +deleteAt: timeStamp
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
 }
 
 ' ==== Relaciones ====
