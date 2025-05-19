@@ -22,12 +22,15 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
+
 # 2025-TUP-Prog3-TP-Grupo2
+
 ### Integrantes:
-- Rodriguez	Paola
-- Velardez	Marcos
-- Reina	Adriel
-- Fresco	Federico 
+
+- Rodriguez Paola
+- Velardez Marcos
+- Reina Adriel
+- Fresco Federico
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
