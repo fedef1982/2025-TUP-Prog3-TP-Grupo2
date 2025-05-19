@@ -49,7 +49,6 @@ class Mascota {
   + edad: number 
   + tamanio: TAMANIO
   + condicion: CONDICION
-  + publicacion: Publicacion
   + createdAt: Date
   + updatedAt: Date
   + deletedAt: Date

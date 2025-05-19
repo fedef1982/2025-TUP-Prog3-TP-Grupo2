@@ -49,7 +49,6 @@ class Mascota {
   +edad: number 
   +tamanio: "Pequenio" | "Mediano" | "Grande"
   +condicion: "Casa" | "Refugio" | "Transito"
-  +publicacion_id: number
   +createdAt: timestamp
   +updatedAt: timestamp
   +deletedAt: timestamp
