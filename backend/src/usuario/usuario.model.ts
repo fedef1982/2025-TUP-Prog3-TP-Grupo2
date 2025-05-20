@@ -40,7 +40,7 @@ export class User extends Model<User> {
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  contrasenia: string;
 
   @Column({
     type: DataType.ENUM('Admin', 'Publicador'),
@@ -56,13 +56,15 @@ export class User extends Model<User> {
 
   @CreatedAt
   @Column({ field: 'created_at' })
-  created_at: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
   @Column({ field: 'updated_at' })
-  updated_at: Date;
+  declare updatedAt: Date;
 
   @DeletedAt
   @Column({ field: 'deleted_at' })
-  deleted_at: Date;
+  declare deletedAt: Date;
 }
+
+// cuando exita el modelo de publicaciones hay que dejar la relación de HasMany del usuario con publicaciones
