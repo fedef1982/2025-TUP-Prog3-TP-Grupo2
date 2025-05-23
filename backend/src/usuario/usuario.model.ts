@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 
 @Table({ tableName: 'usuarios' })
-export class User extends Model<User> {
+export class User extends Model<Partial<User>> {
   @PrimaryKey
   @AutoIncrement
   @Column
@@ -48,11 +48,17 @@ export class User extends Model<User> {
   })
   rol: string;
 
-  @Column(DataType.STRING)
-  telefono: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  telefono?: string;
 
-  @Column(DataType.STRING)
-  direccion: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  direccion?: string;
 
   @CreatedAt
   @Column({ field: 'created_at' })

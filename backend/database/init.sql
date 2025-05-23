@@ -16,56 +16,94 @@ CREATE TABLE IF NOT EXISTS usuarios (
     deleted_at TIMESTAMP WITH TIME ZONE
 );
 
--- Insertar algunos datos de ejemplo en la tabla de categorias
+-- Insertar algunos datos de ejemplo en la tabla de usuarios
 INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol, telefono, direccion)
 VALUES 
     ('paolarladera@gmail.com', 'paola', 'rodriguez', 'paola', 'Publicador', '123456789', 'Calle falsa');
 
--- Crear enum de estado
+-- Insertar unico usuario con el rol ADMIN de la pagina
+INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol) 
+VALUES 
+    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar', 'Admin');
+
+-- Crear enums Mascotas
+CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');
+
+-- Creo tabla especies
+CREATE TABLE IF NOT EXISTS especies (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR 
+)
+
+-- Insertar algunos datos de ejemplo en la tabla de especie
+INSERT INTO especies (nombre)
+VALUES 
+    ('Perro'),
+    ('Gato'),
+    ('Pajaro');
+
+-- Creo tabla condiciones
+CREATE TABLE IF NOT EXISTS condiciones (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR,
+    descripcion VARCHAR
+)
+
+-- Insertar algunos datos de ejemplo en la tabla de condicion
+INSERT INTO condiciones (nombre, descripcion)
+VALUES 
+    ('Casa', 'Se encuentra en casa de acompañante humano'),
+    ('Transito', 'Se encuentra en lugar transitorio'),
+    ('Refugio', 'Se encuentra en refugio');
+
+-- Crear tabla mascotas
+CREATE TABLE IF NOT EXISTS mascotas (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    raza VARCHAR(100) NOT NULL,
+    edad INTEGER,
+    vacunado BOOLEAN,
+    tamanio tamanio_num,
+    fotos_url JSON NOT NULL,
+    especie_id INTEGER,
+    condicion_id INTEGER,
+    usuario_id INTEGER,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT fk_especie
+      FOREIGN KEY(especie_id)
+        REFERENCES especies(id),
+    CONSTRAINT fk_condicion
+      FOREIGN KEY(condicion_id)
+        REFERENCES condiciones(id),
+    CONSTRAINT fk_usuario
+      FOREIGN KEY(usuario_id)
+        REFERENCES usuarios(id),
+);
+
+-- Crear enum de estado de Publicacion
 CREATE TYPE estado_publi_enum AS ENUM ('Abierta', 'Cerrada');
 
 -- Crear tabla publicaciones
 CREATE TABLE IF NOT EXISTS publicaciones (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(100) NOT NULL,
+    descripcion TEXT NOT NULL,
     ubicacion VARCHAR(100) NOT NULL,
     contacto VARCHAR(100) NOT NULL,
-    fotos_url JSON NOT NULL,
     publicado TIMESTAMP,
     estado estado_enum,
-    usuario_id INTEGER,
     mascota_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT fk_usuario
-      FOREIGN KEY(usuario_id)
-        REFERENCES usuarios(id),
     CONSTRAINT fk_mascota
       FOREIGN KEY(mascota_id)
         REFERENCES mascotas(id)
 );
 
--- Crear enums
-CREATE TYPE especie_num AS ENUM ('Perro', 'Gato', 'Pajaro');
-CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');
-CREATE TYPE condicion_num AS ENUM ('Casa', 'Transito', 'Refugio');
-
--- Crear tabla mascotas
-CREATE TABLE IF NOT EXISTS mascotas (
-    id SERIAL PRIMARY KEY,
-    especie especie_num,
-    raza VARCHAR NOT NULL,
-    edad INTEGER,
-    tamanio tamanio_num,
-    condicion condicion_num,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP WITH TIME ZONE
-);
-
--- Crear enums
+-- Crear enums visitas
 CREATE TYPE estado_visita_enum AS ENUM ('Pendiente', 'Aprobado', 'Rechazado');
 CREATE TYPE horario_enum AS ENUM ('Maniana', 'Tarde', 'Noche');
 
@@ -89,17 +127,4 @@ CREATE TABLE IF NOT EXISTS visitas (
         REFERENCES publicaciones(id)
 );
 
--- Insertar algunos datos de ejemplo en la tabla de categorias
-INSERT INTO usuarios (nombre, descripcion)
-VALUES 
-    ('limpieza', 'Productos de limpieza'),
-    ('alimento', 'Productos comestibles');
-
--- Insertar algunos datos de ejemplo en la tabla de productos
-INSERT INTO productos (nombre, cantidad, categoria_id, fecha_compra, fecha_vencimiento)
-VALUES 
-    ('lavandina', 5, 3, '2025-01-30', '2025-04-30'),
-    ('leche', 2, 4, '2025-02-30', '2025-03-10'),
-    ('harina', 10, 4, '2025-05-08', '2026-01-30'),
-    ('jabon', 20, 3, '2025-01-30', '2028-01-30');
 
