@@ -21,6 +21,11 @@ INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol, telefono, direc
 VALUES 
     ('paolarladera@gmail.com', 'paola', 'rodriguez', 'paola', 'Publicador', '123456789', 'Calle falsa');
 
+-- Insertar unico usuario con el rol ADMIN de la pagina
+INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol) 
+VALUES 
+    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar', 'Admin');
+
 -- Crear enums Mascotas
 CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');
 
@@ -59,6 +64,7 @@ CREATE TABLE IF NOT EXISTS mascotas (
     edad INTEGER,
     vacunado BOOLEAN,
     tamanio tamanio_num,
+    fotos_url JSON NOT NULL,
     especie_id INTEGER,
     condicion_id INTEGER,
     usuario_id INTEGER,
@@ -86,7 +92,6 @@ CREATE TABLE IF NOT EXISTS publicaciones (
     descripcion TEXT NOT NULL,
     ubicacion VARCHAR(100) NOT NULL,
     contacto VARCHAR(100) NOT NULL,
-    fotos_url JSON NOT NULL,
     publicado TIMESTAMP,
     estado estado_enum,
     mascota_id INTEGER,
