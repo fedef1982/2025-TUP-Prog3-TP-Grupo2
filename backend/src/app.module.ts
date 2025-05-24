@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './usuario/usuario.model';
 import { UserModule } from './usuario/usuario.module';
+import { Publicacion } from './publicacion/publicacion.model';
+import { PublicacionModule } from './publicacion/publicacion.module';
 
 @Module({
   imports: [
@@ -14,11 +16,11 @@ import { UserModule } from './usuario/usuario.module';
       username: 'postgres',
       password: 'paola',
       database: 'adoptar',
-      models: [User],
+      models: [User,Publicacion],
       autoLoadModels: true,
       synchronize: true,
     }),
-    UserModule,
+    UserModule, PublicacionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
