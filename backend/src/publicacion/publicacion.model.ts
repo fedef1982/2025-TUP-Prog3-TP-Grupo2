@@ -8,7 +8,16 @@ import {
   CreatedAt,
   UpdatedAt,
   DeletedAt,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
+//import { Mascota } from './mascota.model';
+
+export enum EstadoPublicacion {
+  Abierta = 'Abierta',
+  Cerrada = 'Cerrada',
+}
 
 @Table({ tableName: 'publicaciones' })
 export class Publicacion extends Model<Publicacion> {
@@ -42,17 +51,28 @@ export class Publicacion extends Model<Publicacion> {
   })
   contacto: string;
 
-  @Column({
-    type: DataType.ENUM('Admin', 'Publicador'),
-    allowNull: false,
-  })
-  fotos_url: string;
-
   @Column({ type: DataType.DATE })
   publicado: Date;
 
-  @Column(DataType.STRING)
-  direccion: string;
+  @Column({
+    type: DataType.ENUM(...Object.values(EstadoPublicacion)),
+    allowNull: false,
+    defaultValue: EstadoPublicacion.Abierta,
+  })
+  estado: EstadoPublicacion;
+
+  //@ForeignKey(() => Mascota)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  mascota_id: number;
+
+  /*@BelongsTo(() => Mascota, {
+    foreignKey: 'mascota_id',
+    onDelete: 'CASCADE',
+  })
+  mascota: Mascota;*/
 
   @CreatedAt
   @Column({ field: 'created_at' })
@@ -66,5 +86,3 @@ export class Publicacion extends Model<Publicacion> {
   @Column({ field: 'deleted_at' })
   declare deletedAt: Date;
 }
-
-// cuando exita el modelo de publicaciones hay que dejar la relación de HasMany del usuario con publicaciones
