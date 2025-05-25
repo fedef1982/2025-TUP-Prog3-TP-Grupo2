@@ -10,7 +10,7 @@ import {
   DeletedAt,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'usuarios' })
+@Table({ tableName: 'usuarios', paranoid: true })
 export class User extends Model<Partial<User>> {
   @PrimaryKey
   @AutoIncrement
