@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { VisitaService } from './visita.service';
 import { Visita } from './visita.model';
-//import { CreatePublicacionDto } from './dto/create-publicacion.dto'; DTO
+import { CreateVisitaDto } from './dto/create-visita.dto';
 
 @Controller('visita')
 export class VisitaController {
@@ -27,12 +27,12 @@ export class VisitaController {
       findOne(@Param('id', ParseIntPipe) id: number): Promise<Visita> {
         return this.visitaService.findOne(id);
       }
-    /*
-      @Post()
-      create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<Visita> {
-        return this.visitaService.create(createUsuarioDto);
-      }
     
+      @Post()
+      create(@Body() createVisitaDto: CreateVisitaDto): Promise<Visita> {
+        return this.visitaService.create(createVisitaDto);
+      }
+    /*
       @Patch(':id')
       update(
         @Param('id', ParseIntPipe) id: number,
@@ -41,9 +41,10 @@ export class VisitaController {
         return this.visitaService.update(id, UpdateUsuarioDto);
       }
     */
-      @Delete(':id')
+     
+     /* @Delete(':id')
       remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.visitaService.remove(id);
       }
-        
+       */ 
 }
