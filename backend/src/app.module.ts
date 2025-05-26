@@ -4,8 +4,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './usuario/usuario.model';
 import { UserModule } from './usuario/usuario.module';
+import { Mascota } from './mascota/mascota.model';
+import { MascotaModule } from './mascota/mascota.module';
 import { Publicacion } from './publicacion/publicacion.model';
 import { PublicacionModule } from './publicacion/publicacion.module';
+import { Especie } from './mascota/especie.model';
+import { Condicion } from './mascota/condicion.model';
 
 @Module({
   imports: [
@@ -16,11 +20,13 @@ import { PublicacionModule } from './publicacion/publicacion.module';
       username: 'postgres',
       password: 'paola',
       database: 'adoptar',
-      models: [User,Publicacion],
+      models: [User, Mascota, Especie, Condicion, Publicacion],
       autoLoadModels: true,
       synchronize: true,
     }),
-    UserModule, PublicacionModule,
+    UserModule,
+    MascotaModule,
+    PublicacionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
