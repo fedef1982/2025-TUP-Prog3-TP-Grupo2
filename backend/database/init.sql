@@ -33,7 +33,7 @@ CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');
 CREATE TABLE IF NOT EXISTS especies (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR 
-)
+);
 
 -- Insertar algunos datos de ejemplo en la tabla de especie
 INSERT INTO especies (nombre)
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS condiciones (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR,
     descripcion VARCHAR
-)
+);
 
 -- Insertar algunos datos de ejemplo en la tabla de condicion
 INSERT INTO condiciones (nombre, descripcion)
@@ -79,11 +79,11 @@ CREATE TABLE IF NOT EXISTS mascotas (
         REFERENCES condiciones(id),
     CONSTRAINT fk_usuario
       FOREIGN KEY(usuario_id)
-        REFERENCES usuarios(id),
+        REFERENCES usuarios(id)
 );
 
 -- Crear enum de estado de Publicacion
-CREATE TYPE estado_publi_enum AS ENUM ('Abierta', 'Cerrada');
+CREATE TYPE estado_publi_enum AS ENUM ('Abierto', 'Cerrado');
 
 -- Crear tabla publicaciones
 CREATE TABLE IF NOT EXISTS publicaciones (
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS publicaciones (
     ubicacion VARCHAR(100) NOT NULL,
     contacto VARCHAR(100) NOT NULL,
     publicado TIMESTAMP,
-    estado estado_enum,
+    estado estado_publi_enum,
     mascota_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -104,13 +104,16 @@ CREATE TABLE IF NOT EXISTS publicaciones (
 );
 
 -- Insertar algunos datos de ejemplo en la tabla de Publicaciones
+/*
 INSERT INTO publicaciones (titulo, descripcion, ubicacion, contacto, estado, mascota_id)
 VALUES 
     ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Cerrado', '1'),
     ('Gato 1', 'Gato bueno', 'Zona sur', 'email@nombre.com', 'Abierto', '2'),
     ('Perro 2', 'Perro bueno', 'Zona este', '11-5678-1234', 'Abierto', '3'),
-    ('Gato 2', 'Gato lindo', 'Zona oeste', 'nombre@email.com', 'Cerrado', '4'),
+    ('Gato 2', 'Gato lindo', 'Zona oeste', 'nombre@email.com', 'Cerrado', '4');
 
+Necesitamos primero crear las mascotas de ejemplo para vincularla con mascota_id
+*/
 -- Crear enums visitas
 CREATE TYPE estado_visita_enum AS ENUM ('Pendiente', 'Aprobado', 'Rechazado');
 CREATE TYPE horario_enum AS ENUM ('Maniana', 'Tarde', 'Noche');
@@ -129,7 +132,7 @@ CREATE TABLE IF NOT EXISTS visitas (
     publicacion_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP WITH TIME ZONE
+    deleted_at TIMESTAMP WITH TIME ZONE,
     CONSTRAINT fk_publicacion
       FOREIGN KEY(publicacion_id)
         REFERENCES publicaciones(id)

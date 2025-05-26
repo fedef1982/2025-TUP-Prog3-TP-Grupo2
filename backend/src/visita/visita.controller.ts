@@ -32,19 +32,19 @@ export class VisitaController {
       create(@Body() createVisitaDto: CreateVisitaDto): Promise<Visita> {
         return this.visitaService.create(createVisitaDto);
       }
-    /*
-      @Patch(':id')
+    
+      /*@Patch(':id')
       update(
         @Param('id', ParseIntPipe) id: number,
-        @Body() UpdateUsuarioDto: UpdateUsuarioDto,
+        @Body() updateVisitaDto: UpdateVisitaDto,
       ): Promise<Visita> {
-        return this.visitaService.update(id, UpdateUsuarioDto);
+        return this.visitaService.update(id, updateVisitaDto);
       }
     */
      
-     /* @Delete(':id')
+      @Delete(':id')
       remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.visitaService.remove(id);
       }
-       */ 
+      
 }

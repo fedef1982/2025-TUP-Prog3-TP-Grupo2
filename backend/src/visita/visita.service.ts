@@ -29,28 +29,26 @@ async findOne(id: number): Promise<Visita> {
   }
 
   async create(dto: CreateVisitaDto): Promise<Visita> {
-    /*return this.userModel.create({
-      email: dto.email,
+    return this.visitaModel.create({
+      
       nombre: dto.nombre,
       apellido: dto.apellido,
-      contrasenia: dto.contrasenia,
-      rol: 'Publicador',
       telefono: dto.telefono,
-      direccion: dto.direccion,
-    });*/
+      //direccion: dto.direccion,
+      email: dto.email,
+      disponibilidad_fecha: dto.disponibilidad_fecha,
+    //disponibilidad_horaria: dto.disponibilidad_horaria,
+      descripcion: dto.descripcion,
+    });
   }
     
 /*
 async update(/*id: number, dto: UpdateVisitaDto/): Promise<Visita> {
 
-    const user = await this.findOne(id);
-
-    if (dto.email && dto.email !== user.email) {
-      await this.validarEmailUnico(dto.email);
-    }
-
-    await user.update(dto);
-    return user;
+    const visita = await this.findOne(id);
+    
+    await visita.update(dto);
+    return visita;
 
 }
 */

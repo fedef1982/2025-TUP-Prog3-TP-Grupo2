@@ -12,8 +12,8 @@ import {
 
 
   export class CreateVisitaDto { 
-       @IsEnum(/*pasar enum*/)
-       estado: string;
+      // @IsEnum(/*pasar enum*/)
+      // estado: string;
     
        @IsString()
        @IsNotEmpty()
@@ -37,9 +37,9 @@ import {
         @IsDate()
         disponibilidad_fecha: Date;
 
-        @isEnum(/*pasar enum*/)
-        disponibilidad_horaria: string;
+       // @IsEnum(/*pasar enum*/)
+       // disponibilidad_horaria: string;
 
-        @isString()
+        @IsString()
         descripcion: string;
       }
