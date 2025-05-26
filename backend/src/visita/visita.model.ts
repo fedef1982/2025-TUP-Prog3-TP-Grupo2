@@ -1,4 +1,3 @@
-
 import {
   Table,
   Column,
@@ -10,6 +9,8 @@ import {
   UpdatedAt,
   DeletedAt,
 } from 'sequelize-typescript';
+import { Estado_visita } from './dto/create-visita.dto';
+import { Disponibilidad_horaria } from './dto/create-visita.dto';
 
 @Table({ tableName: 'visita', paranoid: true })
 export class Visita extends Model<Partial<Visita>> {
@@ -18,8 +19,8 @@ export class Visita extends Model<Partial<Visita>> {
   @Column
   declare id: number;
 
-    @Column({
-    type: DataType.ENUM('Pendiente', 'Aprobado', 'Rechazado'),
+  @Column({
+    type: DataType.ENUM(...Object.values(Estado_visita)),
     allowNull: false,
   })
   estado: string;
@@ -56,7 +57,7 @@ export class Visita extends Model<Partial<Visita>> {
   disponibilidad_fecha: Date;
 
     @Column({
-    type: DataType.ENUM('Maniana', 'Tarde', 'Noche'),
+    type: DataType.ENUM(...Object.values(Disponibilidad_horaria)),
     allowNull: false,
   })
   disponibilidad_horaria: string;

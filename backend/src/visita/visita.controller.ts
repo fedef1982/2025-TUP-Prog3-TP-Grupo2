@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { 
   Controller,
   Get,
@@ -6,12 +5,13 @@ import {
   Delete,
   ParseIntPipe,
   Post,
-  Body,
-  Req 
+  Patch,
+  Body
 } from '@nestjs/common';
 import { VisitaService } from './visita.service';
 import { Visita } from './visita.model';
 import { CreateVisitaDto } from './dto/create-visita.dto';
+import { UpdateVisitaDto } from './dto/update-visita.dto';
 
 @Controller('visita')
 export class VisitaController {
@@ -33,14 +33,14 @@ export class VisitaController {
         return this.visitaService.create(createVisitaDto);
       }
     
-      /*@Patch(':id')
+      @Patch(':id')
       update(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateVisitaDto: UpdateVisitaDto,
       ): Promise<Visita> {
         return this.visitaService.update(id, updateVisitaDto);
       }
-    */
+    
      
       @Delete(':id')
       remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

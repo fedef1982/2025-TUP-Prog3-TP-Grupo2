@@ -1,13 +1,12 @@
-/* eslint-disable prettier/prettier */
+
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Visita } from './visita.model';
 import { CreateVisitaDto } from './dto/create-visita.dto';
-//import { UpdateVisitaDto } from './dto/update-visita.dto';
+import { UpdateVisitaDto } from './dto/update-visita.dto';
 
 @Injectable()
 export class VisitaService {
@@ -34,16 +33,15 @@ async findOne(id: number): Promise<Visita> {
       nombre: dto.nombre,
       apellido: dto.apellido,
       telefono: dto.telefono,
-      //direccion: dto.direccion,
       email: dto.email,
       disponibilidad_fecha: dto.disponibilidad_fecha,
-    //disponibilidad_horaria: dto.disponibilidad_horaria,
+      disponibilidad_horaria: dto.disponibilidad_horaria,
       descripcion: dto.descripcion,
     });
   }
     
-/*
-async update(/*id: number, dto: UpdateVisitaDto/): Promise<Visita> {
+
+async update(id: number, dto: UpdateVisitaDto): Promise<Visita> {
 
     const visita = await this.findOne(id);
     
@@ -51,7 +49,7 @@ async update(/*id: number, dto: UpdateVisitaDto/): Promise<Visita> {
     return visita;
 
 }
-*/
+
   async remove(id: number): Promise<void> {
       const visita = await this.findOne(id);
       await visita.destroy();

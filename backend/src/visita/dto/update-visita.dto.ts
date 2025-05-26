@@ -1,4 +1,3 @@
-
 import {
     IsNotEmpty,
     IsString,
@@ -8,19 +7,10 @@ import {
     IsDate
   } from 'class-validator';
 
-export enum Estado_visita {
-  Pendiente ='Pendiente',
-  Aprobado ='Aprobado',
-  Rechazado ='Rechazado'
-}
+import { Estado_visita } from './create-visita.dto';
+import { Disponibilidad_horaria } from './create-visita.dto';
 
-export enum Disponibilidad_horaria {
-  Maniana = 'Maniana',
-  Tarde = 'Tarde',
-  Noche = 'Noche'
-}
-
-  export class CreateVisitaDto { 
+  export class UpdateVisitaDto { 
         @IsEnum(Estado_visita)
         estado: string;
       
