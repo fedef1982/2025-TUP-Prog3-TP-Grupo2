@@ -1,0 +1,28 @@
+import {
+  Table,
+  Column,
+  Model,
+  PrimaryKey,
+  AutoIncrement,
+  DataType,
+} from 'sequelize-typescript';
+
+@Table({ tableName: 'condiciones', timestamps: false })
+export class Condicion extends Model<Condicion> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  declare id: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  nombre: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  descripcion?: string;
+}

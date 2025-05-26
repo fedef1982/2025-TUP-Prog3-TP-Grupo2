@@ -29,6 +29,8 @@ VALUES
 -- Crear enums Mascotas
 CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');
 
+CREATE TYPE sexo_enum AS ENUM ('Macho', 'Hembra');
+
 -- Creo tabla especies
 CREATE TABLE IF NOT EXISTS especies (
     id SERIAL PRIMARY KEY,
@@ -52,15 +54,16 @@ CREATE TABLE IF NOT EXISTS condiciones (
 -- Insertar algunos datos de ejemplo en la tabla de condicion
 INSERT INTO condiciones (nombre, descripcion)
 VALUES 
-    ('Casa', 'Se encuentra en casa de acompañante humano'),
-    ('Transito', 'Se encuentra en lugar transitorio'),
-    ('Refugio', 'Se encuentra en refugio');
+    ('Casa', 'El animal está temporalmente viviendo en el hogar de una persona que lo cuida hasta que encuentre su familia adoptiva definitiva'),
+    ('Tránsito', 'El animal se encuentra en un lugar provisorio'),
+    ('Refugio', 'El animal reside en una instalación dedicada al cuidado de animales sin hogar');
 
 -- Crear tabla mascotas
 CREATE TABLE IF NOT EXISTS mascotas (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
-    raza VARCHAR(100) NOT NULL,
+    raza VARCHAR(100),
+    sexo sexo_enum,
     edad INTEGER,
     vacunado BOOLEAN,
     tamanio tamanio_num,
@@ -79,8 +82,14 @@ CREATE TABLE IF NOT EXISTS mascotas (
         REFERENCES condiciones(id),
     CONSTRAINT fk_usuario
       FOREIGN KEY(usuario_id)
-        REFERENCES usuarios(id),
+        REFERENCES usuarios(id)
 );
+
+-- Insertar algunos datos de ejemplos en la tabla de mascotas
+INSERT INTO mascotas (nombre, raza, sexo, edad, vacunado, tamanio, fotos_url, especie_id, condicion_id, usuario_id)
+VALUES (
+  'Rocky', 'Labrador', 'Macho', 1, true, 'Mediano', '["https://ejemplo.com/foto1.jpg", "https://ejemplo.com/foto2.jpg"]', 1, 1, 1,);
+
 
 -- Crear enum de estado de Publicacion
 CREATE TYPE estado_publi_enum AS ENUM ('Abierta', 'Cerrada');

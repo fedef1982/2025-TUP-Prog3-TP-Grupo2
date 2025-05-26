@@ -10,9 +10,8 @@ import {
   DeletedAt,
   ForeignKey,
   BelongsTo,
-  HasMany,
 } from 'sequelize-typescript';
-//import { Mascota } from './mascota.model';
+import { Mascota } from 'src/mascota/mascota.model';
 
 export enum EstadoPublicacion {
   Abierta = 'Abierta',
@@ -61,18 +60,18 @@ export class Publicacion extends Model<Publicacion> {
   })
   estado: EstadoPublicacion;
 
-  //@ForeignKey(() => Mascota)
+  @ForeignKey(() => Mascota)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
   mascota_id: number;
 
-  /*@BelongsTo(() => Mascota, {
+  @BelongsTo(() => Mascota, {
     foreignKey: 'mascota_id',
     onDelete: 'CASCADE',
   })
-  mascota: Mascota;*/
+  mascota: Mascota;
 
   @CreatedAt
   @Column({ field: 'created_at' })

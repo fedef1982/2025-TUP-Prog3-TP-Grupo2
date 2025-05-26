@@ -43,7 +43,7 @@ export class PublicacionesService {
       contacto: publicacionDto.contacto,
       mascota_id: publicacionDto.mascota_id,
       estado: 'Abierta' 
-    } as any); 
+    } as any);
   }
 
   async remove(id: number): Promise<void> {

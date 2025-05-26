@@ -1,12 +1,4 @@
-import { 
-  Controller,
-  Get,
-  Param,
-  Delete,
-  Post,
-  Body,
-  Req 
-} from '@nestjs/common';
+import { Controller, Get, Delete, Post, Body } from '@nestjs/common';
 import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
@@ -16,8 +8,10 @@ export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
 
   @Post()
-  create(@Body() createPublicacionDto: CreatePublicacionDto): Promise<Publicacion> {
-      return this.publicacionesService.create(createPublicacionDto);
+  create(
+    @Body() createPublicacionDto: CreatePublicacionDto,
+  ): Promise<Publicacion> {
+    return this.publicacionesService.create(createPublicacionDto);
   }
 
   @Get()
