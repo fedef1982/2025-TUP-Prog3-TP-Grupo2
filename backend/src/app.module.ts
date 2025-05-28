@@ -10,6 +10,8 @@ import { Publicacion } from './publicacion/publicacion.model';
 import { PublicacionModule } from './publicacion/publicacion.module';
 import { Especie } from './mascota/especie.model';
 import { Condicion } from './mascota/condicion.model';
+import { Visita } from './visita/visita.model';
+import { VisitaModule } from './visita/visita.module';
 
 @Module({
   imports: [
@@ -20,13 +22,14 @@ import { Condicion } from './mascota/condicion.model';
       username: 'postgres',
       password: 'paola',
       database: 'adoptar',
-      models: [User, Mascota, Especie, Condicion, Publicacion],
+      models: [User, Mascota, Especie, Condicion, Publicacion, Visita],
       autoLoadModels: true,
       synchronize: true,
     }),
     UserModule,
     MascotaModule,
     PublicacionModule,
+    VisitaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -30,20 +31,20 @@ export class UsersService {
   private async validarEmailUnico(email: string): Promise<void> {
     const emailUsado = await this.userModel.findOne({ where: { email } });
     if (emailUsado) {
-      throw new ConflictException(
-        'El email ingresado ya está siendo utilizado por otro usuario',
-      );
+      throw new ConflictException('El email ingresado ya está registrado');
     }
   }
 
   async create(dto: CreateUsuarioDto): Promise<User> {
     await this.validarEmailUnico(dto.email);
 
+    const contraseniaHasheada = await bcrypt.hash(dto.contrasenia, 10);
+
     return this.userModel.create({
       email: dto.email,
       nombre: dto.nombre,
       apellido: dto.apellido,
-      contrasenia: dto.contrasenia,
+      contrasenia: contraseniaHasheada,
       rol: 'Publicador',
       telefono: dto.telefono,
       direccion: dto.direccion,
@@ -55,6 +56,10 @@ export class UsersService {
 
     if (dto.email && dto.email !== user.email) {
       await this.validarEmailUnico(dto.email);
+    }
+
+    if (dto.contrasenia) {
+      dto.contrasenia = await bcrypt.hash(dto.contrasenia, 10);
     }
 
     await user.update(dto);

@@ -90,7 +90,6 @@ INSERT INTO mascotas (nombre, raza, sexo, edad, vacunado, tamanio, fotos_url, es
 VALUES (
   'Rocky', 'Labrador', 'Macho', 1, true, 'Mediano', '["https://ejemplo.com/foto1.jpg", "https://ejemplo.com/foto2.jpg"]', 1, 1, 1,);
 
-
 -- Crear enum de estado de Publicacion
 CREATE TYPE estado_publi_enum AS ENUM ('Abierto', 'Cerrado');
 

@@ -8,11 +8,13 @@ import {
   CreatedAt,
   UpdatedAt,
   DeletedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
 import { Estado_visita } from './dto/create-visita.dto';
 import { Disponibilidad_horaria } from './dto/create-visita.dto';
+import { Publicacion } from 'src/publicacion/publicacion.model';
 
-@Table({ tableName: 'visita', paranoid: true })
+@Table({ tableName: 'visitas', paranoid: true })
 export class Visita extends Model<Partial<Visita>> {
   @PrimaryKey
   @AutoIncrement
@@ -43,20 +45,20 @@ export class Visita extends Model<Partial<Visita>> {
   })
   telefono?: string;
 
-    @Column({
+  @Column({
     type: DataType.STRING,
     allowNull: false,
     unique: true,
   })
   email: string;
 
-    @Column({
+  @Column({
     type: DataType.DATE,
     allowNull: false,
   })
   disponibilidad_fecha: Date;
 
-    @Column({
+  @Column({
     type: DataType.ENUM(...Object.values(Disponibilidad_horaria)),
     allowNull: false,
   })
@@ -68,7 +70,8 @@ export class Visita extends Model<Partial<Visita>> {
   })
   descripcion: string;
 
-   @Column({
+  @ForeignKey(() => Publicacion)
+  @Column({
     type: DataType.NUMBER,
     allowNull: false,
   })
