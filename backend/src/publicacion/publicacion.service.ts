@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Publicacion } from './publicacion.model';
-//import { Mascota } from '../mascotas/mascota.model';
+import { EstadoPublicacion, Publicacion } from './publicacion.model';
+import { Mascota } from '../mascota/mascota.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 
 @Injectable()
@@ -9,6 +9,9 @@ export class PublicacionesService {
   constructor(
     @InjectModel(Publicacion)
     private publicacionModel: typeof Publicacion,
+
+    @InjectModel(Mascota)
+    private mascotaModel: typeof Mascota,
   ) {}
 
   async findAll(): Promise<Publicacion[]> {
@@ -24,17 +27,11 @@ export class PublicacionesService {
   }
 
   async create(publicacionDto: CreatePublicacionDto): Promise<Publicacion> {
-    // Verificar que la mascota existe
-    /*const mascota = await this.mascotaModel.findOne({
-      where: { id: createPublicacionDto.mascota_id },
-      transaction,
-    }) ;
+    const mascota = await this.mascotaModel.findByPk(publicacionDto.mascota_id);
 
     if (!mascota) {
-      throw new NotFoundException(
-        'Mascota no encontrada',
-      );
-    }*/
+      throw new NotFoundException('Mascota no encontrada');
+    }
 
     return this.publicacionModel.create({
       titulo: publicacionDto.titulo,
@@ -42,8 +39,8 @@ export class PublicacionesService {
       ubicacion: publicacionDto.ubicacion,
       contacto: publicacionDto.contacto,
       mascota_id: publicacionDto.mascota_id,
-      estado: 'Abierta' 
-    } as any);
+      estado: EstadoPublicacion.Abierta,
+    });
   }
 
   async remove(id: number): Promise<void> {

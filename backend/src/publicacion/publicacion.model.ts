@@ -19,7 +19,7 @@ export enum EstadoPublicacion {
 }
 
 @Table({ tableName: 'publicaciones' })
-export class Publicacion extends Model<Publicacion> {
+export class Publicacion extends Model<Partial<Publicacion>> {
   @PrimaryKey
   @AutoIncrement
   @Column

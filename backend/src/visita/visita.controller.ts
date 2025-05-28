@@ -6,7 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Patch,
-  Body
+  Body,
 } from '@nestjs/common';
 import { VisitaService } from './visita.service';
 import { Visita } from './visita.model';
