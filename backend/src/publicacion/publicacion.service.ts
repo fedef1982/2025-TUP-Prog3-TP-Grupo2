@@ -47,4 +47,10 @@ export class PublicacionesService {
     const publicacion = await this.findOne(id);
     await publicacion.destroy();
   }
+
+  async update(id: number, dto: CreatePublicacionDto): Promise<Publicacion> {
+    const visita = await this.findOne(id);
+    await visita.update(dto);
+    return visita;
+  }
 }
