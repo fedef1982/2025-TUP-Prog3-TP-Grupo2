@@ -30,7 +30,7 @@ export class VisitaService {
       telefono: dto.telefono,
       email: dto.email,
       disponibilidad_fecha: dto.disponibilidad_fecha,
-      disponibilidad_horaria: dto.disponibilidad_horaria,
+      disponibilidad_horario: dto.disponibilidad_horario,
       descripcion: dto.descripcion,
     });
   }

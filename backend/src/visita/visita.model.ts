@@ -62,7 +62,7 @@ export class Visita extends Model<Partial<Visita>> {
     type: DataType.ENUM(...Object.values(Disponibilidad_horaria)),
     allowNull: false,
   })
-  disponibilidad_horaria: string;
+  disponibilidad_horario: string;
 
   @Column({
     type: DataType.STRING,

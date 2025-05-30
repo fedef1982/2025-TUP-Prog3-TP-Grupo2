@@ -117,7 +117,7 @@ INSERT INTO publicaciones (titulo, descripcion, ubicacion, contacto, estado, mas
 VALUES 
     ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Cerrado', '1');
 
-/*    ('Gato 1', 'Gato bueno', 'Zona sur', 'email@nombre.com', 'Abierto', '2'),
+/*   ('Gato 1', 'Gato bueno', 'Zona sur', 'email@nombre.com', 'Abierto', '2'),
     ('Perro 2', 'Perro bueno', 'Zona este', '11-5678-1234', 'Abierto', '3'),
     ('Gato 2', 'Gato lindo', 'Zona oeste', 'nombre@email.com', 'Cerrado', '4');
 

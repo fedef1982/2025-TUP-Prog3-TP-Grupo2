@@ -36,7 +36,7 @@ export class UpdateVisitaDto {
   disponibilidad_fecha: Date;
 
   @IsEnum(Disponibilidad_horaria)
-  disponibilidad_horaria: string;
+  disponibilidad_horario: string;
 
   @IsString()
   descripcion: string;
