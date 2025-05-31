@@ -22,43 +22,43 @@ export class User extends Model<Partial<User>> {
     allowNull: false,
     unique: true,
   })
-  email: string;
+  declare email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  apellido: string;
+  declare apellido: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  contrasenia: string;
+  declare contrasenia: string;
 
   @Column({
     type: DataType.ENUM('Admin', 'Publicador'),
     allowNull: false,
   })
-  rol: string;
+  declare rol: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  telefono?: string;
+  declare telefono?: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  direccion?: string;
+  declare direccion?: string;
 
   @CreatedAt
   @Column({ field: 'created_at' })
