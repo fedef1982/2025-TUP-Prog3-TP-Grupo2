@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { EstadoPublicacion, Publicacion } from './publicacion.model';
 import { Mascota } from '../mascota/mascota.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
+import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
 
 @Injectable()
 export class PublicacionesService {
@@ -46,5 +47,11 @@ export class PublicacionesService {
   async remove(id: number): Promise<void> {
     const publicacion = await this.findOne(id);
     await publicacion.destroy();
+  }
+
+  async update(id: number, dto: UpdatePublicacionDto): Promise<Publicacion> {
+    const visita = await this.findOne(id);
+    await visita.update(dto);
+    return visita;
   }
 }
