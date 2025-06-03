@@ -28,6 +28,16 @@ export class UsersService {
     return user;
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userModel.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException(`No existe un usuario con el email ${email}`);
+    }
+    return user;
+  }
+
   private async validarEmailUnico(email: string): Promise<void> {
     const emailUsado = await this.userModel.findOne({ where: { email } });
     if (emailUsado) {
