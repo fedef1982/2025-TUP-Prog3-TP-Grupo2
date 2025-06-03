@@ -20,7 +20,7 @@ import { VisitaModule } from './visita/visita.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'admin',
+      password: 'paola',
       database: 'adoptar',
       models: [User, Mascota, Especie, Condicion, Publicacion, Visita],
       autoLoadModels: true,
