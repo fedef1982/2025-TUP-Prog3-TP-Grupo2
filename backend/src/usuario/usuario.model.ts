@@ -10,6 +10,11 @@ import {
   DeletedAt,
 } from 'sequelize-typescript';
 
+export enum Rol {
+  Admin = 'Admin',
+  Publicador = 'Publicador',
+}
+
 @Table({ tableName: 'usuarios', paranoid: true })
 export class User extends Model<Partial<User>> {
   @PrimaryKey
@@ -43,7 +48,7 @@ export class User extends Model<Partial<User>> {
   declare contrasenia: string;
 
   @Column({
-    type: DataType.ENUM('Admin', 'Publicador'),
+    type: DataType.ENUM(...Object.values(Rol)),
     allowNull: false,
   })
   declare rol: string;
