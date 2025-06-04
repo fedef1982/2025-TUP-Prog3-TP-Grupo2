@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
-import { Rol } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import * as bcrypt from 'bcrypt';
@@ -56,7 +55,7 @@ export class UsersService {
       nombre: dto.nombre,
       apellido: dto.apellido,
       contrasenia: contraseniaHasheada,
-      rol: Rol.Publicador,
+      rol_id: 2, // 2 = Publicador
       telefono: dto.telefono,
       direccion: dto.direccion,
     });

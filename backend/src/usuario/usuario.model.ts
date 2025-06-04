@@ -8,12 +8,9 @@ import {
   CreatedAt,
   UpdatedAt,
   DeletedAt,
+  ForeignKey,
 } from 'sequelize-typescript';
-
-export enum Rol {
-  Admin = 'Admin',
-  Publicador = 'Publicador',
-}
+import { Rol } from './rol.model';
 
 @Table({ tableName: 'usuarios', paranoid: true })
 export class User extends Model<Partial<User>> {
@@ -47,11 +44,12 @@ export class User extends Model<Partial<User>> {
   })
   declare contrasenia: string;
 
+  @ForeignKey(() => Rol)
   @Column({
-    type: DataType.ENUM(...Object.values(Rol)),
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  declare rol: string;
+  declare rol_id: number;
 
   @Column({
     type: DataType.STRING,
