@@ -55,7 +55,7 @@ export class UsersService {
       nombre: dto.nombre,
       apellido: dto.apellido,
       contrasenia: contraseniaHasheada,
-      rol: 'Publicador',
+      rol_id: 2, // 2 = Publicador
       telefono: dto.telefono,
       direccion: dto.direccion,
     });
