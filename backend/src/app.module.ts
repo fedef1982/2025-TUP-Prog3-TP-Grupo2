@@ -17,16 +17,6 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'paola',
-      database: 'adoptar',
-      models: [User, Mascota, Especie, Condicion, Publicacion, Visita],
-      autoLoadModels: true,
-      synchronize: true,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
