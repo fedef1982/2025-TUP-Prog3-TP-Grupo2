@@ -1,5 +1,15 @@
--- Crear enum de roles
-CREATE TYPE rol_enum AS ENUM ('Admin', 'Publicador');
+-- Script para crear las tablas y datos iniciales de la base de datos
+
+--crear tabla de roles
+CREATE TABLE IF NOT EXISTS roles (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(20) NOT NULL UNIQUE
+);
+
+INSERT INTO roles (id, nombre)
+VALUES 
+    (1, 'Admin'),
+    (2, 'Publicador');
 
 -- Crear tabla usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -8,23 +18,26 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     contrasenia VARCHAR(100) NOT NULL,
-    rol rol_enum,
+    rol_id INTEGER NOT NULL,
     telefono VARCHAR(100),
     direccion VARCHAR(100),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP WITH TIME ZONE
+    deleted_at TIMESTAMP WITH TIME ZONE,
+        CONSTRAINT fk_rol
+          FOREIGN KEY(rol_id)
+            REFERENCES roles(id)
 );
 
 -- Insertar algunos datos de ejemplo en la tabla de usuarios
-INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol, telefono, direccion)
+INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol_id, telefono, direccion)
 VALUES 
-    ('paolarladera@gmail.com', 'paola', 'rodriguez', 'paola', 'Publicador', '123456789', 'Calle falsa');
+    ('paolarladera@gmail.com', 'paola', 'rodriguez', 'paola', 2, '123456789', 'Calle falsa');
 
 -- Insertar unico usuario con el rol ADMIN de la pagina
-INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol) 
+INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol_id) 
 VALUES 
-    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar', 'Admin');
+    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar', 1);
 
 -- Crear enums Mascotas
 CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');

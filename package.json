@@ -1,0 +1,7 @@
+{
+  "scripts": {
+  "dev": "npm-run-all --parallel dev:front dev:back",
+  "dev:front": "cd frontend && pnpm run dev",
+  "dev:back": "cd backend && npm run start:dev"
+}
+}
