@@ -6,9 +6,13 @@ import { MascotasController } from './mascota.controller';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
 import { User } from 'src/usuario/usuario.model';
+import { AccesoModule } from 'src/acceso/acceso.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Mascota, Especie, Condicion, User])],
+  imports: [
+    SequelizeModule.forFeature([Mascota, Especie, Condicion, User]),
+    AccesoModule,
+  ],
   providers: [MascotaService],
   controllers: [MascotasController],
 })

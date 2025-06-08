@@ -32,7 +32,6 @@ export class UsersController {
   @Get('perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getPerfil(@Req() req: AuthenticatedRequest) {
-    console.log('GET /perfil ejecutado');
     const usuario = req.user;
     return this.usersService.findOne(usuario.sub);
   }

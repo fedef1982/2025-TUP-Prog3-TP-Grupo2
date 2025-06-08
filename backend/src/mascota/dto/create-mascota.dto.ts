@@ -59,8 +59,4 @@ export class CreateMascotaDto {
   @IsInt()
   @IsNotEmpty()
   condicion_id: number;
-
-  @IsInt()
-  @IsNotEmpty()
-  usuario_id: number;
 }
