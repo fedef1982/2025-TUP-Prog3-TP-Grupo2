@@ -7,21 +7,26 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { Role } from 'src/auth/roles.enum';
 import * as bcrypt from 'bcrypt';
+import { AccesoService } from 'src/acceso/acceso.service';
+import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { Rol } from './rol.model';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
+    private readonly accesoService: AccesoService,
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userModel.findAll();
+    return this.userModel.findAll({ include: [Rol] });
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userModel.findByPk(id);
+    const user = await this.userModel.findByPk(id, { include: [Rol] });
     if (!user) {
       throw new NotFoundException(`El usuario con id ${id} no existe`);
     }
@@ -31,6 +36,7 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.userModel.findOne({
       where: { email },
+      include: [Rol],
     });
     if (!user) {
       throw new NotFoundException(`No existe un usuario con el email ${email}`);
@@ -55,14 +61,19 @@ export class UsersService {
       nombre: dto.nombre,
       apellido: dto.apellido,
       contrasenia: contraseniaHasheada,
-      rol_id: 2, // 2 = Publicador
+      rol_id: Role.PUBLICADOR,
       telefono: dto.telefono,
       direccion: dto.direccion,
     });
   }
 
-  async update(id: number, dto: UpdateUsuarioDto): Promise<User> {
+  async update(
+    id: number,
+    dto: UpdateUsuarioDto,
+    usuario: JwtPayload,
+  ): Promise<User> {
     const user = await this.findOne(id);
+    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
 
     if (dto.email && dto.email !== user.email) {
       await this.validarEmailUnico(dto.email);
@@ -76,8 +87,9 @@ export class UsersService {
     return user;
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, usuario: JwtPayload): Promise<void> {
     const user = await this.findOne(id);
+    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
     await user.destroy();
   }
 }

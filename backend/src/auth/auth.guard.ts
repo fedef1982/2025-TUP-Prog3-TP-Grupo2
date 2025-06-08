@@ -10,13 +10,13 @@ import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from './decorators/public.decorator';
 
-interface JwtPayload {
+export interface JwtPayload {
   sub: number;
   username: string;
-  rol: string;
+  rol_id: number;
 }
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user?: JwtPayload;
 }
 

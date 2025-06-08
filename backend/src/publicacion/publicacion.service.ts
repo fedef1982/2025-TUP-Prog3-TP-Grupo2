@@ -39,7 +39,7 @@ export class PublicacionesService {
       descripcion: publicacionDto.descripcion,
       ubicacion: publicacionDto.ubicacion,
       contacto: publicacionDto.contacto,
-      mascota_id: publicacionDto.mascota_id,
+      mascota_id: mascota.id,
       estado: EstadoPublicacion.Abierta,
     });
   }

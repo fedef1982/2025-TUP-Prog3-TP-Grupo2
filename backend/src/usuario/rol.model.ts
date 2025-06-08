@@ -5,7 +5,9 @@ import {
   PrimaryKey,
   AutoIncrement,
   DataType,
+  HasMany,
 } from 'sequelize-typescript';
+import { User } from './usuario.model';
 
 @Table({ tableName: 'roles', timestamps: false })
 export class Rol extends Model<Rol> {
@@ -18,5 +20,8 @@ export class Rol extends Model<Rol> {
     type: DataType.STRING,
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
+
+  @HasMany(() => User)
+  declare usuarios: User[];
 }
