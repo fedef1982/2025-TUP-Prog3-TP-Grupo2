@@ -26,50 +26,50 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
     type: DataType.STRING(100),
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
 
   @Column({
     type: DataType.STRING(100),
     allowNull: true,
   })
-  raza?: string;
+  declare raza?: string;
 
   @Column({
     type: DataType.ENUM('Macho', 'Hembra'),
     allowNull: false,
   })
-  sexo: string;
+  declare sexo: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
-  edad?: number;
+  declare edad?: number;
 
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  vacunado: boolean;
+  declare vacunado: boolean;
 
   @Column({
     type: DataType.ENUM('Chico', 'Mediano', 'Grande'),
     allowNull: false,
   })
-  tamanio: string;
+  declare tamanio: string;
 
   @Column({
     type: DataType.JSON,
     allowNull: false,
   })
-  fotos_url: string[];
+  declare fotos_url: string[];
 
   @ForeignKey(() => Especie)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  especie_id: number;
+  declare especie_id: number;
 
   @BelongsTo(() => Especie)
   especie: Especie;
@@ -79,7 +79,7 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  condicion_id: number;
+  declare condicion_id: number;
 
   @BelongsTo(() => Condicion)
   condicion: Condicion;
@@ -89,7 +89,7 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  usuario_id: number;
+  declare usuario_id: number;
 
   @BelongsTo(() => User, {
     foreignKey: 'usuario_id',

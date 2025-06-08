@@ -18,11 +18,11 @@ export class Condicion extends Model<Condicion> {
     type: DataType.STRING,
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
-  descripcion?: string;
+  declare descripcion?: string;
 }
