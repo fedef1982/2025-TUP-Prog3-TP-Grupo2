@@ -9,6 +9,7 @@ import {
   UpdatedAt,
   DeletedAt,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { Rol } from './rol.model';
 
@@ -51,6 +52,9 @@ export class User extends Model<Partial<User>> {
   })
   declare rol_id: number;
 
+  @BelongsTo(() => Rol)
+  declare rol: Rol;
+
   @Column({
     type: DataType.STRING,
     allowNull: true,
@@ -75,5 +79,3 @@ export class User extends Model<Partial<User>> {
   @Column({ field: 'deleted_at' })
   declare deletedAt: Date;
 }
-
-// cuando exita el modelo de publicaciones hay que dejar la relación de HasMany del usuario con publicaciones

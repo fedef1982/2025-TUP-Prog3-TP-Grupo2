@@ -91,7 +91,10 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
   })
   usuario_id: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, {
+    foreignKey: 'usuario_id',
+    onDelete: 'CASCADE',
+  })
   usuario: User;
 
   @CreatedAt

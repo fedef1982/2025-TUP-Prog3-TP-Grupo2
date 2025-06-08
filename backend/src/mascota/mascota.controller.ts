@@ -7,19 +7,21 @@ import {
   Body,
   Post,
   Patch,
+  Request,
 } from '@nestjs/common';
 import { MascotaService } from './mascota.service';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
+import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 
-@Controller('mascotas')
+@Controller('user/:id/mascotas')
 export class MascotasController {
   constructor(private readonly mascotaService: MascotaService) {}
 
   @Get()
-  findAll(): Promise<Mascota[]> {
-    return this.mascotaService.findAll();
+  findAll(@Request() req: AuthenticatedRequest): Promise<Mascota[]> {
+    return this.mascotaService.findAll(req.user);
   }
 
   @Get(':id')

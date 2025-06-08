@@ -12,6 +12,7 @@ import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
+
 @Controller('publicaciones')
 export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}

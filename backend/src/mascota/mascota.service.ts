@@ -6,6 +6,8 @@ import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
 import { User } from 'src/usuario/usuario.model';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
+import { Role } from 'src/auth/roles.enum';
+import { JwtPayload } from 'src/auth/jwt-playload.interface';
 
 @Injectable()
 export class MascotaService {
@@ -23,14 +25,20 @@ export class MascotaService {
     private userModel: typeof User,
   ) {}
 
-  async findAll(): Promise<Mascota[]> {
+  async findAll(user: JwtPayload): Promise<Mascota[]> {
+    const where =
+      user.rol_id === Number(Role.ADMIN) ? {} : { usuario_id: user.sub };
     return this.mascotaModel.findAll({
+      where,
       include: [Especie, Condicion, User],
     });
   }
 
   async findOne(id: number): Promise<Mascota> {
-    const mascota = await this.mascotaModel.findByPk(id);
+    const mascota = await this.mascotaModel.findByPk(id, {
+      include: [Especie, Condicion, User],
+    });
+
     if (!mascota) {
       throw new NotFoundException(`La mascota con id ${id} no existe`);
     }
