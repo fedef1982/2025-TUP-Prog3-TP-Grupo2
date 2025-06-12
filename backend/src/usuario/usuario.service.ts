@@ -25,7 +25,8 @@ export class UsersService {
     return this.userModel.findAll({ include: [Rol] });
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number, usuario: JwtPayload): Promise<User> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, id);
     const user = await this.userModel.findByPk(id, { include: [Rol] });
     if (!user) {
       throw new NotFoundException(`El usuario con id ${id} no existe`);
@@ -72,7 +73,7 @@ export class UsersService {
     dto: UpdateUsuarioDto,
     usuario: JwtPayload,
   ): Promise<User> {
-    const user = await this.findOne(id);
+    const user = await this.findOne(id, usuario);
     this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
 
     if (dto.email && dto.email !== user.email) {
@@ -88,7 +89,7 @@ export class UsersService {
   }
 
   async remove(id: number, usuario: JwtPayload): Promise<void> {
-    const user = await this.findOne(id);
+    const user = await this.findOne(id, usuario);
     this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
     await user.destroy();
   }
