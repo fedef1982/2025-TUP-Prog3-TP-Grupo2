@@ -8,9 +8,17 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Adoptar example')
-    .setDescription('The AdoptAR API description')
+    .setDescription('Aprende a usar la API de AdoptAR ')
     .setVersion('1.0')
     .addTag('tagDePrueba')
+    .addGlobalResponse({
+      status: 500,
+      description: 'Internal server error',
+    })
+    .addGlobalResponse({
+      status: 401,
+      description: 'Unauthorized',
+    })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

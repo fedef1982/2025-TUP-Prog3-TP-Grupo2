@@ -1,0 +1,35 @@
+@startuml
+skinparam componentStyle rectangle
+
+' Frontend
+package "Frontend (NextJS)" {
+  [UI (Pantallas)] as UI
+  [API Client (axios)] as APIClient
+}
+
+' Backend
+package "Backend (NestJS)" {
+  [Controller] as Controller
+  [Service] as Service
+  [DTOs] as DTO
+  [Models/Entities] as Models
+  [Auth Module] as Auth
+  [Swagger Doc] as Swagger
+}
+
+' Base de datos
+database "PostgreSQL" as DB
+
+' Relaciones internas
+UI --> APIClient : Solicita datos
+APIClient --> Controller : HTTP Request
+Controller --> DTO : Usa para validación
+Controller --> Service : Lógica de negocio
+Service --> Models : Acceso a datos
+Models --> DB : ORM (Sequelize)
+
+' Opcional: relaciones auxiliares
+Controller --> Swagger : Documentación
+Controller --> Auth : Verificación JWT/token
+
+@enduml

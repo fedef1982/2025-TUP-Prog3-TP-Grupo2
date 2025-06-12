@@ -8,10 +8,18 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+} from '@nestjs/swagger';
 import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
+
 @Controller('publicaciones')
 export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
@@ -31,6 +39,11 @@ export class PublicacionesController {
     return this.publicacionesService.update(id, updatePublicacionDto);
   }
 
+  @ApiOperation({ summary: 'Listar todas las publicaciones' })
+  @ApiResponse({
+    status: 200,
+    description: 'Publicaciones obtenidas correctamente.',
+  })
   @Get()
   findAll(): Promise<Publicacion[]> {
     return this.publicacionesService.findAll();
