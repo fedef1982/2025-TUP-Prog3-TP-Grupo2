@@ -1,0 +1,28 @@
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
+
+export interface JwtPayload {
+  sub: number;
+  username: string;
+  rol_id: number;
+}
+
+export async function getToken(): Promise<JwtPayload | null> {
+  try {
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('token')?.value;
+
+    if (!token) return null;
+
+    const decoded = jwt.decode(token) as JwtPayload | null;
+    return decoded;
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    return null;
+  }
+}
+
+export async function getRawToken(): Promise<string | null> {
+  const cookieStore = cookies();
+  return (await cookieStore).get('token')?.value || null;
+}

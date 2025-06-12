@@ -1,218 +1,252 @@
-import postgres from 'postgres';
-import {
-  CustomerField,
-  CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  Revenue,
-} from './definitions';
-import { formatCurrency } from './utils';
+import { cookies } from "next/headers";
+import { LatestUser, User, UsersTable } from "./definitions";
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-
-export async function fetchRevenue() {
+export async function fetchLatestUsers(): Promise<LatestUser[]> {
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
+      },
+      next: { revalidate: 3600 }
+    });
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (!response.ok) {
+      throw new Error(`Failed to fetch users: ${response.status}`);
+    }
 
-    const data = await sql<Revenue[]>`SELECT * FROM revenue`;
+    const usersData = await response.json();
 
-    // console.log('Data fetch completed after 3 seconds.');
-
-    return data;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
-  }
-}
-
-export async function fetchLatestInvoices() {
-  try {
-    const data = await sql<LatestInvoiceRaw[]>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
-
-    const latestInvoices = data.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
+    return usersData.map((user: any) => ({
+      id: user.id.toString(),
+      name: `${user.nombre} ${user.apellido}`,
+      email: user.email,
+      image_url: '/default-avatar.png', // Valor por defecto
+      phone: user.telefono,
+      role: user.rol_id === 1 ? 'Admin' : 'User', // Asumiendo 1=Admin
+      status: user.deletedAt === null ? 'active' : 'inactive'
     }));
-    return latestInvoices;
+
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest invoices.');
+    console.error('Failed to fetch latest users:', error);
+    throw new Error('Failed to fetch latest users');
   }
 }
 
-export async function fetchCardData() {
+// Función para obtener un usuario específico
+export async function fetchUserById(id: string): Promise<User> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user');
+  }
+
+  const user = await response.json();
+  
+  return {
+    id: user.id.toString(),
+    name: `${user.nombre} ${user.apellido}`,
+    email: user.email,
+    password: user.contrasenia,
+    role_id: user.rol_id,
+    phone: user.telefono,
+    address: user.direccion,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    deletedAt: user.deletedAt
+  };
+}
+
+// Función para formatear usuarios para tablas
+export function formatUsersForTable(users: any[]): UsersTable[] {
+  return users.map(user => ({
+    id: user.id.toString(),
+    name: `${user.nombre} ${user.apellido}`,
+    email: user.email,
+    image_url: '/default-avatar.png',
+    phone: user.telefono,
+    role: user.rol_id === 1 ? 'Admin' : 'User',
+    createdAt: new Date(user.createdAt).toLocaleDateString(),
+    status: user.deletedAt === null ? 'active' : 'inactive'
+  }));
+}
+
+interface UserStats {
+  totalUsers: number;
+  activeUsers: number;
+  pendingUsers: number;
+  adminUsers: number;
+  inactiveUsers: number;
+  premiumUsers: number;
+}
+
+/*export async function fetchUserStats(): Promise<UserStats> {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+    // 1. Obtener token de autenticación
+    const token = (await cookies()).get('token')?.value;
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
 
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
+    // 2. Configurar la petición a la API
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    const response = await fetch(`${apiUrl}/users/stats`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      next: { revalidate: 3600 } // Revalidar cada hora
+    });
 
-    const numberOfInvoices = Number(data[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2][0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2][0].pending ?? '0');
+    // 3. Manejar errores de la respuesta
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || 
+        `Failed to fetch user stats with status ${response.status}`
+      );
+    }
+
+    // 4. Procesar y transformar los datos de la API
+    const apiData = await response.json();
 
     return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      totalUsers: apiData.total_users || 0,
+      activeUsers: apiData.active_users || 0,
+      pendingUsers: apiData.pending_approval || 0,
+      adminUsers: apiData.admin_count || 0,
+      inactiveUsers: apiData.inactive_users || 0,
+      premiumUsers: apiData.premium_subscribers || 0
     };
+
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
+    console.error('Error in fetchUserStats:', error);
+    
+    // 5. Retornar valores por defecto en caso de error
+    return {
+      totalUsers: 0,
+      activeUsers: 0,
+      pendingUsers: 0,
+      adminUsers: 0,
+      inactiveUsers: 0,
+      premiumUsers: 0
+    };
   }
+}*/
+
+interface FilteredUsersParams {
+  query?: string;
+  page?: number;
+  limit?: number;
+  status?: 'active' | 'inactive' | 'pending';
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
-const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number,
-) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const invoices = await sql<InvoicesTable[]>`
-      SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return invoices;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
-  }
+export interface FilteredUser {
+  id: string;
+  name: string;
+  email: string;
+  status: 'active' | 'inactive' | 'pending';
+  lastLogin: string;
+  role: string;
+  imageUrl: string;
 }
 
-export async function fetchInvoicesPages(query: string) {
+export async function fetchFilteredUsers(filter: string, currentPage: number, {
+  query = '', page = 1, limit = 10, status, sortBy = 'name', sortOrder = 'asc'
+}: FilteredUsersParams = {}): Promise<FilteredUser[]> {
   try {
-    const data = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-  `;
+    const token = (await cookies()).get('session-token')?.value;
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
 
-    const totalPages = Math.ceil(Number(data[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
-  }
-}
+    // Construir parámetros de consulta
+    const params = new URLSearchParams({
+      q: query,
+      page: page.toString(),
+      limit: limit.toString(),
+      sortBy,
+      sortOrder
+    });
 
-export async function fetchInvoiceById(id: string) {
-  try {
-    const data = await sql<InvoiceForm[]>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
+    if (status) {
+      params.append('status', status);
+    }
 
-    const invoice = data.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
+    const apiUrl = `${process.env.API_BASE_URL}/users/filter?${params.toString()}`;
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      next: { revalidate: 3600 } // Revalidar cada hora
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch filtered users');
+    }
+
+    const apiData = await response.json();
+
+    // Mapear y transformar los datos de la API
+    return apiData.users.map((user: any) => ({
+      id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      status: user.accountStatus || 'inactive',
+      lastLogin: user.lastLoginDate || 'Never',
+      role: user.role || 'user',
+      imageUrl: user.profileImage || '/default-avatar.png'
     }));
 
-    return invoice[0];
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+    console.error('Error fetching filtered users:', error);
+    throw new Error('Failed to load user data. Please try again.');
   }
 }
 
-export async function fetchCustomers() {
+export async function fetchUsersPages(query: string): Promise<number> {
   try {
-    const customers = await sql<CustomerField[]>`
-      SELECT
-        id,
-        name
-      FROM customers
-      ORDER BY name ASC
-    `;
+    const token = (await cookies()).get('token')?.value;
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
 
-    return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all customers.');
-  }
-}
+    // Construir la URL con parámetros de consulta
+    const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/users/pages`);
+    apiUrl.searchParams.append('query', query);
 
-export async function fetchFilteredCustomers(query: string) {
-  try {
-    const data = await sql<CustomersTableType[]>`
-		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
-		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
-	  `;
+    const response = await fetch(apiUrl.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      next: { revalidate: 3600 } // Revalidar cada hora
+    });
 
-    const customers = data.map((customer) => ({
-      ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
-    }));
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch total pages');
+    }
 
-    return customers;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch customer table.');
+    const data = await response.json();
+    return data.totalPages || 1; // Retorna 1 como valor por defecto si no hay datos
+    
+  } catch (error) {
+    console.error('Failed to fetch total pages:', error);
+    return 1; // Retorna 1 página como fallback
   }
 }
