@@ -1,18 +1,9 @@
-<<<<<<< Updated upstream
 -- Script para crear las tablas y datos iniciales de la base de datos
-=======
--- Crear enum de roles
---CREATE TYPE rol_enum AS ENUM ('Admin', 'Publicador');
->>>>>>> Stashed changes
 
 --crear tabla de roles
 CREATE TABLE IF NOT EXISTS roles (
     id SERIAL PRIMARY KEY,
-<<<<<<< Updated upstream
     nombre VARCHAR(20) NOT NULL UNIQUE
-=======
-    nombre NOT NULL UNIQUE
->>>>>>> Stashed changes
 );
 
 INSERT INTO roles (id, nombre)
