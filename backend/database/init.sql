@@ -37,7 +37,7 @@ VALUES
 -- Insertar unico usuario con el rol ADMIN de la pagina
 INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol_id) 
 VALUES 
-    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar', 1);
+    ('admin@adoptar.com', 'Admin', 'Administrador', 'adoptar123', 1);
 
 -- Crear enums Mascotas
 CREATE TYPE tamanio_num AS ENUM ('Chico', 'Mediano', 'Grande');

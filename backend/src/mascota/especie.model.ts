@@ -18,5 +18,5 @@ export class Especie extends Model<Especie> {
     type: DataType.STRING,
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
 }
