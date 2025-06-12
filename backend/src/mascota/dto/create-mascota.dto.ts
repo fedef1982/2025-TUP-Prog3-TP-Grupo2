@@ -59,8 +59,8 @@ export class CreateMascotaDto {
       'https://example.com/foto1.jpg',
       'https://example.com/foto2.jpg',
       'https://example.com/foto3.jpg',
-      'https://example.com/foto4.jpg'
-        ]
+      'https://example.com/foto4.jpg',
+    ],
   })
   @IsArray()
   @ArrayMaxSize(4)

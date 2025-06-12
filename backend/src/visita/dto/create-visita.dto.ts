@@ -52,7 +52,7 @@ export class CreateVisitaDto {
   @ApiProperty({ example: '2025-07-01' })
   @IsDate()
   disponibilidad_fecha: Date;
-  
+
   @ApiProperty({ example: Disponibilidad_horaria.Noche })
   @IsEnum(Disponibilidad_horaria)
   disponibilidad_horario: string;
