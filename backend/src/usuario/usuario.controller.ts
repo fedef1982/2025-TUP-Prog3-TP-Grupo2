@@ -29,11 +29,13 @@ export class UsersController {
   }
 
   //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
-  @Get('perfil')
+  @Get(':usuarioId/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
-  getPerfil(@Req() req: AuthenticatedRequest) {
-    const usuario = req.user;
-    return this.usersService.findOne(usuario.sub);
+  getPerfil(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.usersService.findOne(usuarioId, req.user);
   }
 
   @Public()
@@ -45,8 +47,11 @@ export class UsersController {
   //Devuelve el perfil del usuario con ID indicado, solo puede acceder el ADMIN (para que el admin pueda acceder al perfil de cualquier publicador)
   @Get(':id')
   @Roles(Role.ADMIN)
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<User> {
+    return this.usersService.findOne(id, req.user);
   }
 
   @Patch(':id')

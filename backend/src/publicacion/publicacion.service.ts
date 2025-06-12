@@ -2,8 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { EstadoPublicacion, Publicacion } from './publicacion.model';
 import { Mascota } from '../mascota/mascota.model';
+import { MascotaService } from 'src/mascota/mascota.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
+import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { Role } from 'src/auth/roles.enum';
+import { AccesoService } from 'src/acceso/acceso.service';
+import { Especie } from 'src/mascota/especie.model';
+import { Condicion } from 'src/mascota/condicion.model';
+import { User } from 'src/usuario/usuario.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class PublicacionesService {
@@ -13,26 +21,103 @@ export class PublicacionesService {
 
     @InjectModel(Mascota)
     private mascotaModel: typeof Mascota,
+    private readonly mascotaService: MascotaService,
+    private readonly accesoService: AccesoService,
   ) {}
 
-  async findAll(): Promise<Publicacion[]> {
-    return this.publicacionModel.findAll();
-  }
+  /*   private async validarPublicacion(id: number): Promise<Publicacion> {
+    const publicacion = await this.publicacionModel.findByPk(id, {
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, { model: User, as: 'usuario' }],
+        },
+      ],
+    });
 
-  async findOne(id: number): Promise<Publicacion> {
-    const publicacion = await this.publicacionModel.findByPk(id);
     if (!publicacion) {
-      throw new NotFoundException(`La publicacion con id ${id} no existe`);
+      throw new NotFoundException(`La publicacion con ID ${id} no existe`);
+    }
+    return publicacion;
+  } */
+
+  private async validarPublicacion(id: number): Promise<Publicacion> {
+    const publicacion = await this.publicacionModel.findByPk(id, {
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, { model: User, as: 'usuario' }],
+        },
+      ],
+    });
+    console.log(JSON.stringify(publicacion, null, 2));
+    console.log(JSON.stringify(publicacion?.mascota, null, 2));
+
+    if (!publicacion) {
+      throw new NotFoundException(`La publicacion con ID ${id} no existe`);
     }
     return publicacion;
   }
 
-  async create(publicacionDto: CreatePublicacionDto): Promise<Publicacion> {
-    const mascota = await this.mascotaModel.findByPk(publicacionDto.mascota_id);
+  private async validarAccesoAPublicacion(
+    id: number,
+    usuario: JwtPayload,
+  ): Promise<Publicacion> {
+    const publicacion = await this.validarPublicacion(id);
+    const mascota = await this.mascotaService.validarMascota(
+      publicacion.mascota_id,
+    );
+    console.log('usuario id:', JSON.stringify(publicacion.mascota_id));
+    /*     console.log('publicacion:', JSON.stringify(publicacion));
+    const publiX = JSON.parse(JSON.stringify(publicacion)) as Publicacion; <----------
+    console.log('id del usuario:', JSON.stringify(publiX.mascota));*/
+    this.accesoService.verificarAcceso(usuario, {
+      usuario_id: mascota.usuario_id,
+    });
+    return publicacion;
+  }
 
-    if (!mascota) {
-      throw new NotFoundException('Mascota no encontrada');
-    }
+  async findAll(
+    usuarioId: number,
+    usuario: JwtPayload,
+  ): Promise<Publicacion[]> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const whereMascota =
+      usuario.rol_id === Number(Role.ADMIN) ? {} : { usuario_id: usuario.sub };
+    return this.publicacionModel.findAll({
+      include: [
+        {
+          model: Mascota,
+          where: whereMascota,
+          include: [Especie, Condicion, User],
+        },
+      ],
+    });
+  }
+
+  async findOne(
+    id: number,
+    usuarioId: number,
+    usuario: JwtPayload,
+  ): Promise<Publicacion> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const publicacion = await this.validarAccesoAPublicacion(id, usuario);
+    return publicacion;
+  }
+
+  async create(
+    publicacionDto: CreatePublicacionDto,
+    usuarioId: number,
+    usuario: JwtPayload,
+  ): Promise<Publicacion> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const mascota = await this.mascotaService.validarMascota(
+      publicacionDto.mascota_id,
+    );
+
+    this.accesoService.verificarAcceso(usuario, {
+      usuario_id: mascota.usuario_id,
+    });
 
     return this.publicacionModel.create({
       titulo: publicacionDto.titulo,
@@ -44,14 +129,66 @@ export class PublicacionesService {
     });
   }
 
-  async remove(id: number): Promise<void> {
-    const publicacion = await this.findOne(id);
+  async update(
+    id: number,
+    dto: UpdatePublicacionDto,
+    usuarioId: number,
+    usuario: JwtPayload,
+  ): Promise<Publicacion> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const publicacion = await this.validarAccesoAPublicacion(id, usuario);
+    await publicacion.update(dto);
+    return publicacion;
+  }
+
+  async remove(
+    id: number,
+    usuarioId: number,
+    usuario: JwtPayload,
+  ): Promise<void> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const publicacion = await this.validarAccesoAPublicacion(id, usuario);
     await publicacion.destroy();
   }
 
-  async update(id: number, dto: UpdatePublicacionDto): Promise<Publicacion> {
-    const visita = await this.findOne(id);
-    await visita.update(dto);
-    return visita;
+  async findPublicadasYAbiertas(): Promise<Publicacion[]> {
+    return this.publicacionModel.findAll({
+      where: {
+        estado: EstadoPublicacion.Abierta,
+        publicado: {
+          [Op.not]: null,
+        },
+      },
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, User],
+        },
+      ],
+    });
+  }
+
+  async findOnePublica(id: number): Promise<Publicacion> {
+    const publicacion = await this.publicacionModel.findOne({
+      where: {
+        id,
+        estado: EstadoPublicacion.Abierta,
+        publicado: { [Op.not]: null },
+      },
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, User],
+        },
+      ],
+    });
+
+    if (!publicacion) {
+      throw new NotFoundException(
+        `No se encontró una publicación abierta y publicada con ID ${id}`,
+      );
+    }
+
+    return publicacion;
   }
 }

@@ -18,7 +18,7 @@ export enum EstadoPublicacion {
   Cerrada = 'Cerrada',
 }
 
-@Table({ tableName: 'publicaciones' })
+@Table({ tableName: 'publicaciones', paranoid: true })
 export class Publicacion extends Model<Partial<Publicacion>> {
   @PrimaryKey
   @AutoIncrement
@@ -28,44 +28,46 @@ export class Publicacion extends Model<Partial<Publicacion>> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique: true,
   })
-  titulo: string;
+  declare titulo: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  descripcion: string;
+  declare descripcion: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  ubicacion: string;
+  declare ubicacion: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  contacto: string;
+  declare contacto: string;
 
-  @Column({ type: DataType.DATE })
-  publicado: Date;
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  declare publicado: Date | null;
 
   @Column({
     type: DataType.ENUM(...Object.values(EstadoPublicacion)),
     allowNull: false,
     defaultValue: EstadoPublicacion.Abierta,
   })
-  estado: EstadoPublicacion;
+  declare estado: EstadoPublicacion;
 
   @ForeignKey(() => Mascota)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  mascota_id: number;
+  declare mascota_id: number;
 
   @BelongsTo(() => Mascota, {
     foreignKey: 'mascota_id',
