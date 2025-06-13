@@ -32,7 +32,7 @@ export function DocGetUsuario() {
     ApiOperation({ summary: 'Listar todos los usuarios' }),
     ApiResponse({
       status: 200,
-      description: 'Usuarios obtenidas correctamente.',
+      description: 'Usuarios obtenidos correctamente.',
     }),
   );
 }
@@ -60,9 +60,9 @@ export function DocGetIPerfilUsuario() {
 
 export function DocDeleteIdUsuario() {
   return applyDecorators(
-    ApiOperation({ summary: 'Eliminar publicacion por ID' }),
+    ApiOperation({ summary: 'Eliminar usuario por ID' }),
     ApiParam({
-      name: 'perfil',
+      name: 'id',
       type: Number,
       description: 'ID de la publicación',
     }),
