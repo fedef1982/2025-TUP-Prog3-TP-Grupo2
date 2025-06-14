@@ -4,25 +4,21 @@ import {
   IsEnum,
   IsOptional,
   IsEmail,
-  IsDate,
 } from 'class-validator';
 
-export enum Estado_visita {
+export enum EstadoVisita {
   Pendiente = 'Pendiente',
   Aprobado = 'Aprobado',
   Rechazado = 'Rechazado',
 }
 
-export enum Disponibilidad_horaria {
+export enum DisponibilidadHoraria {
   Maniana = 'Maniana',
   Tarde = 'Tarde',
   Noche = 'Noche',
 }
 
 export class CreateVisitaDto {
-  @IsEnum(Estado_visita)
-  estado: string;
-
   @IsString()
   @IsNotEmpty()
   nombre: string;
@@ -31,23 +27,21 @@ export class CreateVisitaDto {
   @IsNotEmpty()
   apellido: string;
 
-  @IsOptional()
   @IsString()
-  telefono?: string;
-
-  @IsOptional()
-  @IsString()
-  direccion?: string;
+  @IsNotEmpty()
+  telefono: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @IsDate()
+  @IsNotEmpty()
   disponibilidad_fecha: Date;
 
-  @IsEnum(Disponibilidad_horaria)
+  @IsEnum(DisponibilidadHoraria)
   disponibilidad_horario: string;
 
   @IsString()
+  @IsOptional()
   descripcion: string;
 }

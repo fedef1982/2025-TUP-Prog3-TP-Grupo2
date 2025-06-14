@@ -10,10 +10,12 @@ import {
   DeletedAt,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { User } from 'src/usuario/usuario.model';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
+import { Publicacion } from 'src/publicacion/publicacion.model';
 
 @Table({ tableName: 'mascotas', paranoid: true })
 export class Mascota extends Model<Mascota, Partial<Mascota>> {
@@ -96,6 +98,9 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
     onDelete: 'CASCADE',
   })
   usuario: User;
+
+  @HasMany(() => Publicacion)
+  declare publicacion: Publicacion[];
 
   @CreatedAt
   @Column({ field: 'created_at' })

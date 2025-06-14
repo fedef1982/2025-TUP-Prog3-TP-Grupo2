@@ -25,33 +25,15 @@ export class PublicacionesService {
     private readonly accesoService: AccesoService,
   ) {}
 
-  /*   private async validarPublicacion(id: number): Promise<Publicacion> {
+  public async validarPublicacion(id: number): Promise<Publicacion> {
     const publicacion = await this.publicacionModel.findByPk(id, {
       include: [
         {
           model: Mascota,
-          include: [Especie, Condicion, { model: User, as: 'usuario' }],
+          include: [Especie, Condicion, User],
         },
       ],
     });
-
-    if (!publicacion) {
-      throw new NotFoundException(`La publicacion con ID ${id} no existe`);
-    }
-    return publicacion;
-  } */
-
-  private async validarPublicacion(id: number): Promise<Publicacion> {
-    const publicacion = await this.publicacionModel.findByPk(id, {
-      include: [
-        {
-          model: Mascota,
-          include: [Especie, Condicion, { model: User, as: 'usuario' }],
-        },
-      ],
-    });
-    console.log(JSON.stringify(publicacion, null, 2));
-    console.log(JSON.stringify(publicacion?.mascota, null, 2));
 
     if (!publicacion) {
       throw new NotFoundException(`La publicacion con ID ${id} no existe`);
@@ -64,15 +46,17 @@ export class PublicacionesService {
     usuario: JwtPayload,
   ): Promise<Publicacion> {
     const publicacion = await this.validarPublicacion(id);
-    const mascota = await this.mascotaService.validarMascota(
-      publicacion.mascota_id,
+    const publiJSON = JSON.parse(JSON.stringify(publicacion)) as Publicacion;
+    console.log(
+      '##################### mascota de la publicacion:',
+      JSON.stringify(publiJSON.mascota),
     );
-    console.log('usuario id:', JSON.stringify(publicacion.mascota_id));
-    /*     console.log('publicacion:', JSON.stringify(publicacion));
-    const publiX = JSON.parse(JSON.stringify(publicacion)) as Publicacion; <----------
-    console.log('id del usuario:', JSON.stringify(publiX.mascota));*/
+    console.log(
+      '##################### id del usuario de la mascota:',
+      JSON.stringify(publiJSON.mascota.usuario.id),
+    );
     this.accesoService.verificarAcceso(usuario, {
-      usuario_id: mascota.usuario_id,
+      usuario_id: publiJSON.mascota.usuario_id,
     });
     return publicacion;
   }

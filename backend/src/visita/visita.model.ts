@@ -9,73 +9,79 @@ import {
   UpdatedAt,
   DeletedAt,
   ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
-import { Estado_visita } from './dto/create-visita.dto';
-import { Disponibilidad_horaria } from './dto/create-visita.dto';
+import { EstadoVisita } from './dto/create-visita.dto';
+import { DisponibilidadHoraria } from './dto/create-visita.dto';
 import { Publicacion } from 'src/publicacion/publicacion.model';
 
 @Table({ tableName: 'visitas', paranoid: true })
-export class Visita extends Model<Partial<Visita>> {
+export class Visita extends Model<Visita, Partial<Visita>> {
   @PrimaryKey
   @AutoIncrement
   @Column
   declare id: number;
 
   @Column({
-    type: DataType.ENUM(...Object.values(Estado_visita)),
+    type: DataType.ENUM(...Object.values(EstadoVisita)),
     allowNull: false,
   })
-  estado: string;
+  declare estado: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  nombre: string;
+  declare nombre: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  apellido: string;
+  declare apellido: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  telefono?: string;
+  declare telefono: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique: true,
   })
-  email: string;
+  declare email: string;
 
   @Column({
     type: DataType.DATE,
     allowNull: false,
   })
-  disponibilidad_fecha: Date;
+  declare disponibilidad_fecha: Date;
 
   @Column({
-    type: DataType.ENUM(...Object.values(Disponibilidad_horaria)),
+    type: DataType.ENUM(...Object.values(DisponibilidadHoraria)),
     allowNull: false,
   })
-  disponibilidad_horario: string;
+  declare disponibilidad_horario: string;
 
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
-  descripcion: string;
+  declare descripcion: string;
 
   @ForeignKey(() => Publicacion)
   @Column({
     type: DataType.NUMBER,
     allowNull: false,
   })
-  publicacion_id: number;
+  declare publicacion_id: number;
+
+  @BelongsTo(() => Publicacion, {
+    foreignKey: 'publicacion_id',
+    onDelete: 'CASCADE',
+  })
+  publicacion: Publicacion;
 
   @CreatedAt
   @Column({ field: 'created_at' })

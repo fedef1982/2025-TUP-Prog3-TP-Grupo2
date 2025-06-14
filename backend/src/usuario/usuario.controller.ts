@@ -17,6 +17,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/roles.enum';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 
 @Controller('usuarios')
 export class UsersController {
@@ -29,13 +30,13 @@ export class UsersController {
   }
 
   //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
-  @Get(':usuarioId/perfil')
+  @Get(':id/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getPerfil(
-    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
   ) {
-    return this.usersService.findOne(usuarioId, req.user);
+    return this.usersService.findOne(id, req.user);
   }
 
   @Public()
@@ -52,6 +53,15 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
   ): Promise<User> {
     return this.usersService.findOne(id, req.user);
+  }
+
+  @Get(':id/estadisticas')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  getEstadisticas(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<EstadisticasUsuarioDto> {
+    return this.usersService.getEstadisticas(id, req.user);
   }
 
   @Patch(':id')

@@ -12,12 +12,19 @@ import * as bcrypt from 'bcrypt';
 import { AccesoService } from 'src/acceso/acceso.service';
 import { JwtPayload } from 'src/auth/jwt-playload.interface';
 import { Rol } from './rol.model';
+import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
+import { Mascota } from 'src/mascota/mascota.model';
+import { Publicacion } from 'src/publicacion/publicacion.model';
+import { Visita } from 'src/visita/visita.model';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User)
-    private userModel: typeof User,
+    @InjectModel(User) private readonly userModel: typeof User,
+    @InjectModel(Mascota) private readonly mascotaModel: typeof Mascota,
+    @InjectModel(Publicacion)
+    private readonly publicacionModel: typeof Publicacion,
+    @InjectModel(Visita) private readonly visitaModel: typeof Visita,
     private readonly accesoService: AccesoService,
   ) {}
 
@@ -92,5 +99,45 @@ export class UsersService {
     const user = await this.findOne(id, usuario);
     this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
     await user.destroy();
+  }
+
+  async getEstadisticas(
+    id: number,
+    usuario: JwtPayload,
+  ): Promise<EstadisticasUsuarioDto> {
+    const user = await this.findOne(id, usuario);
+    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
+    const esAdmin = usuario.rol_id === Number(Role.ADMIN);
+    const whereUsuario = esAdmin ? {} : { usuario_id: usuario.sub };
+
+    const [totalUsuarios, totalMascotas, totalPublicaciones, totalVisitas] =
+      await Promise.all([
+        esAdmin ? this.userModel.count() : Promise.resolve(1),
+        this.mascotaModel.count({
+          where: whereUsuario,
+        }),
+        this.publicacionModel.count({
+          include: [
+            {
+              model: Mascota,
+              where: whereUsuario,
+            },
+          ],
+        }),
+        this.visitaModel.count({
+          include: [
+            {
+              model: Publicacion,
+              include: [{ model: Mascota, where: whereUsuario }],
+            },
+          ],
+        }),
+      ]);
+    return {
+      totalUsuarios,
+      totalMascotas,
+      totalPublicaciones,
+      totalVisitas,
+    };
   }
 }
