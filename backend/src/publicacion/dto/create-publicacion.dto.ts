@@ -1,11 +1,4 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsEnum,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
-import { EstadoPublicacion } from '../publicacion.model';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreatePublicacionDto {
   @IsString()
@@ -23,10 +16,6 @@ export class CreatePublicacionDto {
   @IsString()
   @IsNotEmpty()
   contacto: string;
-
-  @IsEnum(EstadoPublicacion)
-  @IsOptional()
-  estado?: EstadoPublicacion;
 
   @IsNumber()
   @IsNotEmpty()

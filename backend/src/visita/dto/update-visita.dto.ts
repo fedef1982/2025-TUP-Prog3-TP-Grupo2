@@ -4,14 +4,13 @@ import {
   IsEnum,
   IsOptional,
   IsEmail,
-  IsDate,
 } from 'class-validator';
-import { Estado_visita } from './create-visita.dto';
-import { Disponibilidad_horaria } from './create-visita.dto';
+import { EstadoVisita } from './create-visita.dto';
+import { DisponibilidadHoraria } from './create-visita.dto';
 
 export class UpdateVisitaDto {
   @IsOptional()
-  @IsEnum(Estado_visita)
+  @IsEnum(EstadoVisita)
   estado: string;
 
   @IsOptional()
@@ -37,11 +36,10 @@ export class UpdateVisitaDto {
   email: string;
 
   @IsOptional()
-  @IsDate()
   disponibilidad_fecha: Date;
 
   @IsOptional()
-  @IsEnum(Disponibilidad_horaria)
+  @IsEnum(DisponibilidadHoraria)
   disponibilidad_horario: string;
 
   @IsOptional()

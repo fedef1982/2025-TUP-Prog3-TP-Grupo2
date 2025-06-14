@@ -10,8 +10,10 @@ import {
   DeletedAt,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Mascota } from 'src/mascota/mascota.model';
+import { Visita } from 'src/visita/visita.model';
 
 export enum EstadoPublicacion {
   Abierta = 'Abierta',
@@ -19,7 +21,7 @@ export enum EstadoPublicacion {
 }
 
 @Table({ tableName: 'publicaciones', paranoid: true })
-export class Publicacion extends Model<Partial<Publicacion>> {
+export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
   @PrimaryKey
   @AutoIncrement
   @Column
@@ -74,6 +76,9 @@ export class Publicacion extends Model<Partial<Publicacion>> {
     onDelete: 'CASCADE',
   })
   mascota: Mascota;
+
+  @HasMany(() => Visita)
+  declare visita: Visita[];
 
   @CreatedAt
   @Column({ field: 'created_at' })
