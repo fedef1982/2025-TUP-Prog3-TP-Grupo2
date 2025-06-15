@@ -43,7 +43,7 @@ export class CreateVisitaDto {
   disponibilidad_fecha: Date;
 
   @IsEnum(DisponibilidadHoraria)
-  disponibilidad_horario: string;
+  disponibilidad_horario: DisponibilidadHoraria;
 
   @IsString()
   @IsOptional()

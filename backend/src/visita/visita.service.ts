@@ -16,6 +16,7 @@ import { PublicacionesService } from 'src/publicacion/publicacion.service';
 import { Especie } from 'src/mascota/especie.model';
 import { Condicion } from 'src/mascota/condicion.model';
 import { User } from 'src/usuario/usuario.model';
+import { TrackingVisita } from './dto/tracking-visita.dto';
 
 @Injectable()
 export class VisitaService {
@@ -94,9 +95,16 @@ export class VisitaService {
     return visita;
   }
 
+  private generarTracking(): string {
+    const fecha = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `VISITA-${fecha}-${random}`;
+  }
+
   async create(dto: CreateVisitaDto, publicacionId: number): Promise<Visita> {
     const publicacion =
       await this.publicacionService.validarPublicacion(publicacionId);
+    const trackingVisita = this.generarTracking();
     return this.visitaModel.create({
       estado: EstadoVisita.Pendiente,
       nombre: dto.nombre,
@@ -106,6 +114,7 @@ export class VisitaService {
       disponibilidad_fecha: dto.disponibilidad_fecha,
       disponibilidad_horario: dto.disponibilidad_horario,
       descripcion: dto.descripcion,
+      tracking: trackingVisita,
       publicacion_id: publicacion.id,
     });
   }
@@ -139,5 +148,17 @@ export class VisitaService {
   ): Promise<void> {
     const visita = await this.findOne(id, usuarioId, usuario);
     await visita.destroy();
+  }
+
+  async getTracking(tracking: string): Promise<TrackingVisita> {
+    const visita = await this.visitaModel.findOne({ where: { tracking } });
+    if (!visita) {
+      throw new NotFoundException(`Formulario de visita no encontrado`);
+    }
+    return {
+      estado: visita.estado,
+      fecha: visita.disponibilidad_fecha,
+      horario: visita.disponibilidad_horario,
+    };
   }
 }

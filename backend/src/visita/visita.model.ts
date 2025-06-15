@@ -63,13 +63,20 @@ export class Visita extends Model<Visita, Partial<Visita>> {
     type: DataType.ENUM(...Object.values(DisponibilidadHoraria)),
     allowNull: false,
   })
-  declare disponibilidad_horario: string;
+  declare disponibilidad_horario: DisponibilidadHoraria;
 
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   declare descripcion: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    unique: true,
+  })
+  declare tracking: string;
 
   @ForeignKey(() => Publicacion)
   @Column({

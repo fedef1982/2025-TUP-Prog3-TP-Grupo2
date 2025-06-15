@@ -44,7 +44,7 @@ export class UpdateVisitaDto {
 
   @IsOptional()
   @IsEnum(DisponibilidadHoraria)
-  disponibilidad_horario?: string;
+  disponibilidad_horario?: DisponibilidadHoraria;
 
   @IsOptional()
   @IsString()

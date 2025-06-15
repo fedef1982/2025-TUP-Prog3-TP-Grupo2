@@ -17,6 +17,7 @@ import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 import { Public } from 'src/auth/decorators/public.decorator';
+import { TrackingVisita } from './dto/tracking-visita.dto';
 
 @Controller()
 export class VisitaController {
@@ -77,5 +78,11 @@ export class VisitaController {
     @Param('publicacionId', ParseIntPipe) publicacionId: number,
   ): Promise<Visita> {
     return this.visitaService.create(createVisitaDto, publicacionId);
+  }
+
+  @Public()
+  @Get('visitas/seguimiento/:tracking')
+  getEstado(@Param('tracking') tracking: string): Promise<TrackingVisita> {
+    return this.visitaService.getTracking(tracking);
   }
 }
