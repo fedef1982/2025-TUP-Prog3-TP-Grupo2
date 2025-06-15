@@ -14,56 +14,66 @@ import {
 import { User } from 'src/usuario/usuario.model';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'mascotas', paranoid: true })
 export class Mascota extends Model<Mascota, Partial<Mascota>> {
+  @ApiProperty()
   @PrimaryKey
   @AutoIncrement
   @Column
   declare id: number;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING(100),
     allowNull: false,
   })
   declare nombre: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING(100),
     allowNull: true,
   })
   declare raza?: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM('Macho', 'Hembra'),
     allowNull: false,
   })
   declare sexo: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.INTEGER,
     allowNull: true,
   })
   declare edad?: number;
 
+  @ApiProperty()
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
   })
   declare vacunado: boolean;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM('Chico', 'Mediano', 'Grande'),
     allowNull: false,
   })
   declare tamanio: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.JSON,
     allowNull: false,
   })
   declare fotos_url: string[];
 
+  @ApiProperty()
   @ForeignKey(() => Especie)
   @Column({
     type: DataType.INTEGER,
@@ -74,6 +84,7 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
   @BelongsTo(() => Especie)
   especie: Especie;
 
+  @ApiProperty()
   @ForeignKey(() => Condicion)
   @Column({
     type: DataType.INTEGER,
@@ -84,6 +95,7 @@ export class Mascota extends Model<Mascota, Partial<Mascota>> {
   @BelongsTo(() => Condicion)
   condicion: Condicion;
 
+  @ApiProperty()
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,

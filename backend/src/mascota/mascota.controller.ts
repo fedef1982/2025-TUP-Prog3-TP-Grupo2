@@ -16,17 +16,26 @@ import { UpdateMascotaDto } from './dto/update-mascota.dto';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/roles.enum';
+import {
+  DocDeleteIdMascota,
+  DocGetIdMascota,
+  DocGetMascota,
+  DocPatchMascota,
+  DocPostMascota,
+} from './mascota.doc';
 
 @Controller('usuarios/:id/mascotas')
 export class MascotasController {
   constructor(private readonly mascotaService: MascotaService) {}
 
+  @DocGetMascota()
   @Get()
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(@Req() req: AuthenticatedRequest): Promise<Mascota[]> {
     return this.mascotaService.findAll(req.user);
   }
 
+  @DocPostMascota()
   @Post()
   @Roles(Role.PUBLICADOR)
   create(
@@ -36,6 +45,7 @@ export class MascotasController {
     return this.mascotaService.create(createMascotaDto, req.user);
   }
 
+  @DocGetIdMascota()
   @Get(':id')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
@@ -45,6 +55,7 @@ export class MascotasController {
     return this.mascotaService.findOne(id, req.user);
   }
 
+  @DocPatchMascota()
   @Patch(':id')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
@@ -55,6 +66,7 @@ export class MascotasController {
     return this.mascotaService.update(id, updateMascotaDto, req.user);
   }
 
+  @DocDeleteIdMascota()
   @Delete(':id')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(

@@ -8,7 +8,6 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
-//import { ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
