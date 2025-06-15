@@ -1,9 +1,11 @@
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
   IsEnum,
   IsOptional,
   IsEmail,
+  IsDate,
 } from 'class-validator';
 
 export enum EstadoVisita {
@@ -36,10 +38,12 @@ export class CreateVisitaDto {
   email: string;
 
   @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
   disponibilidad_fecha: Date;
 
   @IsEnum(DisponibilidadHoraria)
-  disponibilidad_horario: string;
+  disponibilidad_horario: DisponibilidadHoraria;
 
   @IsString()
   @IsOptional()
