@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { EstadoPublicacion, Publicacion } from './publicacion.model';
 import { Mascota } from '../mascota/mascota.model';
@@ -48,11 +52,7 @@ export class PublicacionesService {
     const publicacion = await this.validarPublicacion(id);
     const publiJSON = JSON.parse(JSON.stringify(publicacion)) as Publicacion;
     console.log(
-      '##################### mascota de la publicacion:',
-      JSON.stringify(publiJSON.mascota),
-    );
-    console.log(
-      '##################### id del usuario de la mascota:',
+      '############ id del usuario de la mascota:',
       JSON.stringify(publiJSON.mascota.usuario.id),
     );
     this.accesoService.verificarAcceso(usuario, {
@@ -119,8 +119,33 @@ export class PublicacionesService {
     usuarioId: number,
     usuario: JwtPayload,
   ): Promise<Publicacion> {
-    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
-    const publicacion = await this.validarAccesoAPublicacion(id, usuario);
+    const publicacion = await this.findOne(id, usuarioId, usuario);
+
+    if (dto.publicado !== undefined) {
+      if (usuario.rol_id !== Number(Role.ADMIN)) {
+        throw new ForbiddenException(
+          'Solo el admin puede publicar publicaciones',
+        );
+      }
+
+      if (publicacion.estado !== EstadoPublicacion.Abierta) {
+        throw new ForbiddenException(
+          'Solo se pueden publicar publicaciones que estén en estado Abierta',
+        );
+      }
+    }
+
+    if (dto.estado) {
+      if (publicacion.estado !== EstadoPublicacion.Abierta) {
+        throw new ForbiddenException(
+          `Solo se pueden cerrar publicaciones abiertas`,
+        );
+      }
+      if (!Object.values(EstadoPublicacion).includes(dto.estado)) {
+        throw new ForbiddenException('Estado inválido');
+      }
+    }
+
     await publicacion.update(dto);
     return publicacion;
   }
@@ -130,8 +155,7 @@ export class PublicacionesService {
     usuarioId: number,
     usuario: JwtPayload,
   ): Promise<void> {
-    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
-    const publicacion = await this.validarAccesoAPublicacion(id, usuario);
+    const publicacion = await this.findOne(id, usuarioId, usuario);
     await publicacion.destroy();
   }
 
@@ -152,7 +176,7 @@ export class PublicacionesService {
     });
   }
 
-  async findOnePublica(id: number): Promise<Publicacion> {
+  async findOnePublicada(id: number): Promise<Publicacion> {
     const publicacion = await this.publicacionModel.findOne({
       where: {
         id,

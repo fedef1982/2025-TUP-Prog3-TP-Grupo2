@@ -1,5 +1,12 @@
-import { IsNotEmpty, IsString, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsDate,
+} from 'class-validator';
 import { EstadoPublicacion } from '../publicacion.model';
+import { Type } from 'class-transformer';
 
 export class UpdatePublicacionDto {
   @IsOptional()
@@ -22,7 +29,12 @@ export class UpdatePublicacionDto {
   @IsNotEmpty()
   contacto: string;
 
-  @IsEnum(EstadoPublicacion)
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  publicado?: Date;
+
+  @IsOptional()
+  @IsEnum(EstadoPublicacion)
   estado?: EstadoPublicacion;
 }

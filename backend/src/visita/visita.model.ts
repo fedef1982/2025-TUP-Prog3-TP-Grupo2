@@ -25,8 +25,9 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   @Column({
     type: DataType.ENUM(...Object.values(EstadoVisita)),
     allowNull: false,
+    defaultValue: EstadoVisita.Pendiente,
   })
-  declare estado: string;
+  declare estado: EstadoVisita;
 
   @Column({
     type: DataType.STRING,

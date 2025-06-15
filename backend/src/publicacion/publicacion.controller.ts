@@ -88,16 +88,17 @@ export class PublicacionesController {
   }
 
   //---------------Endpoints para los usuarios no autenticados
-
   @Public()
   @Get('publicaciones')
-  findAllPublicas(): Promise<Publicacion[]> {
+  findAllPublicadas(): Promise<Publicacion[]> {
     return this.publicacionesService.findPublicadasYAbiertas();
   }
 
   @Public()
   @Get('publicaciones/:id')
-  findOnePublica(@Param('id', ParseIntPipe) id: number): Promise<Publicacion> {
-    return this.publicacionesService.findOnePublica(id);
+  findOnePublicada(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Publicacion> {
+    return this.publicacionesService.findOnePublicada(id);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Visita } from './visita.model';
 import { CreateVisitaDto, EstadoVisita } from './dto/create-visita.dto';
@@ -112,8 +116,18 @@ export class VisitaService {
     usuarioId: number,
     usuario: JwtPayload,
   ): Promise<Visita> {
-    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
     const visita = await this.findOne(id, usuarioId, usuario);
+
+    if (dto.estado) {
+      if (visita.estado !== EstadoVisita.Pendiente) {
+        throw new ForbiddenException(
+          `Solo se pueden modificar visitas pendientes`,
+        );
+      }
+      if (!Object.values(EstadoVisita).includes(dto.estado)) {
+        throw new ForbiddenException('Estado inválido');
+      }
+    }
     await visita.update(dto);
     return visita;
   }
@@ -123,7 +137,6 @@ export class VisitaService {
     usuarioId: number,
     usuario: JwtPayload,
   ): Promise<void> {
-    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
     const visita = await this.findOne(id, usuarioId, usuario);
     await visita.destroy();
   }
