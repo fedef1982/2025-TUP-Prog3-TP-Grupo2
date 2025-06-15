@@ -29,7 +29,7 @@ Service --> Models : Acceso a datos
 Models --> DB : ORM (Sequelize)
 
 ' Opcional: relaciones auxiliares
-Controller --> Swagger : Documentación
+Controller --> Swagger : Documentación API
 Controller --> Auth : Verificación JWT/token
 
 @enduml

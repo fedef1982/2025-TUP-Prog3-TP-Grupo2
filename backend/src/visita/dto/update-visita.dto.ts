@@ -12,7 +12,7 @@ import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateVisitaDto {
-  @ApiProperty({ example: Estado_visita.Pendiente })
+  @ApiProperty({ example: EstadoVisita.Pendiente })
   @IsOptional()
   @IsEnum(EstadoVisita)
   estado?: EstadoVisita;
@@ -50,7 +50,7 @@ export class UpdateVisitaDto {
   @Type(() => Date)
   disponibilidad_fecha: Date;
 
-  @ApiProperty({ example: Disponibilidad_horaria.Tarde })
+  @ApiProperty({ example: DisponibilidadHoraria.Tarde })
   @IsOptional()
   @IsEnum(DisponibilidadHoraria)
   disponibilidad_horario?: DisponibilidadHoraria;
