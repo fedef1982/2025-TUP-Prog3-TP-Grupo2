@@ -11,16 +11,18 @@ import {
   DeletedAt,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Mascota } from 'src/mascota/mascota.model';
+import { Visita } from 'src/visita/visita.model';
 
 export enum EstadoPublicacion {
   Abierta = 'Abierta',
   Cerrada = 'Cerrada',
 }
 
-@Table({ tableName: 'publicaciones' })
-export class Publicacion extends Model<Partial<Publicacion>> {
+@Table({ tableName: 'publicaciones', paranoid: true })
+export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
   @ApiProperty()
   @PrimaryKey
   @AutoIncrement
@@ -31,34 +33,36 @@ export class Publicacion extends Model<Partial<Publicacion>> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique: true,
   })
-  titulo: string;
+  declare titulo: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  descripcion: string;
+  declare descripcion: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  ubicacion: string;
+  declare ubicacion: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  contacto: string;
+  declare contacto: string;
 
-  @ApiProperty()
-  @Column({ type: DataType.DATE })
-  publicado: Date;
+  @ApiProperty()  
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  declare publicado: Date | null;
 
   @ApiProperty()
   @Column({
@@ -66,7 +70,7 @@ export class Publicacion extends Model<Partial<Publicacion>> {
     allowNull: false,
     defaultValue: EstadoPublicacion.Abierta,
   })
-  estado: EstadoPublicacion;
+  declare estado: EstadoPublicacion;
 
   @ApiProperty()
   @ForeignKey(() => Mascota)
@@ -74,13 +78,16 @@ export class Publicacion extends Model<Partial<Publicacion>> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  mascota_id: number;
+  declare mascota_id: number;
 
   @BelongsTo(() => Mascota, {
     foreignKey: 'mascota_id',
     onDelete: 'CASCADE',
   })
   mascota: Mascota;
+
+  @HasMany(() => Visita)
+  declare visita: Visita[];
 
   @CreatedAt
   @Column({ field: 'created_at' })

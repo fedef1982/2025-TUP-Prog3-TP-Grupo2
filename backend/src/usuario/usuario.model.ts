@@ -10,12 +10,14 @@ import {
   DeletedAt,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from 'sequelize-typescript';
 import { Rol } from './rol.model';
+import { Mascota } from 'src/mascota/mascota.model';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'usuarios', paranoid: true })
-export class User extends Model<Partial<User>> {
+export class User extends Model<User, Partial<User>> {
   @ApiProperty()
   @PrimaryKey
   @AutoIncrement
@@ -75,6 +77,9 @@ export class User extends Model<Partial<User>> {
     allowNull: true,
   })
   declare direccion?: string;
+
+  @HasMany(() => Mascota)
+  declare mascota: Mascota[];
 
   @CreatedAt
   @Column({ field: 'created_at' })

@@ -6,27 +6,28 @@ import {
   IsEmail,
   IsDate,
 } from 'class-validator';
-import { Estado_visita } from './create-visita.dto';
-import { Disponibilidad_horaria } from './create-visita.dto';
+import { EstadoVisita } from './create-visita.dto';
+import { DisponibilidadHoraria } from './create-visita.dto';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateVisitaDto {
   @ApiProperty({ example: Estado_visita.Pendiente })
   @IsOptional()
-  @IsEnum(Estado_visita)
-  estado: string;
+  @IsEnum(EstadoVisita)
+  estado?: EstadoVisita;
 
   @ApiProperty({ example: 'Paola' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  nombre: string;
+  nombre?: string;
 
   @ApiProperty({ example: 'Perez' })
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  apellido: string;
+  apellido?: string;
 
   @ApiProperty({ example: '+54 11 12345678' })
   @IsOptional()
@@ -41,20 +42,21 @@ export class UpdateVisitaDto {
   @ApiProperty({ example: 'contacto@dominio.com' })
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiProperty({ example: '2025-10-04' })
   @IsOptional()
   @IsDate()
+  @Type(() => Date)
   disponibilidad_fecha: Date;
 
   @ApiProperty({ example: Disponibilidad_horaria.Tarde })
   @IsOptional()
-  @IsEnum(Disponibilidad_horaria)
-  disponibilidad_horario: string;
+  @IsEnum(DisponibilidadHoraria)
+  disponibilidad_horario?: DisponibilidadHoraria;
 
   @ApiProperty({ example: 'Nueva descripcion de visita' })
   @IsOptional()
   @IsString()
-  descripcion: string;
+  descripcion?: string;
 }

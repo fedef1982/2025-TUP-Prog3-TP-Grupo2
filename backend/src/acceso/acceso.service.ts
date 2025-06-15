@@ -13,7 +13,18 @@ export class AccesoService {
 
     if (!esAdmin && !esDuenio) {
       throw new ForbiddenException(
-        'El rol de su usuario no tiene permisos para acceder a este recurso',
+        `No tiene permisos para acceder a este recurso`,
+      );
+    }
+  }
+
+  verificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void {
+    const esAdmin = usuario.rol_id === Number(Role.ADMIN);
+    const esUsuarioLogueado = usuario.sub === usuarioIdRuta;
+
+    if (!esAdmin && !esUsuarioLogueado) {
+      throw new ForbiddenException(
+        `No tiene permisos para acceder a recursos de otro usuario`,
       );
     }
   }

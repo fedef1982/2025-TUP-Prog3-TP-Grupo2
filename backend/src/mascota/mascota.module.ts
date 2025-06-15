@@ -10,10 +10,11 @@ import { AccesoModule } from 'src/acceso/acceso.module';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Mascota, Especie, Condicion, User]),
+    SequelizeModule.forFeature([Mascota, User, Especie, Condicion]),
     AccesoModule,
   ],
   providers: [MascotaService],
+  exports: [MascotaService],
   controllers: [MascotasController],
 })
 export class MascotaModule {}

@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -8,23 +9,19 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export enum Estado_visita {
+export enum EstadoVisita {
   Pendiente = 'Pendiente',
   Aprobado = 'Aprobado',
   Rechazado = 'Rechazado',
 }
 
-export enum Disponibilidad_horaria {
+export enum DisponibilidadHoraria {
   Maniana = 'Maniana',
   Tarde = 'Tarde',
   Noche = 'Noche',
 }
 
 export class CreateVisitaDto {
-  @ApiProperty({ example: Estado_visita.Aprobado })
-  @IsEnum(Estado_visita)
-  estado: string;
-
   @ApiProperty({ example: 'Alberto' })
   @IsString()
   @IsNotEmpty()
@@ -35,29 +32,28 @@ export class CreateVisitaDto {
   @IsNotEmpty()
   apellido: string;
 
-  @ApiProperty({ example: '+54 11 12345678' })
-  @IsOptional()
+  @ApiProperty({ example: '+54 11 12345678' })  
   @IsString()
-  telefono?: string;
-
-  @ApiProperty({ example: 'Calle falsa 123' })
-  @IsOptional()
-  @IsString()
-  direccion?: string;
+  @IsNotEmpty()
+  telefono: string;
 
   @ApiProperty({ example: 'contacto@dominio.com' })
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: '2025-07-01' })
+  @ApiProperty({ example: '2025-07-01' })  
+  @IsNotEmpty()
   @IsDate()
+  @Type(() => Date)
   disponibilidad_fecha: Date;
 
-  @ApiProperty({ example: Disponibilidad_horaria.Noche })
-  @IsEnum(Disponibilidad_horaria)
-  disponibilidad_horario: string;
+  @ApiProperty({ example: DisponibilidadHoraria.Noche })
+  @IsEnum(DisponibilidadHoraria)
+  disponibilidad_horario: DisponibilidadHoraria;
 
   @ApiProperty({ example: 'Descripcion de visita' })
   @IsString()
+  @IsOptional()
   descripcion: string;
 }

@@ -7,11 +7,16 @@ import {
   Patch,
   Param,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
+import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 import {
   DocDeleteIdPublicacion,
@@ -21,42 +26,92 @@ import {
   DocPostPublicacion,
 } from './publicacion.doc';
 
-@Controller('publicaciones')
+@Controller()
 export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
 
+  //---------------Endpoints para los usuarios autenticados
+  @DocGetIdPublicacion() //ver
+  @Get('usuarios/:usuarioId/publicaciones')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  findAll(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<Publicacion[]> {
+    return this.publicacionesService.findAll(usuarioId, req.user);
+  }
+
   @DocPostPublicacion()
-  @Post()
+  @Post('usuarios/:usuarioId/publicaciones')
+  @Roles(Role.PUBLICADOR)
   create(
     @Body() createPublicacionDto: CreatePublicacionDto,
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Req() req: AuthenticatedRequest,
   ): Promise<Publicacion> {
-    return this.publicacionesService.create(createPublicacionDto);
+    return this.publicacionesService.create(
+      createPublicacionDto,
+      usuarioId,
+      req.user,
+    );
   }
 
+  @DocGetIdPublicacion() //ver
+  @Get('usuarios/:usuarioId/publicaciones/:publicacionId')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  findOne(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Param('publicacionId', ParseIntPipe) publicacionId: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<Publicacion> {
+    return this.publicacionesService.findOne(
+      publicacionId,
+      usuarioId,
+      req.user,
+    );
+  }
   @DocPatchPublicacion()
-  @Patch(':id')
+  @Patch('usuarios/:usuarioId/publicaciones/:publicacionId')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Param('publicacionId', ParseIntPipe) publicacionId: number,
     @Body() updatePublicacionDto: UpdatePublicacionDto,
+    @Req() req: AuthenticatedRequest,
   ): Promise<Publicacion> {
-    return this.publicacionesService.update(id, updatePublicacionDto);
-  }
-
-  @DocGetPublicacion()
-  @Get()
-  findAll(): Promise<Publicacion[]> {
-    return this.publicacionesService.findAll();
-  }
-
-  @DocGetIdPublicacion()
-  @Get(':id')
-  findOne(id: number): Promise<Publicacion> {
-    return this.publicacionesService.findOne(id);
+    return this.publicacionesService.update(
+      publicacionId,
+      updatePublicacionDto,
+      usuarioId,
+      req.user,
+    );
   }
 
   @DocDeleteIdPublicacion()
-  @Delete(':id')
-  remove(id: number): Promise<void> {
-    return this.publicacionesService.remove(id);
+  @Delete('usuarios/:usuarioId/publicaciones/:publicacionId')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  remove(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Param('publicacionId', ParseIntPipe) publicacionId: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<void> {
+    return this.publicacionesService.remove(publicacionId, usuarioId, req.user);
+  }
+
+  //---------------Endpoints para los usuarios no autenticados
+  @DocGetPublicacion()
+  @Public()
+  @Get('publicaciones')
+  findAllPublicadas(): Promise<Publicacion[]> {
+    return this.publicacionesService.findPublicadasYAbiertas();
+  }
+
+  @DocGetIdPublicacion()
+  @Public()
+  @Get('publicaciones/:id')
+  findOnePublicada(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Publicacion> {
+    return this.publicacionesService.findOnePublicada(id);
   }
 }

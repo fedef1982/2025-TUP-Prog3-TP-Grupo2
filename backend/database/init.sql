@@ -128,13 +128,11 @@ CREATE TABLE IF NOT EXISTS publicaciones (
 
 INSERT INTO publicaciones (titulo, descripcion, ubicacion, contacto, estado, mascota_id)
 VALUES 
-    ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Cerrado', '1');
+    ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Abierta', '1');
 
 /*   ('Gato 1', 'Gato bueno', 'Zona sur', 'email@nombre.com', 'Abierto', '2'),
     ('Perro 2', 'Perro bueno', 'Zona este', '11-5678-1234', 'Abierto', '3'),
     ('Gato 2', 'Gato lindo', 'Zona oeste', 'nombre@email.com', 'Cerrado', '4');
-
-Necesitamos primero crear las mascotas de ejemplo para vincularla con mascota_id
 */
 -- Crear enums visitas
 CREATE TYPE estado_visita_enum AS ENUM ('Pendiente', 'Aprobado', 'Rechazado');
@@ -151,6 +149,7 @@ CREATE TABLE IF NOT EXISTS visitas (
     disponibilidad_fecha DATE,
     disponibilidad_horario horario_enum,
     descripcion TEXT,
+    tracking VARCHAR,
     publicacion_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -160,6 +159,6 @@ CREATE TABLE IF NOT EXISTS visitas (
         REFERENCES publicaciones(id)
 );
 
-INSERT INTO visitas(estado,nombre,apellido,telefono,email,disponibilidad_fecha,disponibilidad_horario,descripcion,publicacion_id)
-VALUES ('Pendiente','Adriel','Reina','11-2233-4455','elPublicador@gmail.com','2025-06-01','Tarde','la descripcion',1)
+INSERT INTO visitas(estado,nombre,apellido,telefono,email,disponibilidad_fecha,disponibilidad_horario,descripcion,tracking,publicacion_id)
+VALUES ('Pendiente','Adriel','Reina','11-2233-4455','elPublicador@gmail.com','2025-06-01','Tarde','la descripcion','VISIT-20250614-ABC123',1)
 

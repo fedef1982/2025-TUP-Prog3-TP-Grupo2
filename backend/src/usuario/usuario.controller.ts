@@ -20,11 +20,12 @@ import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
-  DocGetIPerfilUsuario,
+  DocGetIdPerfilUsuario,
   DocGetUsuario,
   DocPatchUsuario,
   DocPostUsuario,
 } from './usuario.doc';
+import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 
 @Controller('usuarios')
 export class UsersController {
@@ -38,12 +39,14 @@ export class UsersController {
   }
 
   //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
-  @DocGetIPerfilUsuario()
-  @Get('perfil')
+  @DocGetIdPerfilUsuario()
+  @Get(':id/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
-  getPerfil(@Req() req: AuthenticatedRequest) {
-    const usuario = req.user;
-    return this.usersService.findOne(usuario.sub);
+  getPerfil(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.usersService.findOne(id, req.user);
   }
 
   @DocPostUsuario()
@@ -57,8 +60,20 @@ export class UsersController {
   @DocGetIdUsuario()
   @Get(':id')
   @Roles(Role.ADMIN)
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<User> {
+    return this.usersService.findOne(id, req.user);
+  }
+
+  @Get(':id/estadisticas')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  getEstadisticas(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
+  ): Promise<EstadisticasUsuarioDto> {
+    return this.usersService.getEstadisticas(id, req.user);
   }
 
   @DocPatchUsuario()

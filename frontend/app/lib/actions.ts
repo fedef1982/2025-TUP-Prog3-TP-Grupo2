@@ -1,48 +1,15 @@
 'use server';
 
 import { z } from 'zod';
-import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { cookies } from 'next/headers';
 
-export async function registerUser(prevState: any, formData: FormData) {
-  const rawFormData = {
-    email: formData.get('email'),
-    nombre: formData.get('name'),
-    apellido: formData.get('lastname'),
-    direccion: formData.get('address'),
-    telefono: formData.get('phone'),
-    contrasenia: formData.get('password'),
-  };
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-  try {
-    const response = await fetch('http://localhost:3001/usuarios', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(rawFormData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      return { message: errorData.message || 'Error al registrar usuario' };
-    }
-
-    const data = await response.json();
-    return { message: 'Registro exitoso', success: true, data };
-  } catch (error) {
-    console.error('Error:', error);
-    return { message: 'Error de conexión con el servidor' };
-  }
-}
-
-/*
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
-
-const FormSchema = z.object({
+const UserSchema = z.object({
   id: z.string(),
   customerId: z.string({
     invalid_type_error: 'Please select a customer.',
@@ -51,13 +18,13 @@ const FormSchema = z.object({
     .number()
     .gt(0, { message: 'Please enter an amount greater than $0.' }),
   status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select an invoice status.',
+    invalid_type_error: 'Please select a user status.',
   }),
   date: z.string(),
 });
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ date: true, id: true });
+const CreateUser = UserSchema.omit({ id: true, date: true });
+const UpdateUser = UserSchema.omit({ date: true, id: true });
 
 export type State = {
   errors?: {
@@ -68,51 +35,68 @@ export type State = {
   message?: string | null;
 };
 
-export async function createInvoice(prevState: State, formData: FormData) {
-  // Validate form fields using Zod
-  const validatedFields = CreateInvoice.safeParse({
+async function apiRequest(endpoint: string, options: RequestInit) {
+  const token = (await cookies()).get('session-token')?.value;
+  
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      ...options.headers,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'API request failed');
+  }
+
+  return response.json();
+}
+
+export async function createUser(prevState: State, formData: FormData) {
+  const validatedFields = CreateUser.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
 
-  // If form validation fails, return errors early. Otherwise, continue.
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create Invoice.',
+      message: 'Missing Fields. Failed to Create User.',
     };
   }
 
-  // Prepare data for insertion into the database
   const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split('T')[0];
 
-  // Insert data into the database
   try {
-    await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
-    `;
+    await apiRequest('/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        customer_id: customerId,
+        amount: amount * 100,
+        status,
+        date: new Date().toISOString().split('T')[0],
+      }),
+    });
   } catch (error) {
-    // If a database error occurs, return a more specific error.
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: error instanceof Error ? error.message : 'API Error: Failed to Create User',
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
 }
 
-export async function updateInvoice(
+export async function updateUser(
   id: string,
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
+  const validatedFields = UpdateUser.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -121,32 +105,45 @@ export async function updateInvoice(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
+      message: 'Missing Fields. Failed to Update User.',
     };
   }
 
   const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
 
   try {
-    await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id}
-    `;
+    await apiRequest(`/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        customer_id: customerId,
+        amount: amount * 100,
+        status,
+      }),
+    });
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
+    return {
+      message: error instanceof Error ? error.message : 'API Error: Failed to Update User',
+    };
   }
 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
+  revalidatePath('/dashboard/users');
+  redirect('/dashboard/users');
 }
 
-export async function deleteInvoice(id: string) {
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
-  revalidatePath('/dashboard/invoices');
+export async function deleteUser(id: string) {
+  try {
+    await apiRequest(`/users/${id}`, {
+      method: 'DELETE',
+    });
+    revalidatePath('/dashboard/users');
+    return { message: 'User deleted successfully' };
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : 'API Error: Failed to Delete User',
+    };
+  }
 }
-*/
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -163,5 +160,39 @@ export async function authenticate(
       }
     }
     throw error;
+  }
+}
+
+// Additional API consumer functions
+export async function fetchUserStats() {
+  try {
+    return await apiRequest('/users/stats', { method: 'GET' });
+  } catch (error) {
+    console.error('Failed to fetch user stats:', error);
+    return {
+      totalUsers: 0,
+      activeUsers: 0,
+      pendingUsers: 0,
+      adminUsers: 0,
+      inactiveUsers: 0,
+      premiumUsers: 0
+    };
+  }
+}
+
+export async function fetchLatestUsers() {
+  try {
+    const data = await apiRequest('/users/latest', { method: 'GET' });
+    return data.map((user: any) => ({
+      id: user.id,
+      name: `${user.firstName} ${user.lastName}`,
+      email: user.email,
+      image_url: user.avatar || '/default-avatar.png',
+      amount: (user.amount / 100).toFixed(2),
+      status: user.status
+    }));
+  } catch (error) {
+    console.error('Failed to fetch latest users:', error);
+    return [];
   }
 }

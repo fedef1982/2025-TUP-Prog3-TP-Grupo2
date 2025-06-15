@@ -1,6 +1,13 @@
-import { IsNotEmpty, IsString, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEnum,
+  IsOptional,
+  IsDate,
+} from 'class-validator';
 import { EstadoPublicacion } from '../publicacion.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 
 export class UpdatePublicacionDto {
   @ApiProperty({ example: 'Se busca hogar para peludito de 4 patas' })
@@ -27,8 +34,12 @@ export class UpdatePublicacionDto {
   @IsNotEmpty()
   contacto: string;
 
-  @ApiProperty({ example: EstadoPublicacion.Cerrada })
-  @IsEnum(EstadoPublicacion)
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  publicado?: Date;
+
+  @IsOptional()
+  @IsEnum(EstadoPublicacion)
   estado?: EstadoPublicacion;
 }

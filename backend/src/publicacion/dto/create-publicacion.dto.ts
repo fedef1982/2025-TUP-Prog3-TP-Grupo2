@@ -1,12 +1,5 @@
-import {
-  IsNotEmpty,
-  IsString,
-  IsEnum,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
-import { EstadoPublicacion } from '../publicacion.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreatePublicacionDto {
   @ApiProperty({ example: 'Se busca hogar para peludito de 4 patas' })
@@ -29,12 +22,6 @@ export class CreatePublicacionDto {
   @IsNotEmpty()
   contacto: string;
 
-  @ApiProperty({ example: EstadoPublicacion.Abierta })
-  @IsEnum(EstadoPublicacion)
-  @IsOptional()
-  estado?: EstadoPublicacion;
-
-  @ApiProperty({ example: 1 })
   @IsNumber()
   @IsNotEmpty()
   mascota_id: number;
