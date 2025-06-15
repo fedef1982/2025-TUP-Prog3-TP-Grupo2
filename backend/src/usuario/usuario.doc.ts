@@ -48,7 +48,7 @@ export function DocGetIdUsuario() {
   );
 }
 
-export function DocGetIPerfilUsuario() {
+export function DocGetIdPerfilUsuario() {
   return applyDecorators(
     ApiOperation({
       summary:
