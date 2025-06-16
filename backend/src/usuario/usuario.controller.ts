@@ -39,7 +39,6 @@ export class UsersController {
     return this.usersService.findUsuariosConFiltros(params);
   }
 
-  //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
   @Get(':id/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getPerfil(
@@ -55,7 +54,6 @@ export class UsersController {
     return this.usersService.create(createUsuarioDto);
   }
 
-  //Devuelve el perfil del usuario con ID indicado, solo puede acceder el ADMIN (para que el admin pueda acceder al perfil de cualquier publicador)
   @Get(':id')
   @Roles(Role.ADMIN)
   findOne(
