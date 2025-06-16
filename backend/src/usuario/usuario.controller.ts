@@ -8,6 +8,8 @@ import {
   Post,
   Patch,
   Req,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
@@ -69,5 +71,60 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
   ): Promise<void> {
     return this.usersService.remove(id, req.user);
+  }
+
+/// endpoints paginado y filters
+@Get('paginas')
+  @Roles(Role.ADMIN)
+  async getTotalPages(
+    @Query('query') query: string = '',
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10
+  ): Promise<{ totalPages: number }> {
+    console.log('###########################################');
+    console.log('Received params:', { query, limit }); 
+    console.log('###########################################');
+    const totalPages = await this.usersService.getTotalPages(query, limit);
+    return { totalPages };
+  }
+
+  @Get(':id/paginas')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  async getUserPages(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('query') query: string = '',
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
+    @Req() req: AuthenticatedRequest
+  ): Promise<{ totalPages: number }> {
+    console.log('###########################################');
+    console.log('Received params:', { id, query, limit }); 
+    console.log('###########################################');
+    const totalPages = await this.usersService.getTotalPages(query, limit, id, req.user);
+    return { totalPages };
+  }
+
+  @Get('filtros')
+  @Roles(Role.ADMIN,)
+  async getFilteredUsers(
+    @Query('q') query: string = '',
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
+    @Query('rol_id', new ParseIntPipe({ optional: true })) rol_id?: number,
+    @Query('sortBy') sortBy: string = 'nombre',
+    @Query('sortOrder') sortOrder: 'asc' | 'desc' = 'asc',
+  ): Promise<{ users: User[]; total: number }> {
+    console.log('###########################################');
+    console.log('Received params:', { page, limit, rol_id }); 
+    console.log('###########################################');
+    if (sortOrder !== 'asc' && sortOrder !== 'desc') {
+      throw new BadRequestException('sortOrder must be either "asc" or "desc"');
+    }
+    return this.usersService.getFilteredUsers({
+      query,
+      page,
+      limit,
+      rol_id,
+      sortBy,
+      sortOrder
+    });
   }
 }
