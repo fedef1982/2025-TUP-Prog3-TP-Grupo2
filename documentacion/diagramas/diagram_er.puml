@@ -97,7 +97,7 @@ entity roles {
 
 ' Relaciones
 mascotas -up-> especies::id
-mascotas -right-> condiciones::id
+mascotas -down-> condiciones::id
 'mascotas::usuario_id --> usuarios::id
 
 'publicaciones::mascota_id --> mascotas::id
@@ -106,9 +106,9 @@ usuarios::rol_id -right-> roles::id
 
 'visitas::publicacion_id --> publicaciones::id
 
-usuarios ||-l-o{ publicaciones : tiene
-publicaciones ||--|| mascotas : tiene
-publicaciones ||--o{ visitas : tiene
+usuarios ||--o{ publicaciones : tiene
+publicaciones ||-l-|| mascotas : tiene
+publicaciones ||-r-o{ visitas : tiene
 
 ' Notas
 note top of usuarios
