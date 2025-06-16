@@ -8,6 +8,7 @@ import {
   Post,
   Patch,
   Req,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
@@ -18,6 +19,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/roles.enum';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
+import { QueryUsuariosDto } from './dto/query-usuario.dto';
 
 @Controller('usuarios')
 export class UsersController {
@@ -27,6 +29,14 @@ export class UsersController {
   @Roles(Role.ADMIN)
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
+  }
+
+  @Get('filtros')
+  @Roles(Role.ADMIN)
+  findUsuariosConFiltros(
+    @Query() params: QueryUsuariosDto,
+  ): Promise<{ users: User[]; total: number }> {
+    return this.usersService.findUsuariosConFiltros(params);
   }
 
   //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
