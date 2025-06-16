@@ -18,12 +18,20 @@ import { Role } from 'src/auth/roles.enum';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
 import { Public } from 'src/auth/decorators/public.decorator';
 
+import {
+  DocDeleteIdPublicacion,
+  DocGetIdPublicacion,
+  DocGetPublicacion,
+  DocPatchPublicacion,
+  DocPostPublicacion,
+} from './publicacion.doc';
+
 @Controller()
 export class PublicacionesController {
   constructor(private readonly publicacionesService: PublicacionesService) {}
 
   //---------------Endpoints para los usuarios autenticados
-
+  @DocGetIdPublicacion() //ver
   @Get('usuarios/:usuarioId/publicaciones')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(
@@ -33,6 +41,7 @@ export class PublicacionesController {
     return this.publicacionesService.findAll(usuarioId, req.user);
   }
 
+  @DocPostPublicacion()
   @Post('usuarios/:usuarioId/publicaciones')
   @Roles(Role.PUBLICADOR)
   create(
@@ -47,6 +56,7 @@ export class PublicacionesController {
     );
   }
 
+  @DocGetIdPublicacion() //ver
   @Get('usuarios/:usuarioId/publicaciones/:publicacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
@@ -60,7 +70,7 @@ export class PublicacionesController {
       req.user,
     );
   }
-
+  @DocPatchPublicacion()
   @Patch('usuarios/:usuarioId/publicaciones/:publicacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
@@ -77,6 +87,7 @@ export class PublicacionesController {
     );
   }
 
+  @DocDeleteIdPublicacion()
   @Delete('usuarios/:usuarioId/publicaciones/:publicacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(
@@ -88,12 +99,14 @@ export class PublicacionesController {
   }
 
   //---------------Endpoints para los usuarios no autenticados
+  @DocGetPublicacion()
   @Public()
   @Get('publicaciones')
   findAllPublicadas(): Promise<Publicacion[]> {
     return this.publicacionesService.findPublicadasYAbiertas();
   }
 
+  @DocGetIdPublicacion()
   @Public()
   @Get('publicaciones/:id')
   findOnePublicada(

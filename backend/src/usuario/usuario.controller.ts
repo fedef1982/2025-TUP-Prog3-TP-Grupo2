@@ -18,6 +18,15 @@ import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/roles.enum';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import {
+  DocDeleteIdUsuario,
+  DocGetIdUsuario,
+  DocGetIdPerfilUsuario,
+  DocGetUsuario,
+  DocPatchUsuario,
+  DocPostUsuario,
+  DocGetUsuarioEstadisticas,
+} from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { QueryUsuariosDto } from './dto/query-usuario.dto';
 
@@ -25,6 +34,7 @@ import { QueryUsuariosDto } from './dto/query-usuario.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @DocGetUsuario()
   @Get()
   @Roles(Role.ADMIN)
   findAll(): Promise<User[]> {
@@ -39,6 +49,7 @@ export class UsersController {
     return this.usersService.findUsuariosConFiltros(params);
   }
 
+  @DocGetIdPerfilUsuario()
   @Get(':id/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getPerfil(
@@ -48,12 +59,14 @@ export class UsersController {
     return this.usersService.findOne(id, req.user);
   }
 
+  @DocPostUsuario()
   @Public()
   @Post()
   create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<User> {
     return this.usersService.create(createUsuarioDto);
   }
 
+  @DocGetIdUsuario()
   @Get(':id')
   @Roles(Role.ADMIN)
   findOne(
@@ -63,6 +76,7 @@ export class UsersController {
     return this.usersService.findOne(id, req.user);
   }
 
+  @DocGetUsuarioEstadisticas()
   @Get(':id/estadisticas')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getEstadisticas(
@@ -72,6 +86,7 @@ export class UsersController {
     return this.usersService.getEstadisticas(id, req.user);
   }
 
+  @DocPatchUsuario()
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -81,6 +96,7 @@ export class UsersController {
     return this.usersService.update(id, UpdateUsuarioDto, req.user);
   }
 
+  @DocDeleteIdUsuario()
   @Delete(':id')
   remove(
     @Param('id', ParseIntPipe) id: number,
