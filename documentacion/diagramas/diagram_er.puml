@@ -1,0 +1,148 @@
+@startuml diagrama ER AdpotAR
+
+' Configuración 
+
+skinparam class {
+    BackgroundColor #f9f9f9
+    BorderColor #333333
+    ArrowColor #666666
+    FontSize 13
+    Linetype ortho
+}
+
+entity mascotas {
+  * id : integer
+  --
+  nombre : varchar
+  raza : varchar
+  sexo : sexo_enum
+  edad : integer
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : integer <<FK>>
+  condicion_id : integer <<FK>>
+  usuario_id : integer <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+entity publicaciones {
+  * id : integer
+  --
+  titulo : varchar
+  descripcion : text
+  ubicacion : varchar
+  contacto : varchar
+  publicado : timestamp
+  estado : estado_publi_enum
+  mascota_id : integer <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+entity usuarios {
+  * id : integer
+  --
+  email : varchar
+  nombre : varchar
+  apellido : varchar
+  contrasenia : varchar
+  rol_id : integer <<FK>>
+  telefono : varchar
+  direccion : varchar
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+entity visitas {
+  * id : integer
+  --
+  estado : estado_visita_enum
+  nombre : varchar
+  apellido : varchar
+  telefono : varchar
+  email : varchar
+  disponibilidad_fecha : date
+  disponibilidad_horario : horario_enum
+  descripcion : text
+  tracking : varchar
+  publicacion_id : integer <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+entity condiciones {
+  * id : integer
+  --
+  nombre : varchar
+  descripcion : varchar
+}
+
+entity especies {
+  * id : integer
+  --
+  nombre : varchar
+}
+
+entity roles {
+  * id : integer
+  --
+  nombre : varchar
+}
+
+' Relaciones
+mascotas -up-> especies::id
+mascotas -right-> condiciones::id
+'mascotas::usuario_id --> usuarios::id
+
+'publicaciones::mascota_id --> mascotas::id
+
+usuarios::rol_id -right-> roles::id
+
+'visitas::publicacion_id --> publicaciones::id
+
+usuarios ||-l-o{ publicaciones : tiene
+publicaciones ||--|| mascotas : tiene
+publicaciones ||--o{ visitas : tiene
+
+' Notas
+note top of usuarios
+Autenticación con JWT
+end note
+
+' Enums
+package "Enumeraciones" {
+    enum tamanio_enum {
+    Chico
+    Mediano
+    Grande
+    }
+
+    enum sexo_enum {
+    Macho
+    Hembra
+    }
+
+    enum horario_enum {
+    Maniana
+    Tarde
+    Noche
+    }
+
+    enum estado_publi_enum {
+    Abierto = 'Abierto',
+    Cerrado = 'Cerrado',
+    }
+
+    enum estado_visita_enum {
+        Pendiente = 'Pendiente',
+        Aprobado  = 'Aprobado',
+        Rechazado = 'Rechazado'
+    }
+}
+@enduml
