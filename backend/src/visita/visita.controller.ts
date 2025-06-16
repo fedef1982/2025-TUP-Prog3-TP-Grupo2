@@ -16,6 +16,7 @@ import { UpdateVisitaDto } from './dto/update-visita.dto';
 import {
   DocDeleteIdVisita,
   DocGetIdVisita,
+  DocGetTrackingVisita,
   DocGetVisita,
   DocPatchVisita,
   DocPostVisita,
@@ -80,6 +81,7 @@ export class VisitaController {
 
   //---------------Endpoints para los usuarios no autenticados
 
+  @DocPostVisita()
   @Public()
   @Post('publicaciones/:publicacionId/visitas')
   create(
@@ -89,6 +91,7 @@ export class VisitaController {
     return this.visitaService.create(createVisitaDto, publicacionId);
   }
 
+  @DocGetTrackingVisita()
   @Public()
   @Get('visitas/seguimiento/:tracking')
   getEstado(@Param('tracking') tracking: string): Promise<TrackingVisita> {

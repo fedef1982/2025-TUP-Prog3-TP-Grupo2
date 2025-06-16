@@ -97,7 +97,6 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   })
   declare publicacion_id: number;
 
-  @ApiProperty()
   @BelongsTo(() => Publicacion, {
     foreignKey: 'publicacion_id',
     onDelete: 'CASCADE',

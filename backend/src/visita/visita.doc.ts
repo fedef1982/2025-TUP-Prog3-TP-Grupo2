@@ -43,3 +43,14 @@ export function DocDeleteIdVisita() {
     ApiParam({ name: 'id', type: Number, description: 'ID de la visita' }),
   );
 }
+
+export function DocGetTrackingVisita() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Obtener el seguimiento de una visita' }),
+    ApiParam({
+      name: 'tracking',
+      type: String,
+      description: 'codigo tracking de la visita',
+    }),
+  );
+}

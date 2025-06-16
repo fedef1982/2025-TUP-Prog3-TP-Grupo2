@@ -7,18 +7,25 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Adoptar example')
-    .setDescription('Aprende a usar la API de AdoptAR ')
+    .setTitle('AdoptAR API')
+    .setDescription(
+      'Bienvenido, aqui podras encontrar la documentacion de la API de AdoptAR',
+    )
     .setVersion('1.0')
-    .addTag('tagDePrueba')
     .addGlobalResponse({
+      status: 200,
+      description: 'Ok',
+    })
+    /*.addGlobalResponse({
       status: 500,
       description: 'Internal server error',
     })
+    /*
     .addGlobalResponse({
       status: 401,
       description: 'Unauthorized',
     })
+      */
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

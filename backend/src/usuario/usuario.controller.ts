@@ -24,6 +24,7 @@ import {
   DocGetUsuario,
   DocPatchUsuario,
   DocPostUsuario,
+  DocGetUsuarioEstadisticas,
 } from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 
