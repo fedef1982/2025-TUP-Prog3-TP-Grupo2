@@ -14,14 +14,17 @@ import {
 import { EstadoVisita } from './dto/create-visita.dto';
 import { DisponibilidadHoraria } from './dto/create-visita.dto';
 import { Publicacion } from 'src/publicacion/publicacion.model';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'visitas', paranoid: true })
 export class Visita extends Model<Visita, Partial<Visita>> {
+  @ApiProperty()
   @PrimaryKey
   @AutoIncrement
   @Column
   declare id: number;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM(...Object.values(EstadoVisita)),
     allowNull: false,
@@ -29,48 +32,56 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   })
   declare estado: EstadoVisita;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare nombre: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare apellido: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare telefono: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare email: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.DATE,
     allowNull: false,
   })
   declare disponibilidad_fecha: Date;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM(...Object.values(DisponibilidadHoraria)),
     allowNull: false,
   })
   declare disponibilidad_horario: DisponibilidadHoraria;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: true,
   })
   declare descripcion: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -78,6 +89,7 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   })
   declare tracking: string;
 
+  @ApiProperty()
   @ForeignKey(() => Publicacion)
   @Column({
     type: DataType.NUMBER,

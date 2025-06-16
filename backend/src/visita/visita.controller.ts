@@ -13,6 +13,14 @@ import { VisitaService } from './visita.service';
 import { Visita } from './visita.model';
 import { CreateVisitaDto } from './dto/create-visita.dto';
 import { UpdateVisitaDto } from './dto/update-visita.dto';
+import {
+  DocDeleteIdVisita,
+  DocGetIdVisita,
+  DocGetTrackingVisita,
+  DocGetVisita,
+  DocPatchVisita,
+  DocPostVisita,
+} from './visita.doc';
 import { Role } from 'src/auth/roles.enum';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
@@ -24,7 +32,7 @@ export class VisitaController {
   constructor(private readonly visitaService: VisitaService) {}
 
   //---------------Endpoints para los usuarios autenticados
-
+  @DocGetVisita()
   @Get('usuarios/:usuarioId/visitas')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(
@@ -33,7 +41,7 @@ export class VisitaController {
   ): Promise<Visita[]> {
     return this.visitaService.findAll(usuarioId, req.user);
   }
-
+  @DocGetIdVisita()
   @Get('usuarios/:usuarioId/visitas/:visitaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
@@ -43,7 +51,8 @@ export class VisitaController {
   ): Promise<Visita> {
     return this.visitaService.findOne(visitaId, usuarioId, req.user);
   }
-
+  
+  @DocPatchVisita()
   @Patch('usuarios/:usuarioId/visitas/:visitaId')
   update(
     @Param('usuarioId', ParseIntPipe) usuarioId: number,
@@ -59,6 +68,7 @@ export class VisitaController {
     );
   }
 
+  @DocDeleteIdVisita()
   @Delete('usuarios/:usuarioId/visitas/:visitaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(
@@ -71,6 +81,7 @@ export class VisitaController {
 
   //---------------Endpoints para los usuarios no autenticados
 
+  @DocPostVisita()
   @Public()
   @Post('publicaciones/:publicacionId/visitas')
   create(
@@ -80,6 +91,7 @@ export class VisitaController {
     return this.visitaService.create(createVisitaDto, publicacionId);
   }
 
+  @DocGetTrackingVisita()
   @Public()
   @Get('visitas/seguimiento/:tracking')
   getEstado(@Param('tracking') tracking: string): Promise<TrackingVisita> {

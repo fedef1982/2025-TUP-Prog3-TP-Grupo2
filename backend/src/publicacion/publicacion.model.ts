@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Table,
   Column,
@@ -22,41 +23,48 @@ export enum EstadoPublicacion {
 
 @Table({ tableName: 'publicaciones', paranoid: true })
 export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
+  @ApiProperty()
   @PrimaryKey
   @AutoIncrement
   @Column
   declare id: number;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare titulo: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare descripcion: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare ubicacion: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare contacto: string;
 
+  @ApiProperty()  
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
   declare publicado: Date | null;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM(...Object.values(EstadoPublicacion)),
     allowNull: false,
@@ -64,6 +72,7 @@ export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
   })
   declare estado: EstadoPublicacion;
 
+  @ApiProperty()
   @ForeignKey(() => Mascota)
   @Column({
     type: DataType.INTEGER,
