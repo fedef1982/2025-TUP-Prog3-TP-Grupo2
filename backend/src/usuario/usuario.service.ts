@@ -16,6 +16,8 @@ import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { Mascota } from 'src/mascota/mascota.model';
 import { Publicacion } from 'src/publicacion/publicacion.model';
 import { Visita } from 'src/visita/visita.model';
+import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
@@ -136,6 +138,42 @@ export class UsersService {
       totalMascotas,
       totalPublicaciones,
       totalVisitas,
+    };
+  }
+
+  async findUsuariosConFiltros(
+    params: QueryUsuariosDto,
+  ): Promise<{ users: User[]; total: number; totalPages: number }> {
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'nombre',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const where = q
+      ? {
+          [Op.or]: [
+            { nombre: { [Op.iLike]: `%${q}%` } },
+            { apellido: { [Op.iLike]: `%${q}%` } },
+            { email: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {};
+    const { count, rows } = await this.userModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [{ model: Rol }],
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      users: rows,
+      total: count,
+      totalPages: totalPages,
     };
   }
 }
