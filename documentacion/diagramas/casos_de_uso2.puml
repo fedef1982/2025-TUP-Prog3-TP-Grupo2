@@ -1,4 +1,4 @@
-@startuml
+@startuml caso de uso 2
 
 'caso de uso 2 
 'Usuario visitante (no autenticado): Ver publicaciones abiertas o Enviar formulario de visita
@@ -13,6 +13,6 @@ rectangle "web AdoptAR" {
 }
 
 Visitante --> VerPublicaciones
-Visitante --> EnviarFormulario
+VerPublicaciones --> EnviarFormulario
 
 @enduml

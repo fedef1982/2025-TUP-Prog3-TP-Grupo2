@@ -1,4 +1,4 @@
-@startuml
+@startuml caso de uso 1
 
 'caso de uso 1 
 'Usuario publicador (registrado y autenticado):
@@ -15,6 +15,6 @@ rectangle "web AdoptAR" {
 
 Publicador --> Registrarse
 Publicador --> IniciarSesion
-Publicador --> CrearPublicacion
+IniciarSesion --> CrearPublicacion
 
 @enduml
