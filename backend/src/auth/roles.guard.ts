@@ -15,7 +15,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    // eslint-disable-next-line prettier/prettier
+
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [context.getHandler(),context.getClass(),]);
     console.log('Método actual:', context.getHandler().name);
     console.log('requiredRoles:', requiredRoles);

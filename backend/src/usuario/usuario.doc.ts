@@ -68,3 +68,14 @@ export function DocDeleteIdUsuario() {
     }),
   );
 }
+
+export function DocGetUsuarioEstadisticas() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Devuelve las estadisticas de un usuario' }),
+    ApiParam({
+      name: 'id',
+      type: Number,
+      description: 'ID del usuario',
+    }),
+  );
+}

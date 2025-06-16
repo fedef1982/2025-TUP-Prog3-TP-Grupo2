@@ -23,7 +23,7 @@ database "PostgreSQL" as DB
 ' Relaciones internas
 UI --> APIClient : Solicita datos
 APIClient --> Controller : HTTP Request
-Controller --> DTO : Usa para validación
+Controller --> DTO : Usa para validación  
 Controller --> Service : Lógica de negocio
 Service --> Models : Acceso a datos
 Models --> DB : ORM (Sequelize)

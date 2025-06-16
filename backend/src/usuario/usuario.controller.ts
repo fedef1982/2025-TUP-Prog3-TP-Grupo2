@@ -67,6 +67,7 @@ export class UsersController {
     return this.usersService.findOne(id, req.user);
   }
 
+  @DocGetUsuarioEstadisticas()
   @Get(':id/estadisticas')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   getEstadisticas(

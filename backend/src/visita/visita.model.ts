@@ -53,24 +53,28 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   })
   declare telefono: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   declare email: string;
 
+  @ApiProperty()
   @Column({
     type: DataType.DATE,
     allowNull: false,
   })
   declare disponibilidad_fecha: Date;
 
+  @ApiProperty()
   @Column({
     type: DataType.ENUM(...Object.values(DisponibilidadHoraria)),
     allowNull: false,
   })
   declare disponibilidad_horario: DisponibilidadHoraria;
 
+  @ApiProperty()
   @Column({
     type: DataType.STRING,
     allowNull: true,
@@ -83,9 +87,9 @@ export class Visita extends Model<Visita, Partial<Visita>> {
     allowNull: false,
     unique: true,
   })
-  @ApiProperty()
   declare tracking: string;
 
+  @ApiProperty()
   @ForeignKey(() => Publicacion)
   @Column({
     type: DataType.NUMBER,
@@ -93,6 +97,7 @@ export class Visita extends Model<Visita, Partial<Visita>> {
   })
   declare publicacion_id: number;
 
+  @ApiProperty()
   @BelongsTo(() => Publicacion, {
     foreignKey: 'publicacion_id',
     onDelete: 'CASCADE',
