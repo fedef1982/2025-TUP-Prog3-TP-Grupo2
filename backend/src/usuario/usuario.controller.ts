@@ -107,3 +107,4 @@ export class UsersController {
   ): Promise<void> {
     return this.usersService.remove(id, req.user);
   }
+}
