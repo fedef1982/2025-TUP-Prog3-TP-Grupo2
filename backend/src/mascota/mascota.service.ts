@@ -144,7 +144,10 @@ export class MascotaService {
       usuario.rol_id === Number(Role.ADMIN) ? {} : { usuario_id: usuario.sub };
 
     if (q) {
-      where[Op.or] = [{ raza: { [Op.iLike]: `%${q}%` } }];
+      where[Op.or] = [
+        { raza: { [Op.iLike]: `%${q}%` } },
+        { nombre: { [Op.iLike]: `%${q}%` } },
+      ];
     }
 
     const { count, rows } = await this.mascotaModel.findAndCountAll({
