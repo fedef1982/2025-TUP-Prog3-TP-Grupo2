@@ -9,6 +9,8 @@ import { UpdateMascotaDto } from './dto/update-mascota.dto';
 import { Role } from 'src/auth/roles.enum';
 import { JwtPayload } from 'src/auth/jwt-playload.interface';
 import { AccesoService } from 'src/acceso/acceso.service';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class MascotaService {
@@ -121,5 +123,42 @@ export class MascotaService {
   ): Promise<void> {
     const mascota = await this.findOne(id, usuarioId, usuario);
     await mascota.destroy();
+  }
+
+  async findMascotasConFiltros(
+    usuarioId: number,
+    usuario: JwtPayload,
+    params: QueryOpcionesDto,
+  ): Promise<{ mascotas: Mascota[]; total: number; totalPages: number }> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'nombre',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const where =
+      usuario.rol_id === Number(Role.ADMIN) ? {} : { usuario_id: usuario.sub };
+
+    if (q) {
+      where[Op.or] = [{ raza: { [Op.iLike]: `%${q}%` } }];
+    }
+
+    const { count, rows } = await this.mascotaModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [Especie, Condicion, User],
+    });
+
+    return {
+      mascotas: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 }

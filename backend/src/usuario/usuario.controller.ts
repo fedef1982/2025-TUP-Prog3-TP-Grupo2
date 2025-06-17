@@ -9,7 +9,6 @@ import {
   Patch,
   Req,
   Query,
-  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
@@ -29,7 +28,7 @@ import {
   DocGetUsuarioEstadisticas,
 } from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
-import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 
 @Controller('usuarios')
 export class UsersController {
@@ -47,8 +46,8 @@ export class UsersController {
   findUsuariosConFiltros(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
-    @Query() params: QueryUsuariosDto,
-  ): Promise<{ users: User[]; total: number }> {
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{ users: User[]; total: number; totalPages: number }> {
     return this.usersService.findUsuariosConFiltros(id, req.user, params);
   }
 
