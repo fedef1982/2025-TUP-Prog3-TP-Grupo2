@@ -9,8 +9,8 @@ export interface JwtPayload {
 
 export async function getToken(): Promise<JwtPayload | null> {
   try {
-    const cookieStore = cookies();
-    const token = (await cookieStore).get('token')?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
 
     if (!token) return null;
 
@@ -23,6 +23,6 @@ export async function getToken(): Promise<JwtPayload | null> {
 }
 
 export async function getRawToken(): Promise<string | null> {
-  const cookieStore = cookies();
-  return (await cookieStore).get('token')?.value || null;
+  const cookieStore = await cookies();
+  return cookieStore.get('token')?.value || null;
 }

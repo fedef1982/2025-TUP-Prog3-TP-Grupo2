@@ -1,198 +1,209 @@
 'use server';
 
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
+import { getRawToken, getToken } from "./server-utils";
+import { CreateUserDto, CreateUserState, LoginState, UpdateUserDto, UpdateUserState, User } from './definitions'
 import { cookies } from 'next/headers';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
-
-const UserSchema = z.object({
-  id: z.string(),
-  customerId: z.string({
-    invalid_type_error: 'Please select a customer.',
-  }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], {
-    invalid_type_error: 'Please select a user status.',
-  }),
-  date: z.string(),
-});
-
-const CreateUser = UserSchema.omit({ id: true, date: true });
-const UpdateUser = UserSchema.omit({ date: true, id: true });
-
-export type State = {
-  errors?: {
-    customerId?: string[];
-    amount?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
-
-async function apiRequest(endpoint: string, options: RequestInit) {
-  const token = (await cookies()).get('session-token')?.value;
-  
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || 'API request failed');
-  }
-
-  return response.json();
-}
-
-export async function createUser(prevState: State, formData: FormData) {
-  const validatedFields = CreateUser.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Create User.',
-    };
-  }
-
-  const { customerId, amount, status } = validatedFields.data;
-
-  try {
-    await apiRequest('/users', {
-      method: 'POST',
-      body: JSON.stringify({
-        customer_id: customerId,
-        amount: amount * 100,
-        status,
-        date: new Date().toISOString().split('T')[0],
-      }),
-    });
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'API Error: Failed to Create User',
-    };
-  }
-
-  revalidatePath('/dashboard/users');
-  redirect('/dashboard/users');
-}
-
-export async function updateUser(
-  id: string,
-  prevState: State,
-  formData: FormData,
-) {
-  const validatedFields = UpdateUser.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update User.',
-    };
-  }
-
-  const { customerId, amount, status } = validatedFields.data;
-
-  try {
-    await apiRequest(`/users/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        customer_id: customerId,
-        amount: amount * 100,
-        status,
-      }),
-    });
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'API Error: Failed to Update User',
-    };
-  }
-
-  revalidatePath('/dashboard/users');
-  redirect('/dashboard/users');
-}
-
-export async function deleteUser(id: string) {
-  try {
-    await apiRequest(`/users/${id}`, {
-      method: 'DELETE',
-    });
-    revalidatePath('/dashboard/users');
-    return { message: 'User deleted successfully' };
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'API Error: Failed to Delete User',
-    };
-  }
-}
-
 export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
+  prevState: LoginState | undefined,
+  formData: FormData
+): Promise<LoginState> {
   try {
-    await signIn('credentials', formData);
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
-        default:
-          return 'Something went wrong.';
-      }
-    }
-    throw error;
-  }
-}
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
-// Additional API consumer functions
-export async function fetchUserStats() {
-  try {
-    return await apiRequest('/users/stats', { method: 'GET' });
-  } catch (error) {
-    console.error('Failed to fetch user stats:', error);
+    // Validación básica
+    if (!email) {
+      return {
+        message: 'Email es requerido',
+        errors: {
+          email: ['Email es requerido'],
+        },
+      };
+    }
+
+    if (!password) {
+      return {
+        message: 'Contraseña es requerida',
+        errors: {
+          password: ['Contraseña es requerida'],
+        },
+      };
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, contrasenia: password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.message || 'Error en el login';
+      
+      return {
+        message: errorMessage,
+        errors: {
+          email: errorData?.errors?.email,
+          password: errorData?.errors?.password,
+        },
+      };
+    }
+
+    const { access_token: token } = await response.json();
+
+    if (!token) {
+      return {
+        message: 'No se recibió token de autenticación',
+      };
+    }
+
+    // Guardar token en cookies
+    (await cookies()).set('token', token, {
+      path: '/',
+      maxAge: 60 * 60 * 24, // 1 día en segundos
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+    });
+   
+
+    // Retornar éxito (la redirección debería manejarse en el cliente)
     return {
-      totalUsers: 0,
-      activeUsers: 0,
-      pendingUsers: 0,
-      adminUsers: 0,
-      inactiveUsers: 0,
-      premiumUsers: 0
+      success: true,
+      message: 'Login exitoso',
+    };
+  } catch (error) {
+    console.error('Authentication error:', error);
+    return {
+      message: error instanceof Error ? error.message : 'Error desconocido durante el login',
     };
   }
 }
 
-export async function fetchLatestUsers() {
+
+// Create new user (public endpoint)
+export async function createUser(
+  prevState: CreateUserState | undefined,
+  formData: FormData) {
   try {
-    const data = await apiRequest('/users/latest', { method: 'GET' });
-    return data.map((user: any) => ({
-      id: user.id,
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.email,
-      image_url: user.avatar || '/default-avatar.png',
-      amount: (user.amount / 100).toFixed(2),
-      status: user.status
-    }));
+    const email = formData.get('email') as string;
+    const nombre = formData.get('nombre') as string;
+    const apellido = formData.get('apellido') as string;
+    const contrasenia = formData.get('contrasenia') as string;
+    const telefono = formData.get('telefono') as string || '';
+    const direccion = formData.get('direccion') as string || '';
+    const userData: CreateUserDto ={
+        email: email,
+        nombre: nombre,
+        apellido: apellido,
+        contrasenia: contrasenia,
+        telefono: telefono,
+        direccion: direccion,
+    }
+    console.log('######################################################');
+    console.log(userData);
+    console.log('######################################################');
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Registration failed');
+    }
+
+    return { success: true };
   } catch (error) {
-    console.error('Failed to fetch latest users:', error);
-    return [];
+    console.error('Registration error:', error);
+    return { 
+      success: false,
+      error: error instanceof Error ? error.message : 'Error en el registro. Por favor intente nuevamente.'
+    };
+  }
+}
+
+// Update user
+export async function updateUser(
+  id: number,
+  prevState: UpdateUserState | undefined,
+  formData: FormData
+) {
+  try {
+    const email = formData.get('email') as string;
+    const nombre = formData.get('nombre') as string;
+    const apellido = formData.get('apellido') as string;
+    const contrasenia = formData.get('contrasenia') as string;
+    const telefono = formData.get('telefono') as string || '';
+    const direccion = formData.get('direccion') as string || '';
+
+    const userData: Record<string, any> = {};
+    
+    if (email) userData.email = email;
+    if (nombre) userData.nombre = nombre;
+    if (apellido) userData.apellido = apellido;
+    if (contrasenia) userData.contrasenia = contrasenia;
+    if (telefono) userData.telefono = telefono;
+    if (direccion) userData.direccion = direccion;
+
+    console.log('######################################################');
+    console.log('Updating user with ID:', id, 'Data:', userData);
+    console.log('######################################################');
+    
+    const token = await getRawToken();
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}`, {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Update failed');
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Update error:', error);
+    return { 
+      success: false,
+      error: error instanceof Error ? error.message : 'Error al actualizar el usuario. Por favor intente nuevamente.'
+    };
+  }
+}
+
+// Delete user
+export async function deleteUser(userId: number): Promise<void> {
+  try {
+    const token = await getRawToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || 
+        `Failed to delete user with status ${response.status}`
+      );
+    }
+
+  } catch (error) {
+    console.error('Error in deleteUser:', error);
+    throw error;
   }
 }

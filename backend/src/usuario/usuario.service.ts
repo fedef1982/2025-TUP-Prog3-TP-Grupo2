@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -12,21 +13,31 @@ import * as bcrypt from 'bcrypt';
 import { AccesoService } from 'src/acceso/acceso.service';
 import { JwtPayload } from 'src/auth/jwt-playload.interface';
 import { Rol } from './rol.model';
+<<<<<<< user-manager-ff
+=======
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { Mascota } from 'src/mascota/mascota.model';
 import { Publicacion } from 'src/publicacion/publicacion.model';
 import { Visita } from 'src/visita/visita.model';
 import { QueryUsuariosDto } from './dto/query-usuario.dto';
+>>>>>>> develop
 import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
   constructor(
+<<<<<<< user-manager-ff
+    @InjectModel(User)
+    private userModel: typeof User,
+    @InjectModel(Rol)
+    private rolModel: typeof Rol,
+=======
     @InjectModel(User) private readonly userModel: typeof User,
     @InjectModel(Mascota) private readonly mascotaModel: typeof Mascota,
     @InjectModel(Publicacion)
     private readonly publicacionModel: typeof Publicacion,
     @InjectModel(Visita) private readonly visitaModel: typeof Visita,
+>>>>>>> develop
     private readonly accesoService: AccesoService,
   ) {}
 
@@ -102,6 +113,135 @@ export class UsersService {
     await user.destroy();
   }
 
+<<<<<<< user-manager-ff
+  // servicios query y paginado
+  async getTotalPages(
+    query: string = '',
+    limit: number = 10,
+    id?: number,
+    usuario?: JwtPayload 
+  ): Promise<number> {
+    let where: any = {};
+    
+    if (query) {
+      where = {
+        [Op.or]: [
+          { nombre: { [Op.like]: `%${query}%` } },
+          { apellido: { [Op.like]: `%${query}%` } }, 
+          { email: { [Op.like]: `%${query}%` } },
+          { '$rol.nombre$': { [Op.like]: `%${query}%` } },
+        ],
+      };
+    }
+
+    if (id) {
+      where = { ...where, id };
+
+      if (!usuario) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      const user = await this.findOne(id, usuario);    
+      this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
+    }
+
+    const include = query.includes('rol') ? [{ model: this.rolModel, as: 'rol' }] : [];
+
+    const totalCount = await this.userModel.count({
+      where,
+      include,
+      distinct: true
+    });
+
+    return Math.ceil(totalCount / limit);
+  }
+
+  async getUsersPage(
+    page: number = 1,
+    limit: number = 10,
+    query: string = '',
+    id?: number,
+    usuario?: JwtPayload
+  ): Promise<{ users: User[]; totalPages: number }> {
+    const offset = (page - 1) * limit;
+    let where: any = {};
+    
+    if (query) {
+      where = {
+        [Op.or]: [
+          { nombre: { [Op.like]: `%${query}%` } },
+          { apellido: { [Op.like]: `%${query}%` } }, 
+          { email: { [Op.like]: `%${query}%` } },
+          { '$rol.nombre$': { [Op.like]: `%${query}%` } },
+        ],
+      };
+    }
+
+    if (id) {
+      where = { ...where, id };
+
+      if (!usuario) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      const user = await this.findOne(id, usuario);    
+      this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
+    }
+
+    const include = query.includes('rol') ? [{ model: this.rolModel, as: 'rol' }] : [];
+
+    const { count, rows } = await this.userModel.findAndCountAll({
+      where,
+      include,
+      limit,
+      offset,
+      order: [['id', 'ASC']],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      users: rows,
+      totalPages
+    };
+  }
+  
+  async getFilteredUsers(params: {
+    query: string;
+    page: number;
+    limit: number;
+    rol_id?: number;
+    sortBy: string;
+    sortOrder: 'asc' | 'desc';
+  }): Promise<{ users: User[]; total: number }> {
+    const { query, page, limit, rol_id, sortBy, sortOrder } = params;
+    const offset = (page - 1) * limit;
+
+    const where: any = {};
+    console.log('##############################################');
+    console.log(query, page,limit);
+    console.log('##############################################');
+    if (query) {
+      where[Op.or] = [
+        { nombre: { [Op.iLike]: `%${query}%` } },
+        { apellido: { [Op.iLike]: `%${query}%` } },
+        { email: { [Op.iLike]: `%${query}%` } },
+      ];
+    }
+
+    if (rol_id) {
+      where.rol_id = rol_id;
+    }
+
+    const order: [string, 'asc' | 'desc'][] = [];
+    
+    if (sortBy && ['nombre', 'apellido', 'email', 'createdAt'].includes(sortBy)) {
+      order.push([sortBy, sortOrder]);
+    } else {
+      order.push(['nombre', 'asc']);
+    }
+
+=======
   async getEstadisticas(
     id: number,
     usuario: JwtPayload,
@@ -162,10 +302,20 @@ export class UsersService {
           ],
         }
       : {};
+>>>>>>> develop
     const { count, rows } = await this.userModel.findAndCountAll({
       where,
       limit,
       offset,
+<<<<<<< user-manager-ff
+      order,
+      include: [{ model: this.rolModel, as: 'rol' }],
+    });
+
+    return {
+      users: rows,
+      total: count,
+=======
       order: [[sortBy, sortOrder]],
       include: [{ model: Rol }],
     });
@@ -174,6 +324,8 @@ export class UsersService {
       users: rows,
       total: count,
       totalPages: totalPages,
+>>>>>>> develop
     };
   }
 }
+

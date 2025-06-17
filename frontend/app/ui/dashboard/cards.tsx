@@ -1,36 +1,31 @@
 import {
-  UserIcon,
-  ClockIcon,
+  CameraIcon,
+  EyeIcon,
   UsersIcon,
-  CheckCircleIcon,
-  ShieldCheckIcon,
-  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-//import { fetchUserStats } from '@/app/lib/data';
+import { fetchUserStats } from '@/app/lib/data';
+import { PawPrint } from 'lucide-react';
 
 const iconMap = {
-  total: UsersIcon,
-  active: CheckCircleIcon,
-  pending: ClockIcon,
-  admins: ShieldCheckIcon,
-  inactive: ExclamationTriangleIcon,
-  premium: UserIcon
+  totalusers: UsersIcon,
+  totalpets: PawPrint,
+  totalpublications: CameraIcon,
+  totalvisits: EyeIcon,
 };
 
-/*export default async function UserCardsWrapper() {
+export default async function UserCardsWrapper() {
   const stats = await fetchUserStats();
   
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <UserCard title="Total Users" value={stats.totalUsers} type="total" />
-      <UserCard title="Active Users" value={stats.activeUsers} type="active" />
-      <UserCard title="Pending Users" value={stats.pendingUsers} type="pending" />
-      <UserCard title="Admin Users" value={stats.adminUsers} type="admins" />
-      <UserCard title="Inactive Users" value={stats.inactiveUsers} type="inactive" />
+    <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-1">
+      <UserCard title="Usuarios" value={stats.totalUsers} type="totalusers" />
+      <UserCard title="Mascotas" value={stats.totalPets} type="totalpets" />
+      <UserCard title="Publicaciones" value={stats.totalPublications} type="totalpublications" />
+      <UserCard title="Visitas" value={stats.totalVisits} type="totalvisits" />
     </div>
   );
-}*/
+}
 
 interface UserCardProps {
   title: string;
@@ -46,22 +41,17 @@ export function UserCard({
   className = '' 
 }: UserCardProps) {
   const Icon = iconMap[type];
-  const valueColor = type === 'inactive' ? 'text-rose-600' : 
-                    type === 'pending' ? 'text-amber-600' : 
-                    'text-gray-900';
+  const valueColor = 'text-gray-900';
 
   return (
-    <div className={`rounded-xl bg-gray-50 p-2 shadow-sm ${className}`}>
-      <div className="flex items-center p-4">
-        {Icon && (
-          <Icon className={`h-5 w-5 ${
-            type === 'active' ? 'text-green-600' :
-            type === 'admins' ? 'text-blue-600' :
-            type === 'premium' ? 'text-purple-600' :
-            'text-gray-600'
-          }`} />
-        )}
-        <h3 className="ml-2 text-sm font-medium text-gray-900">{title}</h3>
+    <div className={`rounded-xl bg-gray-200 p-2 shadow-sm ${className}`}>
+      <div className="flex items-center justify-between p-4">
+        <div className="flex items-center">
+          {Icon && (
+            <Icon className={`h-5 w-5 ${'text-gray-600'}`} />
+          )}
+          <h3 className="ml-2 text-sm font-medium text-gray-900 whitespace-nowrap">{title}</h3>
+        </div>
       </div>
       <p
         className={`${lusitana.className} ${valueColor}
