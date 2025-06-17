@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.ts",
     "scripts/seed.js"
-  ],
+, "app/ui/adoptar-logo.tsx.bk"  ],
   "exclude": ["node_modules"]
 }

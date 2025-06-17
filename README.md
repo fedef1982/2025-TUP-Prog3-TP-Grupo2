@@ -11,7 +11,7 @@
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://francisluna.github.io/ToDo-POO-Grupo-9/"><strong>Accede a la documentación »</strong></a>
+    <a href="https://docs.google.com/document/d/1Tp3NS1_4iSdxhbV2G0Gn1zKr3-Gh8gFu/edit?usp=sharing&ouid=109882683574158321015&rtpof=true&sd=true"><strong>Accede a la documentación »</strong></a>
   </p>
 </div>
 

@@ -3,8 +3,8 @@ import SideNav from '@/app/ui/dashboard/sidenav';
 import { getToken } from '../lib/server-utils';
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const token = await getToken(); // Verifica la cookie/headers
-  if (!token) redirect('/login'); // Si no hay token, redirige
+  const token = await getToken();
+  if (!token) redirect('/login');
 
   return (
     <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">

@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
+
+  console.log('Entro a MIDDLEWARE');
+
   const { pathname } = request.nextUrl;
 
   const cleanPath = pathname.replace(/\/$/, '');
@@ -29,15 +32,20 @@ export async function middleware(request: NextRequest) {
   if (isPrivate && token) {
     try {
       const decoded = jwt.decode(token) as { sub: number; username: string; rol_id: number } | null;
-      
+
       if (!decoded) {
         throw new Error('Token inválido o malformado');
       }
 
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-user-id', decoded.sub.toString());
+      requestHeaders.set('x-user-id', Number(decoded.sub).toString());
       requestHeaders.set('x-user-username', decoded.username);
       requestHeaders.set('x-user-rol-id', decoded.rol_id.toString());
+
+      console.log('######################################################');
+      console.log('ENTRO a pivado y token ok',decoded);
+      console.log('id', requestHeaders);
+      console.log('######################################################');
 
       return NextResponse.next({
         request: {
@@ -52,6 +60,6 @@ export async function middleware(request: NextRequest) {
       return response;
     }
   }
-
+  console.log('SALIO de MIDDLEWARE a NEXT');
   return NextResponse.next();
 }

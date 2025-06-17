@@ -7,30 +7,64 @@ import {
   ExclamationCircleIcon,
   UserIcon,
   PhoneIcon,
-  HomeIcon,
-  ArrowLeftIcon,
+  HomeIcon
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState, useEffect } from 'react';
-import { createUser } from '@/app/lib/actions';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
-import { useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import { CreateUserState } from '../lib/definitions';
+import { createUser } from '@/app/lib/actions'; // Adjust the import path as needed
 
 export default function RegisterForm() {
-  const [state, formAction] = useActionState<CreateUserState, FormData>(createUser, {});
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const callbackUrl = searchParams.get('callbackUrl') || '/login';
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
+  const [isPending, setIsPending] = useState(false);
+  const [passwordMatchError, setPasswordMatchError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (state?.success) {
-      router.push('/login');
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPending(true);
+    setErrorMessage(undefined);
+    setPasswordMatchError(null);
+
+    const formData = new FormData(event.currentTarget);
+    const password = formData.get('contrasenia') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      setPasswordMatchError('Las contraseñas no coinciden');
+      setIsPending(false);
+      return;
     }
-  }, [state, router]);
+
+    // Prepare user data
+    const userData = {
+      email: formData.get('email') as string,
+      nombre: formData.get('nombre') as string,
+      apellido: formData.get('apellido') as string,
+      direccion: formData.get('direccion') as string || undefined,
+      telefono: formData.get('telefono') as string || undefined,
+      contrasenia: password
+    };
+
+    // Call server action
+    const result = await createUser(userData);
+
+    if (result.success) {
+      router.push(callbackUrl);
+    } else {
+      setErrorMessage(result.error);
+    }
+    
+    setIsPending(false);
+  };
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-200 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Por favor regístrese para continuar.
@@ -171,7 +205,7 @@ export default function RegisterForm() {
             </label>
             <div className="relative">
               <input
-                className={`peer block w-full rounded-md border ${state?.passwordMatchError ? 'border-red-500' : 'border-gray-200'} py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
+                className={`peer block w-full rounded-md border ${passwordMatchError ? 'border-red-500' : 'border-gray-200'} py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500`}
                 id="confirmPassword"
                 type="password"
                 name="confirmPassword"
@@ -181,13 +215,20 @@ export default function RegisterForm() {
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            {state?.passwordMatchError && (
-              <p className="mt-1 text-sm text-red-500">{state.passwordMatchError}</p>
+            {passwordMatchError && (
+              <p className="mt-1 text-sm text-red-500">{passwordMatchError}</p>
             )}
           </div>
         </div>
 
-        <RegisterButton />
+        <Button
+          type="submit"
+          className="mt-4 w-full"
+          aria-disabled={isPending}
+          disabled={isPending}
+        >
+          Registrarse <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
 
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
@@ -200,7 +241,7 @@ export default function RegisterForm() {
 
         <div className="mt-6 flex flex-col items-center space-y-4">
           <Link href="/" className="flex items-center text-violet-600 hover:text-violet-800 text-sm font-medium transition-colors">
-            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            <ArrowRightIcon className="h-5 w-5 rotate-180 mr-2" />
             <span>Volver al inicio</span>
           </Link>
         </div>
@@ -210,29 +251,14 @@ export default function RegisterForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {state?.message && !state.success && (
+          {errorMessage && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{state.message}</p>
+              <p className="text-sm text-red-500">{errorMessage}</p>
             </>
           )}
         </div>
       </div>
     </form>
-  );
-}
-
-function RegisterButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      className="mt-4 w-full"
-      aria-disabled={pending}
-      disabled={pending}
-    >
-      Registrarse <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </Button>
   );
 }

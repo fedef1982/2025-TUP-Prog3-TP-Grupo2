@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -142,8 +143,22 @@ export class UsersService {
   }
 
   async findUsuariosConFiltros(
-    params: QueryUsuariosDto,
+    id:number,
+    usuario: JwtPayload,
+    params: QueryUsuariosDto, 
   ): Promise<{ users: User[]; total: number; totalPages: number }> {
+    const esPublicador = usuario.rol_id === Number(Role.PUBLICADOR);
+
+    if (esPublicador)
+    {
+     const user:User[] = [await this.findOne(id,usuario)];
+     return { 
+              users: user,
+              total:1,
+              totalPages: 1,
+     }
+    }   
+    
     const {
       q,
       page = 1,
@@ -177,3 +192,4 @@ export class UsersService {
     };
   }
 }
+

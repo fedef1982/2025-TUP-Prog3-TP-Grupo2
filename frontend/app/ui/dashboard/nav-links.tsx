@@ -3,24 +3,19 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
   CameraIcon,
-  UserIcon,
-  TvIcon,
   EyeIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { CogIcon } from '@heroicons/react/24/solid';
+import { PawPrintIcon } from 'lucide-react';
 
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
   { name: 'Usuarios', href: '/dashboard/users', icon: UserGroupIcon },
-  { name: 'Mascotas', href: '/dashboard/pets', icon: CameraIcon },
-  { name: 'Publicaciones', href: '/dashboard/publications', icon: TvIcon },
+  { name: 'Mascotas', href: '/dashboard/pets', icon: PawPrintIcon },
+  { name: 'Publicaciones', href: '/dashboard/publications', icon: CameraIcon },
   { name: 'Visitas', href: '/dashboard/visits', icon: EyeIcon },
 ];
 
