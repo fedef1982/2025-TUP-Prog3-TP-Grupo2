@@ -5,8 +5,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
 
-  console.log('Entro a MIDDLEWARE');
-
   const { pathname } = request.nextUrl;
 
   const cleanPath = pathname.replace(/\/$/, '');
@@ -42,11 +40,6 @@ export async function middleware(request: NextRequest) {
       requestHeaders.set('x-user-username', decoded.username);
       requestHeaders.set('x-user-rol-id', decoded.rol_id.toString());
 
-      console.log('######################################################');
-      console.log('ENTRO a pivado y token ok',decoded);
-      console.log('id', requestHeaders);
-      console.log('######################################################');
-
       return NextResponse.next({
         request: {
           headers: requestHeaders,
@@ -60,6 +53,6 @@ export async function middleware(request: NextRequest) {
       return response;
     }
   }
-  console.log('SALIO de MIDDLEWARE a NEXT');
+  
   return NextResponse.next();
 }

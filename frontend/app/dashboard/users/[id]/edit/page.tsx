@@ -26,18 +26,14 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     telefono: user.telefono || "",    
     direccion: user.direccion || "" 
   };
-  console.log('########################################');
-  console.log('userFechUserById: ',user);
-  console.log('userForEdit: ', userForEdit);
-  console.log('########################################');
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'users', href: '/dashboard/users' },
+          { label: 'Usuarios', href: '/dashboard/users' },
           {
-            label: 'Edit user',
+            label: 'Esditar usuario',
             href: `/dashboard/users/${id}/edit`,
             active: true,
           },
