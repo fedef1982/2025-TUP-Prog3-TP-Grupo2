@@ -1,14 +1,12 @@
 import { cookies } from "next/headers";
-import { LatestUser, User, UsersTable, Role, UserStats, FilteredUser } from "./definitions";
+import { User, UsersTable, Role, UserStats, FilteredUser } from "./definitions";
 import { getRawToken, getToken } from "./server-utils";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 
-// Fetch all users (admin only)
 export async function fetchAllUsers(): Promise<User[]> {
   try {
     const token = await getRawToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No se ha encontrado ningún token de autenticación');
     }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
@@ -23,24 +21,23 @@ export async function fetchAllUsers(): Promise<User[]> {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Failed to fetch users with status ${response.status}`
+        `Error al recuperar usuarios con estado ${response.status}`
       );
     }
     
     return await response.json();
 
   } catch (error) {
-    console.error('Error in fetchAllUsers:', error);
+    console.error('Error en fetchAllUsers:', error);
     throw error;
   }
 }
 
-// Fetch user profile (admin or own profile)
 export async function fetchUserById(userId: number): Promise<User> {
   try {
     const token = await getRawToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No se ha encontrado ningún token de autenticación');
     }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}`, {
@@ -69,28 +66,27 @@ export async function fetchUserById(userId: number): Promise<User> {
     return await response.json();
 
   } catch (error) {
-    console.error(`Error fetching user with ID ${userId}:`, error);
+    console.error(`Error al buscar un usuario con ID ${userId}:`, error);
     throw error;
   }
 }
 
-// Fetch current user profile (uses the token's sub as ID)
 export async function fetchCurrentUserProfile(): Promise<User> {
   try {
-    const token = await getToken();
-    if (!token?.sub) {
-      throw new Error('No user ID found in token');
+    const tokenPl = await getToken();
+    if (!tokenPl?.sub) {
+      throw new Error('No se ha encontrado ID de usuario en el token');
     }
 
-    const userId = Number(token.sub);
+    const userId = Number(tokenPl.sub);
     return await fetchUserById(userId);
   } catch (error) {
-    console.error('Error in fetchCurrentUserProfile:', error);
+    console.error('Error en fetchCurrentUserProfile:', error);
     throw error;
   }
 }
 
-export async function fetchLatestUsers(): Promise<LatestUser[]> {
+/*export async function fetchLatestUsers(): Promise<LatestUser[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
       method: 'GET',
@@ -102,7 +98,7 @@ export async function fetchLatestUsers(): Promise<LatestUser[]> {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch users: ${response.status}`);
+      throw new Error(`Fallo al recuperar usuarios: ${response.status}`);
     }
 
     const usersData = await response.json();
@@ -121,17 +117,17 @@ export async function fetchLatestUsers(): Promise<LatestUser[]> {
     console.error('Failed to fetch latest users:', error);
     throw new Error('Failed to fetch latest users');
   }
-}
+}*/
 
 export async function fetchUserStats(): Promise<UserStats> {
   try {
     const token = await getRawToken();
-    const jwttoken = await getToken();
+    const tokenPl = await getToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No se ha encontrado ningún token de autenticación');
     }
 
-    const id = jwttoken?.sub;
+    const id = tokenPl?.sub;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}/estadisticas`, {
       method: 'GET',
@@ -146,7 +142,7 @@ export async function fetchUserStats(): Promise<UserStats> {
       const errorData = await response.json().catch(() => ({}));
       throw new Error(
         errorData.message || 
-        `Failed to fetch user stats with status ${response.status}`
+        `Error al recuperar las estadísticas de usuario con estado ${response.status}`
       );
     }
 
@@ -160,7 +156,7 @@ export async function fetchUserStats(): Promise<UserStats> {
     };
 
   } catch (error) {
-    console.error('Error in fetchUserStats:', error);
+    console.error('Error en fetchUserStats:', error);
     
     return {
       totalUsers: 0,
@@ -175,17 +171,25 @@ export async function fetchUsersPages(query: string): Promise<number> {
   try {
     const token = (await cookies()).get('token')?.value;
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No se ha encontrado ningún token de autenticación');
     }
     const tokenPl = await getToken();
     const id = tokenPl?.sub;  
 
-    const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}/filtros`);
-    apiUrl.searchParams.append('query', query);
+    const page = 1;
+    const limit = 5;
+    const sortBy = 'nombre';
+    const sortOrder = 'asc';
 
-    console.log('#########################');
-    console.log(apiUrl);
-    console.log('#########################');
+    const params = new URLSearchParams({
+      q: query,
+      page: page.toString(),
+      limit: limit.toString(),
+      sortBy,
+      sortOrder
+    });
+
+    const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}/filtros?${params.toString()}`);
 
     const response = await fetch(apiUrl.toString(), {
       method: 'GET',
@@ -198,14 +202,15 @@ export async function fetchUsersPages(query: string): Promise<number> {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Failed to fetch total pages');
+      throw new Error(errorData.message || 'Error al recuperar el total de páginas');
     }
 
     const data = await response.json();
+
     return data.totalPages || 1; 
     
   } catch (error) {
-    console.error('Failed to fetch total pages:', error);
+    console.error('Error al recuperar el total de páginas:', error);
     return 1;
   }
 }
@@ -227,7 +232,7 @@ export function formatUsersForTable(users: FilteredUser[]): UsersTable[] {
 export async function fetchFilteredUsers({
   query = '', 
   page = 1, 
-  limit = 10, 
+  limit = 5, 
   rol_id, 
   sortBy = 'nombre', 
   sortOrder = 'asc'
@@ -238,16 +243,16 @@ export async function fetchFilteredUsers({
   rol_id?: number | string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-} = {}): Promise<{ users: FilteredUser[]; total: number }> {
+} = {}): Promise<{ users: FilteredUser[]; total: number; totalPages: number }> {
   try {
 
     const token = (await cookies()).get('token')?.value;
     if (!token) {
-      throw new Error('No authentication token found');
+      throw new Error('No se ha encontrado ningún token de autenticación');
     }
 
-    const jwttoken = await getToken();
-    const id = jwttoken?.sub; 
+    const tokenPl = await getToken();
+    const id = tokenPl?.sub; 
 
     const params = new URLSearchParams({
       q: query,
@@ -262,9 +267,7 @@ export async function fetchFilteredUsers({
     }
 
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}/filtros?${params.toString()}`;
-    console.log('###########################################');
-    console.log('Request URL:', apiUrl);
-    console.log('###########################################');
+
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -276,14 +279,10 @@ export async function fetchFilteredUsers({
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Failed to fetch filtered users');
+      throw new Error(errorData.message || 'No se han podido recuperar los usuarios filtrados');
     }
 
     const data = await response.json();
-
-    console.log('###########################################');
-    console.log('Respose:', data);
-    console.log('###########################################');
 
     return {
       users: data.users.map((user: any) => ({
@@ -297,11 +296,12 @@ export async function fetchFilteredUsers({
         createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',
         status: user.deletedAt ? 'Inactivo' : 'Activo'
       })),
-      total: data.total
+      total: data.total,
+      totalPages: data.totalPages
     };
 
   } catch (error) {
-    console.error('Error fetching filtered users:', error);
-    throw new Error('Failed to load user data. Please try again.');
+    console.error('Error al buscar usuarios filtrados:', error);
+    throw new Error('Error al cargar los datos de usuario. Por favor, inténtelo de nuevo.');
   }
 }

@@ -162,7 +162,7 @@ export class UsersService {
     const {
       q,
       page = 1,
-      limit = 10,
+      limit = 5,
       sortBy = 'nombre',
       sortOrder = 'asc',
     } = params;
