@@ -1,16 +1,17 @@
 <a name="readme-top"></a>
+# 2025-TUP-Prog3-TP-Grupo2
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://francisluna.github.io/ToDo-POO-Grupo-9/">
-    <img src="../frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
+  <a href="https://docs.google.com/document/d/1Tp3NS1_4iSdxhbV2G0Gn1zKr3-Gh8gFu/edit?usp=sharing&ouid=109882683574158321015&rtpof=true&sd=true">
+    <img src="./frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
   </a>
 
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://francisluna.github.io/ToDo-POO-Grupo-9/"><strong>Accede a la documentación »</strong></a>
+    <a href="https://docs.google.com/document/d/1Tp3NS1_4iSdxhbV2G0Gn1zKr3-Gh8gFu/edit?usp=sharing&ouid=109882683574158321015&rtpof=true&sd=true"><strong>Accede a la documentación »</strong></a>
   </p>
 </div>
 
@@ -47,4 +48,39 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
   <li>Velardez, Marcos - marcosvelardez40@gmail.com</li>
   <li>Rodríguez, Paola - paolarladera@gmail.com</li>
 </ul>
+
+
+
+## Project setup
+
+```bash
+$ npm install
+```
+
+## Compilar y levantar el proyecto
+
+```bash
+# levantar Frontend y backend
+$ npm run dev
+
+# levantar solo Backend
+$ npm run dev:back
+
+# levantar solo Frontend
+$ npm run dev:front
+
+```
+
+## Run tests
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

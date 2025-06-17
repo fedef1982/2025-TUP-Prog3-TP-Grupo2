@@ -1,7 +1,7 @@
 export interface JwtPayload {
-  sub: number;
-  username: string;
-  rol_id: number;
+  sub: number; //id del usuario
+  username: string; //email del usuario
+  rol_id: number; //rol del usuario
 }
 
 export interface AuthenticatedRequest extends Request {
