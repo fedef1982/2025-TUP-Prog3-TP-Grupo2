@@ -12,7 +12,6 @@ export async function authenticate(
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    // Validación básica
     if (!email) {
       return {
         message: 'Email es requerido',
@@ -80,8 +79,6 @@ export async function authenticate(
   }
 }
 
-
-// Create new user (public endpoint)
 export async function createUser(
   prevState: CreateUserState | undefined,
   formData: FormData) {
@@ -179,14 +176,14 @@ export async function updateUser(
 }
 
 // Delete user
-export async function deleteUser(userId: number): Promise<void> {
+export async function deleteUser(id: number): Promise<void> {
   try {
     const token = await getRawToken();
     if (!token) {
       throw new Error('No authentication token found');
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

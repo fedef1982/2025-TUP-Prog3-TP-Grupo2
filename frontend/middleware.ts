@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { getRawToken, getToken } from './app/lib/server-utils';
-import { cookies } from 'next/headers';
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
-
-  console.log('Entro a MIDDLEWARE');
 
   const { pathname } = request.nextUrl;
 
@@ -44,11 +40,6 @@ export async function middleware(request: NextRequest) {
       requestHeaders.set('x-user-username', decoded.username);
       requestHeaders.set('x-user-rol-id', decoded.rol_id.toString());
 
-      console.log('######################################################');
-      console.log('Entro a pivado y token ok',decoded);
-      console.log('id', requestHeaders);
-      console.log('######################################################');
-
       return NextResponse.next({
         request: {
           headers: requestHeaders,
@@ -62,6 +53,6 @@ export async function middleware(request: NextRequest) {
       return response;
     }
   }
-  console.log('Entro de MIDDLEWARE a NEXT');
+  
   return NextResponse.next();
 }

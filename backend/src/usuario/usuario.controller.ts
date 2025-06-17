@@ -42,12 +42,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('filtros')
-  @Roles(Role.ADMIN)
+  @Get(':id/filtros')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findUsuariosConFiltros(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: AuthenticatedRequest,
     @Query() params: QueryUsuariosDto,
   ): Promise<{ users: User[]; total: number }> {
-    return this.usersService.findUsuariosConFiltros(params);
+    return this.usersService.findUsuariosConFiltros(id, req.user, params);
   }
 
   //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
