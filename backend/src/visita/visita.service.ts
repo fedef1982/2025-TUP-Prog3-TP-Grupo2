@@ -17,6 +17,8 @@ import { Especie } from 'src/mascota/especie.model';
 import { Condicion } from 'src/mascota/condicion.model';
 import { User } from 'src/usuario/usuario.model';
 import { TrackingVisita } from './dto/tracking-visita.dto';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class VisitaService {
@@ -159,6 +161,70 @@ export class VisitaService {
       estado: visita.estado,
       fecha: visita.disponibilidad_fecha,
       horario: visita.disponibilidad_horario,
+    };
+  }
+
+  async findVisitasConFiltros(
+    usuarioId: number,
+    usuario: JwtPayload,
+    params: QueryOpcionesDto,
+  ): Promise<{
+    visitas: Visita[];
+    total: number;
+    totalPages: number;
+  }> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'nombre',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const whereVisita = q
+      ? {
+          [Op.or]: [
+            { nombre: { [Op.iLike]: `%${q}%` } },
+            { apellido: { [Op.iLike]: `%${q}%` } },
+            { email: { [Op.iLike]: `%${q}%` } },
+            { tracking: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {};
+    const includePublicacion =
+      usuario.rol_id === Number(Role.ADMIN)
+        ? [
+            {
+              model: Publicacion,
+              include: [Mascota],
+            },
+          ]
+        : [
+            {
+              model: Publicacion,
+              include: [
+                {
+                  model: Mascota,
+                  include: [Especie, Condicion, User],
+                  where: { usuario_id: usuarioId },
+                },
+              ],
+            },
+          ];
+    const { count, rows } = await this.visitaModel.findAndCountAll({
+      where: whereVisita,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: includePublicacion,
+    });
+
+    return {
+      visitas: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
     };
   }
 }

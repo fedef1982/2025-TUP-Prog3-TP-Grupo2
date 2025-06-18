@@ -235,6 +235,7 @@ export class PublicacionesService {
         : [
             {
               model: Mascota,
+              include: [Especie, Condicion, User],
               where: { usuario_id: usuarioId },
             },
           ];

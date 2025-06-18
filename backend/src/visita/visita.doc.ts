@@ -31,7 +31,7 @@ export function DocGetIdVisita() {
 
 export function DocPatchVisita() {
   return applyDecorators(
-    ApiOperation({ summary: 'Modifica parametros de una visita' }),
+    ApiOperation({ summary: 'Modifica parámetros de una visita' }),
     ApiParam({ name: 'id', type: Number, description: 'ID de la visita' }),
     ApiBody({ type: UpdateVisitaDto }),
   );

@@ -45,7 +45,7 @@ export class PublicacionesController {
 
   @Get('usuarios/:usuarioId/publicaciones/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
-  findUsuariosConFiltros(
+  findPublicacionesConFiltros(
     @Param('usuarioId', ParseIntPipe) usuarioId: number,
     @Req() req: AuthenticatedRequest,
     @Query() params: QueryOpcionesDto,

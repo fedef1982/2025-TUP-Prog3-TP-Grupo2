@@ -46,7 +46,7 @@ export class MascotasController {
 
   @Get('filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
-  findUsuariosConFiltros(
+  findMascotasConFiltros(
     @Param('usuarioId', ParseIntPipe) usuarioId: number,
     @Req() req: AuthenticatedRequest,
     @Query() params: QueryOpcionesDto,

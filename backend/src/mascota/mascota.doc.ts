@@ -14,18 +14,18 @@ export function DocPostMascota() {
 
 export function DocPatchMascota() {
   return applyDecorators(
-    ApiOperation({ summary: 'Modifica parametros de una mascota' }),
-    ApiParam({ name: 'id', type: Number, description: 'ID de la publicación' }),
+    ApiOperation({ summary: 'Modifica parámetros de una mascota' }),
+    ApiParam({ name: 'id', type: Number, description: 'ID de la mascota' }),
     ApiBody({ type: UpdateMascotaDto }),
   );
 }
 
 export function DocGetMascota() {
   return applyDecorators(
-    ApiOperation({ summary: 'Listar todas las mascota' }),
+    ApiOperation({ summary: 'Listar todas las mascotas' }),
     ApiResponse({
       status: 200,
-      description: 'Mascota obtenidas correctamente.',
+      description: 'Mascotas obtenidas correctamente.',
     }),
   );
 }
