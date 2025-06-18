@@ -13,8 +13,8 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { User } from 'src/usuario/usuario.model';
-import { Especie } from './especie.model';
-import { Condicion } from './condicion.model';
+import { Especie } from './especie/especie.model';
+import { Condicion } from './condicion/condicion.model';
 import { ApiProperty } from '@nestjs/swagger';
 import { Publicacion } from 'src/publicacion/publicacion.model';
 
