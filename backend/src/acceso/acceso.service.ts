@@ -13,7 +13,7 @@ export class AccesoService {
 
     if (!esAdmin && !esDuenio) {
       throw new ForbiddenException(
-        'No tiene permisos para acceder a este recurso',
+        `No tiene permisos para acceder a este recurso`,
       );
     }
   }

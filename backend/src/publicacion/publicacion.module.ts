@@ -23,6 +23,7 @@ import { MascotaModule } from 'src/mascota/mascota.module';
     MascotaModule,
   ],
   providers: [PublicacionesService],
+  exports: [PublicacionesService],
   controllers: [PublicacionesController],
 })
 export class PublicacionModule {}

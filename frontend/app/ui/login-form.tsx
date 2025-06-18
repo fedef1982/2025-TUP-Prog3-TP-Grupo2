@@ -9,68 +9,25 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { authenticate } from '@/app/lib/actions';
 import Link from 'next/link';
-import Cookies from 'js-cookie';
-
+import { useFormStatus } from 'react-dom';
+import { LoginState } from '../lib/definitions';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
-  const searchParams = useSearchParams();
+  const [state, formAction] = useActionState<LoginState, FormData>(authenticate, {});
   const router = useRouter();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
-  const [isPending, setIsPending] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsPending(true);
-    setErrorMessage(undefined);
-
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const contrasenia = formData.get('password') as string;
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, contrasenia }), 
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Login failed');
-      }
-
-      const { access_token: token } = await response.json();
-
-      if (!token) {
-        throw new Error('No token received');
-      }
-
-      localStorage.setItem('token', token);
-      Cookies.set('token', token, {
-        path: '/',
-        expires: 1, // 1 día
-        sameSite: 'strict',
-        secure: process.env.NODE_ENV === 'production',
-      });
-      
-      const tokenGurdado = Cookies.get('token')?.valueOf;
-      console.log(tokenGurdado);
-
-      router.push(callbackUrl);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(error instanceof Error ? error.message : 'Login failed');
-    } finally {
-      setIsPending(false);
+  useEffect(() => {
+    if (state?.success) {
+      router.push('/dashboard');
     }
-  };
+  }, [state, router]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-200 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Ingrese para continuar.
@@ -89,7 +46,7 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Ingrese direccion email "
+                placeholder="Ingrese direccion email"
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -116,14 +73,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button
-          type="submit"
-          className="mt-4 w-full"
-          aria-disabled={isPending}
-          disabled={isPending}
-        >
-          Ingresar <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
+        <LoginButton />
         <h1 className={`${lusitana.className} mb-3 text-1xl`}>
           Si no tiene usuario.
         </h1>
@@ -135,7 +85,7 @@ export default function LoginForm() {
         </Link>
         <div className="mt-6 flex flex-col items-center space-y-4">
           <Link href="/" className="flex items-center text-violet-600 hover:text-violet-800 text-sm font-medium transition-colors">
-            <ArrowRightIcon className="h-5 w-5 rotate-180 mr-2" />
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
             <span>Volver al inicio</span>
           </Link>
         </div>
@@ -145,14 +95,29 @@ export default function LoginForm() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {errorMessage && (
+          {state?.message && !state.success && (
             <>
               <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
+              <p className="text-sm text-red-500">{state.message}</p>
             </>
           )}
         </div>
       </div>
     </form>
+  );
+}
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      className="mt-4 w-full"
+      aria-disabled={pending}
+      disabled={pending}
+    >
+      Ingresar <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    </Button>
   );
 }
