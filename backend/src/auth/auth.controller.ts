@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { User } from 'src/usuario/usuario.model';
+import { User } from '../usuario/usuario.model';
 import { Public } from './decorators/public.decorator';
 
 interface AuthRequest extends Request {

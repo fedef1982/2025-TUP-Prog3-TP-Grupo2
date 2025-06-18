@@ -7,10 +7,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../auth/roles.enum';
 import * as bcrypt from 'bcrypt';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { AccesoService } from '../acceso/acceso.service';
+import { JwtPayload } from '../auth/jwt-playload.interface';
 import { Rol } from './rol.model';
 
 @Injectable()

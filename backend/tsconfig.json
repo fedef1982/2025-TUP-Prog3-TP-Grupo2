@@ -9,7 +9,9 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    //"baseUrl": "./",
+    "rootDir": "./src",
+    "types": ["node", "jest"],
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -19,13 +21,10 @@
     "noFallthroughCasesInSwitch": false
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "src/test/*.*"
   ],
   "exclude": [
-    "dist",
-    "node_modules",
-    "fixtures",
-    "tmp",
-    "tests"
+    "node_modules"
   ]
 }
