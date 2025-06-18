@@ -57,7 +57,7 @@ export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
   })
   declare contacto: string;
 
-  @ApiProperty()  
+  @ApiProperty()
   @Column({
     type: DataType.DATE,
     allowNull: true,
