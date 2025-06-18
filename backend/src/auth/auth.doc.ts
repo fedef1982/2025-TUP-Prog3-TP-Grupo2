@@ -11,6 +11,6 @@ export function DocPostLogin() {
 
 export function DocGetProfile() {
   return applyDecorators(
-    ApiOperation({ summary: 'Devolver datos de un perfil' }),
+    ApiOperation({ summary: 'Devolver los datos del perfil de un usuario' }),
   );
 }
