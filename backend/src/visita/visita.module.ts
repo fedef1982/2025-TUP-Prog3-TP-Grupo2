@@ -7,8 +7,8 @@ import { Publicacion } from 'src/publicacion/publicacion.model';
 import { AccesoModule } from 'src/acceso/acceso.module';
 import { PublicacionModule } from 'src/publicacion/publicacion.module';
 import { Mascota } from 'src/mascota/mascota.model';
-import { Especie } from 'src/mascota/especie.model';
-import { Condicion } from 'src/mascota/condicion.model';
+import { Especie } from 'src/mascota/especie/especie.model';
+import { Condicion } from 'src/mascota/condicion/condicion.model';
 import { User } from 'src/usuario/usuario.model';
 
 @Module({

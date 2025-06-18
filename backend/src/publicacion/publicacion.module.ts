@@ -5,8 +5,8 @@ import { PublicacionesService } from './publicacion.service';
 import { PublicacionesController } from './publicacion.controller';
 import { Mascota } from 'src/mascota/mascota.model';
 import { AccesoModule } from 'src/acceso/acceso.module';
-import { Especie } from 'src/mascota/especie.model';
-import { Condicion } from 'src/mascota/condicion.model';
+import { Especie } from 'src/mascota/especie/especie.model';
+import { Condicion } from 'src/mascota/condicion/condicion.model';
 import { User } from 'src/usuario/usuario.model';
 import { MascotaModule } from 'src/mascota/mascota.module';
 
