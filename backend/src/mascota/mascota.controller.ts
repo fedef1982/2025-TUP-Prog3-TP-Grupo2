@@ -13,10 +13,17 @@ import { MascotaService } from './mascota.service';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
-import { AccesoService } from 'src/acceso/acceso.service';
+import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/roles.enum';
+import {
+  DocDeleteIdMascota,
+  DocGetIdMascota,
+  DocGetMascota,
+  DocPatchMascota,
+  DocPostMascota,
+} from './mascota.doc';
+import { AccesoService } from '../acceso/acceso.service';
 
 @Controller('usuarios/:usuarioId/mascotas')
 export class MascotasController {
@@ -25,6 +32,7 @@ export class MascotasController {
     private readonly accesoService: AccesoService,
   ) {}
 
+  @DocGetMascota()
   @Get()
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(
@@ -34,6 +42,7 @@ export class MascotasController {
     return this.mascotaService.findAll(usuarioId, req.user);
   }
 
+  @DocPostMascota()
   @Post()
   @Roles(Role.PUBLICADOR)
   create(
@@ -44,6 +53,7 @@ export class MascotasController {
     return this.mascotaService.create(createMascotaDto, usuarioId, req.user);
   }
 
+  @DocGetIdMascota()
   @Get(':mascotaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
@@ -54,6 +64,7 @@ export class MascotasController {
     return this.mascotaService.findOne(mascotaId, usuarioId, req.user);
   }
 
+  @DocPatchMascota()
   @Patch(':mascotaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
@@ -70,6 +81,7 @@ export class MascotasController {
     );
   }
 
+  @DocDeleteIdMascota()
   @Delete(':mascotaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(

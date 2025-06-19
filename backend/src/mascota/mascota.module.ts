@@ -5,8 +5,8 @@ import { MascotaService } from './mascota.service';
 import { MascotasController } from './mascota.controller';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
-import { User } from 'src/usuario/usuario.model';
-import { AccesoModule } from 'src/acceso/acceso.module';
+import { User } from '../usuario/usuario.model';
+import { AccesoModule } from '../acceso/acceso.module';
 
 @Module({
   imports: [

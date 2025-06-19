@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtPayload } from 'src/auth/auth.guard';
-import { Role } from 'src/auth/roles.enum';
+import { JwtPayload } from '../auth/auth.guard';
+import { Role } from '../auth/roles.enum';
 
 @Injectable()
 export class AccesoService {
@@ -13,7 +13,7 @@ export class AccesoService {
 
     if (!esAdmin && !esDuenio) {
       throw new ForbiddenException(
-        'No tiene permisos para acceder a este recurso',
+        `No tiene permisos para acceder a este recurso`,
       );
     }
   }

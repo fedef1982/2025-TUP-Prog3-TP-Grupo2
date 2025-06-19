@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,17 +8,26 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../auth/roles.enum';
 import * as bcrypt from 'bcrypt';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { AccesoService } from '../acceso/acceso.service';
+import { JwtPayload } from '../auth/jwt-playload.interface';
 import { Rol } from './rol.model';
+import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
+import { Mascota } from '../mascota/mascota.model';
+import { Publicacion } from '../publicacion/publicacion.model';
+import { Visita } from '../visita/visita.model';
+import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User)
-    private userModel: typeof User,
+    @InjectModel(User) private readonly userModel: typeof User,
+    @InjectModel(Mascota) private readonly mascotaModel: typeof Mascota,
+    @InjectModel(Publicacion)
+    private readonly publicacionModel: typeof Publicacion,
+    @InjectModel(Visita) private readonly visitaModel: typeof Visita,
     private readonly accesoService: AccesoService,
   ) {}
 
@@ -31,6 +41,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException(`El usuario con id ${id} no existe`);
     }
+    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
     return user;
   }
 
@@ -74,7 +85,6 @@ export class UsersService {
     usuario: JwtPayload,
   ): Promise<User> {
     const user = await this.findOne(id, usuario);
-    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
 
     if (dto.email && dto.email !== user.email) {
       await this.validarEmailUnico(dto.email);
@@ -90,7 +100,96 @@ export class UsersService {
 
   async remove(id: number, usuario: JwtPayload): Promise<void> {
     const user = await this.findOne(id, usuario);
-    this.accesoService.verificarAcceso(usuario, { usuario_id: user.id });
     await user.destroy();
   }
+
+  async getEstadisticas(
+    id: number,
+    usuario: JwtPayload,
+  ): Promise<EstadisticasUsuarioDto> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, id);
+    const esAdmin = usuario.rol_id === Number(Role.ADMIN);
+    const whereUsuario = esAdmin ? {} : { usuario_id: usuario.sub };
+
+    const [totalUsuarios, totalMascotas, totalPublicaciones, totalVisitas] =
+      await Promise.all([
+        esAdmin ? this.userModel.count() : Promise.resolve(1),
+        this.mascotaModel.count({
+          where: whereUsuario,
+        }),
+        this.publicacionModel.count({
+          include: [
+            {
+              model: Mascota,
+              where: whereUsuario,
+            },
+          ],
+        }),
+        this.visitaModel.count({
+          include: [
+            {
+              model: Publicacion,
+              include: [{ model: Mascota, where: whereUsuario }],
+            },
+          ],
+        }),
+      ]);
+    return {
+      totalUsuarios,
+      totalMascotas,
+      totalPublicaciones,
+      totalVisitas,
+    };
+  }
+
+  async findUsuariosConFiltros(
+    id:number,
+    usuario: JwtPayload,
+    params: QueryUsuariosDto, 
+  ): Promise<{ users: User[]; total: number; totalPages: number }> {
+    const esPublicador = usuario.rol_id === Number(Role.PUBLICADOR);
+
+    if (esPublicador)
+    {
+     const user:User[] = [await this.findOne(id,usuario)];
+     return { 
+              users: user,
+              total:1,
+              totalPages: 1,
+     }
+    }   
+    
+    const {
+      q,
+      page = 1,
+      limit = 5,
+      sortBy = 'nombre',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const where = q
+      ? {
+          [Op.or]: [
+            { nombre: { [Op.iLike]: `%${q}%` } },
+            { apellido: { [Op.iLike]: `%${q}%` } },
+            { email: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {};
+    const { count, rows } = await this.userModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [{ model: Rol }],
+    });
+    const totalPages = Math.ceil(count / limit);
+    return {
+      users: rows,
+      total: count,
+      totalPages: totalPages,
+    };
+  }
 }
+
