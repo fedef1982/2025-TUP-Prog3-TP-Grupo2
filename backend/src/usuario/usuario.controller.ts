@@ -18,7 +18,7 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../auth/roles.enum';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,

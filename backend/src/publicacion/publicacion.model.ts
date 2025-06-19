@@ -13,8 +13,8 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { Mascota } from 'src/mascota/mascota.model';
-import { Visita } from 'src/visita/visita.model';
+import { Mascota } from '../mascota/mascota.model';
+import { Visita } from '../visita/visita.model';
 
 export enum EstadoPublicacion {
   Abierta = 'Abierta',

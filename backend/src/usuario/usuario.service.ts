@@ -14,9 +14,9 @@ import { AccesoService } from '../acceso/acceso.service';
 import { JwtPayload } from '../auth/jwt-playload.interface';
 import { Rol } from './rol.model';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
-import { Mascota } from 'src/mascota/mascota.model';
-import { Publicacion } from 'src/publicacion/publicacion.model';
-import { Visita } from 'src/visita/visita.model';
+import { Mascota } from '../mascota/mascota.model';
+import { Publicacion } from '../publicacion/publicacion.model';
+import { Visita } from '../visita/visita.model';
 import { QueryUsuariosDto } from './dto/query-usuario.dto';
 import { Op } from 'sequelize';
 

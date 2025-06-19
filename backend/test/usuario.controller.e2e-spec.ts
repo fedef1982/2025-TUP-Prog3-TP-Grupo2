@@ -3,15 +3,15 @@ import { UsersController } from '../src/usuario/usuario.controller';
 import { UsersService } from '../src/usuario/usuario.service';
 import { CreateUsuarioDto } from '../src/usuario/dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../src/usuario/dto/update-usuario.dto';
-import { Role } from '../src/auth/roles.enum';
-import { mockUser, mockUsersArray } from './mock-user';
-import { mockUsersService } from './mock-users-service';
+
+import { mockUser, mockUsersArray } from '../src/mock-user';
+import { mockUsersService } from '../src/mock-users-service';
 import { AuthGuard } from '../src/auth/auth.guard';
-import { MockAuthGuard } from './mock-auth.guard';
+import { MockAuthGuard } from '../src/mock-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 
 import { ExecutionContext } from '@nestjs/common';
-import { request } from 'http';
+
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -25,14 +25,16 @@ describe('UsersController', () => {
           provide: UsersService,
           useValue: mockUsersService,
         },
-/*         {
+        {
           provide: APP_GUARD,
-          useClass: MockAuthGuard,  // Aquí inyectamos el guard mockeado
-        }, */
+          // Inyectamos el guard mockeado
+          useClass: MockAuthGuard,  
+        },
       ],
     })
-    //.overrideGuard(AuthGuard)
-    //.useClass(MockAuthGuard)  // Reemplazo del guard real por el mock guard
+    .overrideGuard(AuthGuard)
+    // Reemplazamos el guard real por el mock guard
+    .useClass(MockAuthGuard)  
     .compile();
 
     usersController = module.get<UsersController>(UsersController);
@@ -58,7 +60,7 @@ describe('UsersController', () => {
       //const mockRequest = { user: { id: usuarioId, rol_id: Role.ADMIN } } as any; 
       const mockAuthGuard = new MockAuthGuard();
 
-      // Simulamos ExecutionContext (tiempo de ejecución) con request vacío 
+      // Simulamos ExecutionContext (contexto de tiempo de ejecución) con la request vacía 
       const mockExecutionContext = {
        switchToHttp: () => ({
         getRequest: () => ({}),
@@ -70,6 +72,9 @@ describe('UsersController', () => {
 
       // Obtenemos la request modificada
       const mockRequest = mockExecutionContext.switchToHttp().getRequest();
+
+      // Configuramos el mock para devolver el usuario esperado en vez de 'null'
+      (usersService.findOne as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await usersController.getPerfil(usuarioId, mockRequest);
       expect(result).toEqual(mockUser);
@@ -92,10 +97,21 @@ describe('UsersController', () => {
     });
   });
 
-/*   describe('findOne', () => { // req: AuthenticatedRequest
+  describe('findOne', () => {
     it('debería retornar un usuario por id', async () => {
       const id = 1;
-      const mockRequest = { user: { id: 1, rol_id: Role.ADMIN } } as any;
+      // Simula el contexto y el guardia
+      const mockAuthGuard = new MockAuthGuard();
+      const mockExecutionContext = {
+        switchToHttp: () => ({
+          getRequest: () => ({}),
+        }),
+      } as ExecutionContext;
+
+      mockAuthGuard.canActivate(mockExecutionContext);
+      const mockRequest = mockExecutionContext.switchToHttp().getRequest();
+
+      (usersService.findOne as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await usersController.findOne(id, mockRequest);
       expect(result).toEqual(mockUser);
@@ -103,13 +119,21 @@ describe('UsersController', () => {
     });
   });
 
-  describe('update', () => { // req: AuthenticatedRequest
+  describe('update', () => {
     it('debería actualizar un usuario', async () => {
       const id = 1;
-      const updateDto: UpdateUsuarioDto = {
-        nombre: 'Usuario2',
-      };
-      const mockRequest = { user: { id: 1, rol_id: Role.PUBLICADOR } } as any;
+      const updateDto: UpdateUsuarioDto = { nombre: 'Usuario2' };
+      const mockAuthGuard = new MockAuthGuard();
+      const mockExecutionContext = {
+        switchToHttp: () => ({
+          getRequest: () => ({}),
+        }),
+      } as ExecutionContext;
+
+      mockAuthGuard.canActivate(mockExecutionContext);
+      const mockRequest = mockExecutionContext.switchToHttp().getRequest();
+
+      (usersService.update as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await usersController.update(id, updateDto, mockRequest);
       expect(result).toEqual(mockUser);
@@ -117,14 +141,23 @@ describe('UsersController', () => {
     });
   });
 
-  describe('remove', () => { // req: AuthenticatedRequest
+  describe('remove', () => {
     it('debería eliminar un usuario', async () => {
       const id = 1;
-      const mockRequest = { user: { id: 1, rol_id: Role.PUBLICADOR } } as any;
+      const mockAuthGuard = new MockAuthGuard();
+      const mockExecutionContext = {
+        switchToHttp: () => ({
+          getRequest: () => ({}),
+        }),
+      } as ExecutionContext;
+      mockAuthGuard.canActivate(mockExecutionContext);
+      const mockRequest = mockExecutionContext.switchToHttp().getRequest();
+
+      (usersService.remove as jest.Mock).mockResolvedValue(undefined);
 
       const result = await usersController.remove(id, mockRequest);
       expect(result).toBeUndefined();
       expect(usersService.remove).toHaveBeenCalledWith(id, mockRequest.user);
     });
-  }); */
+  });
 });

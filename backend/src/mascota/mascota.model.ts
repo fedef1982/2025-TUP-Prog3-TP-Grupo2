@@ -12,11 +12,11 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { User } from 'src/usuario/usuario.model';
+import { User } from '../usuario/usuario.model';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
 import { ApiProperty } from '@nestjs/swagger';
-import { Publicacion } from 'src/publicacion/publicacion.model';
+import { Publicacion } from '../publicacion/publicacion.model';
 
 @Table({ tableName: 'mascotas', paranoid: true })
 export class Mascota extends Model<Mascota, Partial<Mascota>> {

@@ -1,5 +1,5 @@
-import { CreateUsuarioDto } from '../src/usuario/dto/create-usuario.dto';
-import { UpdateUsuarioDto } from '../src/usuario/dto/update-usuario.dto';
+import { CreateUsuarioDto } from './usuario/dto/create-usuario.dto';
+import { UpdateUsuarioDto } from './usuario/dto/update-usuario.dto';
 import { mockUsersArray, mockUser } from './mock-user';
 import { MockAuthGuard } from './mock-auth.guard';
 

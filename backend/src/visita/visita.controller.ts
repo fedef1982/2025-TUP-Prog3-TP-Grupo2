@@ -21,10 +21,10 @@ import {
   DocPatchVisita,
   DocPostVisita,
 } from './visita.doc';
-import { Role } from 'src/auth/roles.enum';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Role } from '../auth/roles.enum';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
+import { Public } from '../auth/decorators/public.decorator';
 import { TrackingVisita } from './dto/tracking-visita.dto';
 
 @Controller()

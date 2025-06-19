@@ -13,10 +13,10 @@ import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { Role } from '../auth/roles.enum';
+import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
+import { Public } from '../auth/decorators/public.decorator';
 
 import {
   DocDeleteIdPublicacion,

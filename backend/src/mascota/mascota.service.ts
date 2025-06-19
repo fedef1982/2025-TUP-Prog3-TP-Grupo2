@@ -4,11 +4,11 @@ import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { Especie } from './especie.model';
 import { Condicion } from './condicion.model';
-import { User } from 'src/usuario/usuario.model';
+import { User } from '../usuario/usuario.model';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { Role } from 'src/auth/roles.enum';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
-import { AccesoService } from 'src/acceso/acceso.service';
+import { Role } from '../auth/roles.enum';
+import { JwtPayload } from '../auth/jwt-playload.interface';
+import { AccesoService } from '../acceso/acceso.service';
 
 @Injectable()
 export class MascotaService {
