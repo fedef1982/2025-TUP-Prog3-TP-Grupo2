@@ -10,76 +10,7 @@ import { afterEach, beforeEach } from 'node:test';
 import { RolesGuard } from '../src/auth/roles.guard';
 import { ConfigModule } from '@nestjs/config';
 
-describe('/auth/login (POST)', () => {
-  let app: INestApplication;
-  let authService: AuthService;
-  // Mock user payload que simula el JWT payload
-  const mockUser = {
-    id: 1,
-    email: 'testuser@gmail.com',
-    nombre: 'Test User',
-    rol: 'admin',
-  };
-  // Debe coincidir con la clave usada en el módulo JWT
-  const jwtSecret = 'TP-GRUPO2-PROG-ADOPTAR'; 
-
-  beforeEach(async () => {
-    const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
-        SequelizeModule.forRoot({
-          dialect: 'postgres',
-          // Usamos memoria dinámica para test, para evitar archivos físicos
-          storage: ':memory:', 
-          autoLoadModels: true,
-          synchronize: true,
-          logging: false,
-        }),
-        AuthModule
-      ],
-    })
-      .overrideProvider(AuthService)
-      .useValue({
-        // Mock del método login que retorna un token JWT firmado con mockUser
-        login: jest.fn().mockImplementation(async () => {
-          return {
-            access_token: jwt.sign(mockUser, jwtSecret),
-          };
-        }),
-        // Podemos mockear aquí otros métodos si es necesario
-      })
-      .compile();
-
-    app = moduleRef.createNestApplication();
-    await app.init();
-
-    authService = moduleRef.get<AuthService>(AuthService);
-  });
-
-  afterEach(async () => {
-    await app.close();
-  });
-
-  it('debería retornar un token JWT', async () => {
-    const loginDto = { email: 'testuser@gmail.com', contrasenia: '123456' };
-
-    const response = await request(app.getHttpServer())
-      .post('/auth/login')
-      .send(loginDto)
-      .expect(200);
-
-    expect(response.body).toHaveProperty('access_token');
-
-    // Verificamos que el token sea válido y contenga el payload esperado (mockUser)
-    const decoded = jwt.verify(response.body.access_token, jwtSecret);
-    expect(decoded).toMatchObject(mockUser);
-
-    // Verificamos que el método login fue llamado con los datos correctos
-    //expect(authService.login).toHaveBeenCalledWith(loginDto);
-  });
-});
-
-/* const mockUser = {
+const mockUser = {
   sub: 1,
   username: 'testUser',
   rol_id: 2,
@@ -150,4 +81,4 @@ describe('AuthController (e2e)', () => {
     const decoded = jwt.verify(response.body.access_token, 'TP-GRUPO2-PROG-ADOPTAR') as any;
     expect(decoded).toMatchObject(mockUser);
   });
-}); */
+});
