@@ -1,3 +1,4 @@
+// Definiciones para usuarios
 export enum Role {
   ADMIN = 'ADMIN',
   PUBLICADOR = 'PUBLICADOR',
@@ -90,16 +91,6 @@ export interface FilteredUsersParams {
   sortOrder?: 'asc' | 'desc';
 }
 
-export interface LatestUser {
-  id: string;
-  name: string;
-  lastname: string;
-  email: string;
-  role: Role;
-  phone?: string;
-  address?: string;
-};
-
 export interface UsersTable {
   id: string;
   name: string;
@@ -132,8 +123,3 @@ export interface FilteredUser {
   createdAt?: string;
   status: string;
 }
-
-
-
-
-

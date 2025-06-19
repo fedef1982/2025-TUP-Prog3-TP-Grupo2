@@ -86,38 +86,21 @@ export async function fetchCurrentUserProfile(): Promise<User> {
   }
 }
 
-/*export async function fetchLatestUsers(): Promise<LatestUser[]> {
+export async function fetchCurrentUserId() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
-      },
-      next: { revalidate: 3600 }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fallo al recuperar usuarios: ${response.status}`);
+    const tokenPl = await getToken();
+    if (!tokenPl?.sub) {
+      throw new Error('No se ha encontrado ID de usuario en el token');
     }
 
-    const usersData = await response.json();
-
-    return usersData.map((user: any) => ({
-      id: user.id.toString(),
-      name: user.nombre,
-      lastname: user.apellido,
-      email: user.email,
-      phone: user.telefono,
-      address: user.direccion,
-      role: user.rol_id === 1 ? Role.ADMIN : Role.PUBLICADOR, 
-    }));
-
+    const userId = tokenPl.sub;
+    return userId;
   } catch (error) {
-    console.error('Failed to fetch latest users:', error);
-    throw new Error('Failed to fetch latest users');
+    console.error('Error en fetchCurrentUserId:', error);
+    throw error;
   }
-}*/
+  
+}
 
 export async function fetchUserStats(): Promise<UserStats> {
   try {
@@ -290,7 +273,7 @@ export async function fetchFilteredUsers({
         name: user.nombre,
         lastname: user.apellido, 
         email: user.email,
-        role: Number(user.role_id),
+        role: user.role_id,
         phone: user.telefono,
         address: user.direccion,
         createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',

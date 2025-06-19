@@ -97,9 +97,6 @@ export async function createUser(
         telefono: telefono,
         direccion: direccion,
     }
-    console.log('######################################################');
-    console.log(userData);
-    console.log('######################################################');
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
       method: 'POST',

@@ -9,7 +9,7 @@ export class CondicionController {
   constructor(private readonly condicionService: CondicionService) {}
 
   @Get()
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(): Promise<Condicion[]> {
     return this.condicionService.findAll();
   }

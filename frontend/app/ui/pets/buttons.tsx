@@ -1,23 +1,23 @@
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteUser } from '@/app/lib/actions';
+import { deletePet } from '@/app/lib/actionsPets';
 
-export function CreateUser() {
+export function CreatePet() {
   return (
     <Link
-      href="/dashboard/users/create"
+      href="/dashboard/pets/create"
       className="flex h-10 items-center rounded-lg bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-500  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
     >
-      <span className="hidden md:block">Crear usuario</span>{' '}
+      <span className="hidden md:block">Crear mascota</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
 }
 
-export function UpdateUser({ id }: { id: string }) {
+export function UpdatePet({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/users/${id}/edit`}
+      href={`/dashboard/pets/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -25,11 +25,11 @@ export function UpdateUser({ id }: { id: string }) {
   );
 }
 
-export function DeleteUser({ id }: { id: string }) {
-  const deleteUserWithId = deleteUser.bind(null, Number(id));
+export function DeletePet({ id }: { id: string }) {
+  const deletePetWithId = deletePet.bind(null, Number(id));
 
   return (
-    <form action={deleteUserWithId}>
+    <form action={deletePetWithId}>
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
