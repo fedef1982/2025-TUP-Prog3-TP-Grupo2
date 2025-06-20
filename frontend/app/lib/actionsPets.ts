@@ -59,11 +59,6 @@ export async function createPet(
       condicion_id: parseInt(formData.get('condicion_id') as string),
     };
 
-    console.log('#############################');
-    console.log('URL feth crear mascota',`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`);
-    console.log('Data pet (body)', JSON.stringify(petData));
-    console.log('###########################');
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`, {
       method: 'POST',
       headers: { 
@@ -83,10 +78,6 @@ export async function createPet(
     }
 
     const data = await response.json();
-    console.log('#############################');
-    console.log('Respose.json data',data);
-    console.log('###########################');
-
 
     return { 
       success: true,
@@ -159,13 +150,8 @@ export async function updatePet(
       condicion_id: parseInt(formData.get('condicion_id') as string),
     };
 
-    console.log('#############################');
-    console.log('URL fetch actualizar mascota', `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`);
-    console.log('Data pet (body)', JSON.stringify(petData));
-    console.log('###########################');
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`, {
-      method: 'PATCH', // or 'PUT' depending on your API
+      method: 'PATCH', 
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -183,9 +169,6 @@ export async function updatePet(
     }
 
     const data = await response.json();
-    console.log('#############################');
-    console.log('Response.json data', data);
-    console.log('###########################');
 
     return { 
       success: true,

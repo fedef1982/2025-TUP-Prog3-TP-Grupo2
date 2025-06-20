@@ -3,7 +3,6 @@ import { fetchPetById, fetchAllSpecies, fetchAllConditions } from '@/app/lib/dat
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import ReadOnlyPetForm from '@/app/ui/pets/view-form';
-import { Pet, Species, Condition } from '@/app/lib/definitionsPets';
 
 export const metadata: Metadata = {
   title: 'Ver mascota',

@@ -33,7 +33,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         breadcrumbs={[
           { label: 'Usuarios', href: '/dashboard/users' },
           {
-            label: 'Esditar usuario',
+            label: 'Editar usuario',
             href: `/dashboard/users/${id}/edit`,
             active: true,
           },

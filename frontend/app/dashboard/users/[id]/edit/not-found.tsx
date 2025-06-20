@@ -9,7 +9,7 @@ export default function NotFound() {
       <p>No puede encotrar el usuario requerido</p>
       <Link
         href="/dashboard/users"
-        className="mt-4 rounded-md bg-violet-500  px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
+        className="mt-4 rounded-md bg-violet-500  px-4 py-2 text-sm text-white transition-colors hover:bg-violet-400"
       >
         Go Back
       </Link>
