@@ -60,7 +60,7 @@ export class MascotasController {
 
   @DocPostMascota()
   @Post()
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   create(
     @Body() createMascotaDto: CreateMascotaDto,
     @Param('usuarioId', ParseIntPipe) usuarioId: number,
