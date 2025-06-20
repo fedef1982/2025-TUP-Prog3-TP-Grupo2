@@ -1,5 +1,5 @@
-import { CreateUsuarioDto } from '../src/usuario/dto/create-usuario.dto';
-import { UpdateUsuarioDto } from '../src/usuario/dto/update-usuario.dto';
+import { CreateUsuarioDto } from '../../src/usuario/dto/create-usuario.dto';
+import { UpdateUsuarioDto } from '../../src/usuario/dto/update-usuario.dto';
 import { mockUsersArray, mockUser } from './mock-user';
 import { MockAuthGuard } from './mock-auth.guard';
 
@@ -17,11 +17,11 @@ export const mockUsersService = {
    if (authenticatedUser && authenticatedUser.id === id) {
     return Promise.resolve(mockUser);
    }
-   // Podrías simular error o devolver null si no coincide
+   // Devolver null si no coincide ó manejar el error
     return Promise.resolve(null);
   }),
   
   create: jest.fn().mockImplementation((dto: CreateUsuarioDto) => Promise.resolve(mockUser)),
-/*   update: jest.fn().mockImplementation((id: number, dto: UpdateUsuarioDto) => Promise.resolve(mockUser)),
-  remove: jest.fn().mockResolvedValue(undefined), */
+  update: jest.fn().mockImplementation((id: number, dto: UpdateUsuarioDto) => Promise.resolve(mockUser)),
+  remove: jest.fn().mockResolvedValue(undefined),
 };

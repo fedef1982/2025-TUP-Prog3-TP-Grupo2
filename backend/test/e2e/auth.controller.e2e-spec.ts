@@ -2,17 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ExecutionContext } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import * as request from 'supertest';
-import { AuthModule } from '../src/auth/auth.module';
-import { AuthController } from '../src/auth/auth.controller';
-import { AuthGuard } from '../src/auth/auth.guard';
-import { AuthService } from '../src/auth/auth.service';
-import { Role } from '../src/auth/roles.enum';
+import { AuthModule } from '../../src/auth/auth.module';
+import { AuthController } from '../../src/auth/auth.controller';
+import { AuthGuard } from '../../src/auth/auth.guard';
+import { AuthService } from '../../src/auth/auth.service';
+import { Role } from '../../src/auth/roles.enum';
 import * as jwt from 'jsonwebtoken';
 import { afterEach, beforeEach } from 'node:test';
-import { RolesGuard } from '../src/auth/roles.guard';
+import { RolesGuard } from '../../src/auth/roles.guard';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { LoginDto } from '../src/auth/dto/login.dto';
+import { LoginDto } from '../../src/auth/dto/login.dto';
 
 const mockUser = {
   sub: 1,
