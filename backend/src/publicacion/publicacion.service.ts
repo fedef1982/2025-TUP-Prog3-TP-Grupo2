@@ -23,9 +23,9 @@ export class PublicacionesService {
   constructor(
     @InjectModel(Publicacion)
     private publicacionModel: typeof Publicacion,
-
     @InjectModel(Mascota)
     private mascotaModel: typeof Mascota,
+
     private readonly mascotaService: MascotaService,
     private readonly accesoService: AccesoService,
   ) {}

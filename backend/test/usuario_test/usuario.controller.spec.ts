@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '../../src/usuario/usuario.controller';
 import { UsersService } from '../../src/usuario/usuario.service';
-import { mockUserData } from './_mocks_/usuario.model.mock';
+import { mockUserData } from '../_mocks_/usuario.model.mock';
 import { EstadisticasUsuarioDto } from '../../src/usuario/dto/estadisticas-usuario.dto';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { Role } from '../../src/auth/roles.enum';
 
 const mockUsersService = {
   findAll: jest.fn(),
@@ -17,10 +18,10 @@ const mockUsersService = {
 };
 
 const reqAdmin = {
-  user: { sub: 1, rol_id: 1, username: 'admin' },
+  user: { sub: 1, rol_id: Number(Role.ADMIN), username: 'admin@gmailcom' },
 } as AuthenticatedRequest;
 const reqPublicador = {
-  user: { sub: 2, rol_id: 2, username: 'user' },
+  user: { sub: 2, rol_id: Number(Role.PUBLICADOR), username: 'user@gmail.com' },
 } as AuthenticatedRequest;
 
 describe('UsersController', () => {

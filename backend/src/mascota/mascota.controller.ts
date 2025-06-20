@@ -14,9 +14,9 @@ import { MascotaService } from './mascota.service';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { Role } from '../../src/auth/roles.enum';
 import {
   DocDeleteIdMascota,
   DocGetIdMascota,
@@ -24,8 +24,8 @@ import {
   DocPatchMascota,
   DocPostMascota,
 } from './mascota.doc';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 @Controller('usuarios/:usuarioId/mascotas')
 export class MascotasController {

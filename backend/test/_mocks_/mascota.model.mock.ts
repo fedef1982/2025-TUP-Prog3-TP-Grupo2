@@ -1,14 +1,15 @@
 import { mockDeep } from 'jest-mock-extended';
-import { Mascota } from '../../../src/mascota/mascota.model';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { Sexo, Tamanio } from '../../src/mascota/dto/create-mascota.dto';
 
 export const mockMascotaData: Mascota = {
   id: 10,
   nombre: 'Chai',
   raza: 'Labrador',
-  sexo: 'Macho',
+  sexo: Sexo.Macho,
   edad: 3,
   vacunado: true,
-  tamanio: 'Grande',
+  tamanio: Tamanio.Grande,
 } as Mascota;
 
 export const mockMascotaModel = () => mockDeep<typeof Mascota>();

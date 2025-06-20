@@ -1,5 +1,5 @@
 import { mockDeep } from 'jest-mock-extended';
-import { User } from '../../../src/usuario/usuario.model';
+import { User } from '../../src/usuario/usuario.model';
 
 export const mockUserData = {
   id: 1,

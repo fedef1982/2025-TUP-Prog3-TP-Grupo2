@@ -1,5 +1,5 @@
 import { mockDeep } from 'jest-mock-extended';
-import { Publicacion } from '../../../src/publicacion/publicacion.model';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
 
 export const mockPublicacionData = {
   id: 100,

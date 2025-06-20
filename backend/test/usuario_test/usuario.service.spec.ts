@@ -16,11 +16,11 @@ import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import {
   mockUserData,
   mockUserModel as makeUserModel,
-} from './_mocks_/usuario.model.mock';
-import { mockMascotaModel } from './_mocks_/mascota.model.mock';
-import { mockPublicacionModel } from './_mocks_/publicacion.model.mock';
-import { mockVisitaModel } from './_mocks_/visita.model.mock';
-import { mockAccesoService as makeAccesoService } from './_mocks_/acceso.service.mock';
+} from '../_mocks_/usuario.model.mock';
+import { mockMascotaModel } from '../_mocks_/mascota.model.mock';
+import { mockPublicacionModel } from '../_mocks_/publicacion.model.mock';
+import { mockVisitaModel } from '../_mocks_/visita.model.mock';
+import { mockAccesoService as makeAccesoService } from '../_mocks_/acceso.service.mock';
 import { DeepMockProxy } from 'jest-mock-extended';
 
 jest.mock('bcrypt', () => ({
