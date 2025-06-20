@@ -11,7 +11,7 @@ export class EspecieController {
 
   @DocGetEspecie()
   @Get()
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(): Promise<Especie[]> {
     return this.especieService.findAll();
   }
