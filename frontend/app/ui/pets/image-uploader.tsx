@@ -5,38 +5,59 @@ import { useState, useEffect } from 'react';
 
 interface ImageUploaderProps {
   initialImages?: string[];
+  userId: number;
 }
 
-export function ImageUploader({ initialImages = [] }: ImageUploaderProps) {
+export function ImageUploader({ initialImages = [], userId }: ImageUploaderProps) {
   const [images, setImages] = useState<string[]>(initialImages);
   const [uploading, setUploading] = useState(false);
 
-  // Sincronizar initialImages con el estado interno
   useEffect(() => {
-    setImages(initialImages);
+    if (initialImages.length > 0 && JSON.stringify(initialImages) !== JSON.stringify(images)) {
+      setImages(initialImages);
+    }
   }, [initialImages]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setUploading(true);
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    setUploading(true);
+    
+    try {
+      const formData = new FormData();
+      Array.from(e.target.files).forEach(file => {
+        formData.append('files', file);
+      });
+      formData.append('userId', userId.toString());
+
+      const response = await fetch('/lib/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const { savedPaths } = await response.json();
+      const updatedImages = [...images, ...savedPaths.map((path: string) => 
+        `/images/${path}` // Prepend /images/ to the path
+      )].slice(0, 4);
       
-      // Simulamos la subida de imágenes
-      const newImages = Array.from(e.target.files).map(file => 
-        URL.createObjectURL(file)
-      );
+      setImages(updatedImages);
       
-      setTimeout(() => {
-        const updatedImages = [...images, ...newImages].slice(0, 4); // Máximo 4 imágenes
-        setImages(updatedImages);
-        
-        // Actualizar el campo hidden
-        const fotosInput = document.getElementById('fotos_url') as HTMLInputElement;
-        if (fotosInput) {
-          fotosInput.value = JSON.stringify(updatedImages);
-        }
-        
-        setUploading(false);
-      }, 1000);
+      // Actualizar el campo hidden
+      const fotosInput = document.getElementById('fotos_url') as HTMLInputElement;
+      if (fotosInput) {
+        fotosInput.value = JSON.stringify(updatedImages.map(img => 
+          img.replace('http://localhost:3000/images/', '')
+        ));
+      }
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      alert('Error al subir imágenes: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -46,7 +67,7 @@ export function ImageUploader({ initialImages = [] }: ImageUploaderProps) {
         {images.map((img, index) => (
           <div key={index} className="relative w-24 h-24">
             <img 
-              src={img} 
+              src={img.startsWith('http') ? img : img}
               alt={`Preview ${index}`} 
               className="w-full h-full object-cover rounded-md"
             />

@@ -2,22 +2,20 @@ import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
 import { fetchPetById, fetchAllSpecies, fetchAllConditions } from '@/app/lib/dataPets';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import EditPetForm from '@/app/ui/pets/edit-form';
+import ReadOnlyPetForm from '@/app/ui/pets/view-form';
 import { Pet, Species, Condition } from '@/app/lib/definitionsPets';
 
 export const metadata: Metadata = {
-  title: 'Editar mascota',
+  title: 'Ver mascota',
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-
   if (!params?.id) {
     console.error('Parámetro petId no definido en la URL');
     notFound();
   }
 
   try {
-
     const petId = Math.floor(Number(params.id));
 
     if (!Number.isSafeInteger(petId) || petId <= 0) {
@@ -54,15 +52,14 @@ export default async function Page({ params }: { params: { id?: string } }) {
           breadcrumbs={[
             { label: 'Mascotas', href: '/dashboard/pets' },
             {
-              label: 'Editar mascota',
-              href: `/dashboard/pets/${petId}/edit`,
+              label: 'Ver mascota',
+              href: `/dashboard/pets/${petId}/view`,
               active: true,
             },
           ]}
         />
-        <EditPetForm 
-          pet={pet} 
-          userId={pet.usuario_id}
+        <ReadOnlyPetForm 
+          pet={pet}
           species={species}
           conditions={conditions}
         />

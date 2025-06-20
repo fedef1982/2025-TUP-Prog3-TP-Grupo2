@@ -46,6 +46,7 @@ export interface EditPetFormProps {
   conditions: Condition[];
 }
 
+
 export interface CreatePetState {
   message?: string;
   errors?: {
@@ -53,9 +54,11 @@ export interface CreatePetState {
     especie_id?: string[];
     condicion_id?: string[];
     fotos_url?: string[];
+    sexo?: string[];
+    tamanio?: string[];
   };
   success?: boolean;
-}
+}; 
 
 export interface UpdatePetState {
   message?: string;
@@ -64,6 +67,8 @@ export interface UpdatePetState {
     especie_id?: string[];
     condicion_id?: string[];
     fotos_url?: string[];
+    sexo?: string[];
+    tamanio?: string[];
   };
   success?: boolean;
 }
@@ -72,6 +77,7 @@ export interface FilteredPetsParams {
   query?: string;
   page?: number;
   limit?: number;
+  raza?: string;
   especie_id?: number;
   condicion_id?: number;
   tamanio?: Size;
@@ -87,6 +93,7 @@ export interface FilteredPetsParams {
 export interface PetsTable {
   id: string;
   nombre: string;
+  raza?: string;
   especie: string;
   condicion: string;
   tamanio: Size;
@@ -115,6 +122,7 @@ export interface PetForm {
 export interface FilteredPet {
   id: number; 
   nombre: string;
+  raza?: string;
   especie_id: number;
   condicion_id: number;
   especie?: Species; 
@@ -170,22 +178,21 @@ export interface Condition {
 }
 
 export interface SpeciesSelectProps {
+  species: Species[];
   defaultValue?: string;
   onChange?: (value: string) => void;
-  species?: Species[];
   className?: string;
   required?: boolean;
 }
 
 export interface ConditionSelectProps {
+  conditions: Condition[];
   defaultValue?: string;
   onChange?: (value: string) => void;
-  conditions?: Condition[];
   className?: string;
   required?: boolean;
 }
 
-// Tipo para las props del formulario
 export interface PetFormSelectsProps {
   speciesList: Species[];
   conditionsList: Condition[];

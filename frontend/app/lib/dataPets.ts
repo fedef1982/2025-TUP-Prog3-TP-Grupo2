@@ -1,15 +1,14 @@
 import { Pet, PetsTable, FilteredPet, Species, Condition, FilteredPetsParams, CreatePetDto, CreatePetState, UpdatePetDto, UpdatePetState } from "./definitionsPets";
-import { getRawToken, getToken, JwtPayload } from "./server-utils";
+import { getRawToken, getToken, getUserId, JwtPayload } from "./server-utils";
 import jwt from 'jsonwebtoken';
 
 export async function fetchAllPets(): Promise<Pet[]> {
   try {
     const token = await getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
-
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const userId = await getUserId();
+    
+    if (!token || !userId) {
+      throw new Error('Authentication required');
     }
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`, {
@@ -47,12 +46,15 @@ export async function fetchPetById(petId: number): Promise<Pet> {
     }
 
     const token = await getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
-
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const userId = await getUserId();
+    
+    if (!token || !userId) {
+      throw new Error('Authentication required');
     }
+
+    console.log('#########################');
+    console.log('URL api FechPetBy ID ', `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${petId}` );
+    console.log('#########################');
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${petId}`,
@@ -76,8 +78,13 @@ export async function fetchPetById(petId: number): Promise<Pet> {
 
     const petData: Pet = await response.json();
 
+    console.log('#########################');
+    console.log('Response FechPetBy ID ', JSON.stringify(petData));
+    console.log('#########################');
+
+
     // Validación básica de la estructura de datos recibida
-    if (!petData.id || !petData.nombre || !petData.sexo || !petData.tamanio || !petData.status) {
+    if (!petData.id || !petData.nombre || !petData.sexo || !petData.tamanio ) {
       throw new Error('Datos de mascota incompletos o inválidos');
     }
 
@@ -95,12 +102,11 @@ export async function fetchPetById(petId: number): Promise<Pet> {
 
 export async function fetchPetsPages(query: string): Promise<number> {
   try {
-    const token = getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
-
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const token = await getRawToken();
+    const userId = await getUserId();
+    
+    if (!token || !userId) {
+      throw new Error('Authentication required');
     }
 
     const page = 1;
@@ -164,6 +170,7 @@ export async function fetchFilteredPets({
   query = '', 
   page = 1, 
   limit = 5, 
+  raza,
   especie_id, 
   condicion_id,
   tamanio,
@@ -177,13 +184,11 @@ export async function fetchFilteredPets({
 }: FilteredPetsParams = {}): Promise<{ pets: FilteredPet[]; total: number; totalPages: number }> {
   try {
     const token = await getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
-
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const userId = await getUserId();
+    
+    if (!token || !userId) {
+      throw new Error('Authentication required');
     }
-
     const params = new URLSearchParams({
       q: query,
       page: page.toString(),
@@ -194,6 +199,9 @@ export async function fetchFilteredPets({
 
     if (especie_id !== undefined) {
       params.append('especie_id', especie_id.toString());
+    }
+    if (raza !== undefined) {
+      params.append('raza', raza);
     }
     if (condicion_id !== undefined) {
       params.append('condicion_id', condicion_id.toString());
@@ -282,8 +290,7 @@ export async function fetchAllSpecies(): Promise<Species[]> {
 export async function fetchAllConditions(): Promise<Condition[]> {
   try {
     const token = await getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
+ 
     if (!token) {
       throw new Error('No se ha encontrado ningún token de autenticación');
     }
@@ -311,86 +318,3 @@ export async function fetchAllConditions(): Promise<Condition[]> {
     throw error;
   }
 }
-/*
-export async function createPet(petData: CreatePetDto): Promise<CreatePetState> {
-  try {
-    const token = await getRawToken();
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
-
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
-    }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(petData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        message: data.message || 'Error al crear la mascota',
-        errors: data.errors,
-        success: false
-      };
-    }
-
-    return {
-      message: data.message || 'Mascota creada exitosamente',
-      success: true
-    };
-
-  } catch (error) {
-    console.error('Error en createPet:', error);
-    return {
-      message: 'Error inesperado al crear la mascota',
-      success: false
-    };
-  }
-}
-
-export async function updatePet(petId: number, petData: UpdatePetDto): Promise<UpdatePetState> {
-  try {
-    const token = await getRawToken();
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
-    }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mascotas/${petId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(petData)
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        message: data.message || 'Error al actualizar la mascota',
-        errors: data.errors,
-        success: false
-      };
-    }
-
-    return {
-      message: data.message || 'Mascota actualizada exitosamente',
-      success: true
-    };
-
-  } catch (error) {
-    console.error('Error en updatePet:', error);
-    return {
-      message: 'Error inesperado al actualizar la mascota',
-      success: false
-    };
-  }
-}*/

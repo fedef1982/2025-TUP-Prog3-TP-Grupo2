@@ -1,43 +1,68 @@
 'use server';
 
-import { getRawToken, getToken } from "./server-utils";
+import { getRawToken, getToken, getUserId } from "./server-utils";
 import { CreatePetDto, CreatePetState, UpdatePetDto, UpdatePetState, PetStatus, Size, Gender } from './definitionsPets';
+import { redirect } from "next/navigation";
 
 export async function createPet(
-  prevState: CreatePetState | undefined,
+  prevState: CreatePetState | null, 
   formData: FormData
-) {
+): Promise<CreatePetState> {
   try {
-    const token = await getRawToken();
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const token = await getRawToken(); 
+    const userId = await getUserId(); 
+    
+    if (!token ) {
+      return { 
+        success: false,
+        message: 'Autenticación requerida',
+        errors: {}
+      };
     }
 
-    const tokenPl = await getToken();
-    const userId = tokenPl?.sub;
+    if (!userId) {
+      return {
+        success: false,
+        message: 'ID de usuario inválido',
+        errors: {}
+      };
+    }
 
-    // Obtener datos del formulario
     const nombre = formData.get('nombre') as string;
-    const raza = formData.get('raza') as string || undefined;
-    const sexo = formData.get('sexo') as Gender;
-    const edad = formData.get('edad') ? parseInt(formData.get('edad') as string) : undefined;
-    const vacunado = formData.get('vacunado') === 'on';
-    const tamanio = formData.get('tamanio') as Size;
-    const fotos_url = JSON.parse(formData.get('fotos_url') as string) as string[];
-    const especie_id = parseInt(formData.get('especie_id') as string);
-    const condicion_id = parseInt(formData.get('condicion_id') as string);
+    const sexo = formData.get('sexo') as string;
+    const tamanio = formData.get('tamanio') as string;
+    const fotos_url = formData.get('fotos_url');
 
-    const petData: CreatePetDto = {
+    const errors: Record<string, string[]> = {};
+    if (!nombre) errors.nombre = ['El nombre es requerido'];
+    if (!sexo) errors.sexo = ['El sexo es requerido'];
+    if (!tamanio) errors.tamanio = ['El tamaño es requerido'];
+    if (!fotos_url) errors.fotos_url = ['Las fotos son requeridas'];
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Faltan campos requeridos',
+        errors
+      };
+    }
+
+    const petData = {
       nombre,
-      raza,
+      raza: formData.get('raza') as string || undefined,
       sexo,
-      edad,
-      vacunado,
+      edad: formData.get('edad') ? parseInt(formData.get('edad') as string) : undefined,
+      vacunado: formData.get('vacunado') === 'on',
       tamanio,
-      fotos_url,
-      especie_id,
-      condicion_id,
+      fotos_url: JSON.parse(fotos_url as string) as string[],
+      especie_id: parseInt(formData.get('especie_id') as string),
+      condicion_id: parseInt(formData.get('condicion_id') as string),
     };
+
+    console.log('#############################');
+    console.log('URL feth crear mascota',`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`);
+    console.log('Data pet (body)', JSON.stringify(petData));
+    console.log('###########################');
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas`, {
       method: 'POST',
@@ -48,70 +73,99 @@ export async function createPet(
       body: JSON.stringify(petData),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
       return {
-        message: data.message || 'Error al crear la mascota',
-        errors: data.errors,
-        success: false
+        success: false,
+        message: errorData.message || 'Error al crear la mascota',
+        errors: errorData.errors || {}
       };
     }
 
-    return {
-      message: 'Mascota creada exitosamente',
-      success: true
-    };
-  } catch (error) {
-    console.error('Error al crear mascota:', error);
+    const data = await response.json();
+    console.log('#############################');
+    console.log('Respose.json data',data);
+    console.log('###########################');
+
+
     return { 
+      success: true,
+      message: 'Mascota creada exitosamente'
+    };
+
+  } catch (error) {
+    console.error('Error en createPet:', error);
+    return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error al crear la mascota. Por favor intente nuevamente.'
+      message: error instanceof Error ? error.message : 'Error desconocido al procesar la solicitud',
+      errors: {}
     };
   }
 }
 
 export async function updatePet(
-  id: number, 
-  userId: number, 
-  prevState: UpdatePetState | undefined, 
+  id: number,
+  userId: number,
+  prevState: UpdatePetState | null,
   formData: FormData
-) {
+): Promise<UpdatePetState> {
   try {
     const token = await getRawToken();
+    
     if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+      return { 
+        success: false,
+        message: 'Autenticación requerida',
+        errors: {}
+      };
     }
 
-    // Transformar los valores del formulario al formato esperado por el backend
-    const petData: Record<string, any> = {
-      nombre: formData.get('nombre') as string,
+    if (!userId) {
+      return {
+        success: false,
+        message: 'ID de usuario inválido',
+        errors: {}
+      };
+    }
+
+    const nombre = formData.get('nombre') as string;
+    const sexo = formData.get('sexo') as string;
+    const tamanio = formData.get('tamanio') as string;
+    const fotos_url = formData.get('fotos_url');
+
+    const errors: Record<string, string[]> = {};
+    if (!nombre) errors.nombre = ['El nombre es requerido'];
+    if (!sexo) errors.sexo = ['El sexo es requerido'];
+    if (!tamanio) errors.tamanio = ['El tamaño es requerido'];
+    if (!fotos_url) errors.fotos_url = ['Las fotos son requeridas'];
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Faltan campos requeridos',
+        errors
+      };
+    }
+
+    const petData = {
+      nombre,
       raza: formData.get('raza') as string || undefined,
-      sexo: formData.get('sexo') === 'MACHO' ? 'Macho' : 'Hembra',
+      sexo,
       edad: formData.get('edad') ? parseInt(formData.get('edad') as string) : undefined,
       vacunado: formData.get('vacunado') === 'on',
-      tamanio: formData.get('tamanio') === 'CHICO' ? 'Chico' : 
-              formData.get('tamanio') === 'MEDIANO' ? 'Mediano' : 'Grande',
-      fotos_url: JSON.parse(formData.get('fotos_url') as string) as string[],
+      tamanio,
+      fotos_url: JSON.parse(fotos_url as string) as string[],
       especie_id: parseInt(formData.get('especie_id') as string),
       condicion_id: parseInt(formData.get('condicion_id') as string),
-      descripcion: formData.get('descripcion') as string || undefined,
-      status: formData.get('status') as PetStatus || undefined
     };
 
-    // Validación básica de campos requeridos
-    if (!petData.nombre) {
-      throw new Error('El nombre es requerido');
-    }
-    if (!petData.fotos_url || petData.fotos_url.length === 0) {
-      throw new Error('Debe proporcionar al menos una foto');
-    }
-    if (petData.fotos_url.length > 4) {
-      throw new Error('Máximo 4 fotos permitidas');
-    }
+    console.log('#############################');
+    console.log('URL fetch actualizar mascota', `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`);
+    console.log('Data pet (body)', JSON.stringify(petData));
+    console.log('###########################');
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`, {
-      method: 'PATCH',
+      method: 'PATCH', // or 'PUT' depending on your API
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -119,27 +173,30 @@ export async function updatePet(
       body: JSON.stringify(petData),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      console.error('Error en la respuesta del servidor:', data);
+      const errorData = await response.json().catch(() => ({}));
       return {
-        message: data.message || 'Error al actualizar la mascota',
-        errors: data.errors || {},
-        success: false
+        success: false,
+        message: errorData.message || 'Error al actualizar la mascota',
+        errors: errorData.errors || {}
       };
     }
 
-    return {
-      message: 'Mascota actualizada exitosamente',
-      success: true,
-      pet: data // Incluir los datos actualizados de la mascota
-    };
-  } catch (error) {
-    console.error('Error al actualizar mascota:', error);
+    const data = await response.json();
+    console.log('#############################');
+    console.log('Response.json data', data);
+    console.log('###########################');
+
     return { 
+      success: true,
+      message: 'Mascota actualizada exitosamente'
+    };
+
+  } catch (error) {
+    console.error('Error en updatePet:', error);
+    return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error al actualizar la mascota. Por favor intente nuevamente.',
+      message: error instanceof Error ? error.message : 'Error desconocido al procesar la solicitud',
       errors: {}
     };
   }
@@ -149,11 +206,13 @@ export async function updatePet(
 export async function deletePet(id: number): Promise<void> {
   try {
     const token = await getRawToken();
-    if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+    const userId = await getUserId();
+    
+    if (!token || !userId) {
+      throw new Error('Authentication required');
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mascotas/${id}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

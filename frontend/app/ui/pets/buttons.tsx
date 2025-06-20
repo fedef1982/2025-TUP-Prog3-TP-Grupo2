@@ -1,4 +1,4 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deletePet } from '@/app/lib/actionsPets';
 
@@ -10,6 +10,17 @@ export function CreatePet() {
     >
       <span className="hidden md:block">Crear mascota</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
+    </Link>
+  );
+}
+
+export function ViewPet({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/dashboard/pets/${id}/view`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <EyeIcon className="w-5" />
     </Link>
   );
 }

@@ -13,48 +13,76 @@ import {
   MarsIcon,
   VenusIcon, 
 } from 'lucide-react';
+import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { updatePet } from '@/app/lib/actionsPets';
 import Link from 'next/link';
 import { useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import { UpdatePetState, Pet, Species, Condition } from '@/app/lib/definitionsPets';
+import { UpdatePetState, Pet, Species, Condition, Gender, Size } from '@/app/lib/definitionsPets';
 import { SpeciesSelect } from './specie-select';
 import { ConditionSelect } from './condition-select';
 import { ImageUploader } from './image-uploader';
-
-
-interface EditPetFormProps {
-  pet: Pet;
-  userId: number;
-  species: Species[];
-  conditions: Condition[];
-}
+import { useRouter } from 'next/navigation';
 
 export default function EditPetForm({ 
   pet, 
-  userId,
-  species,
-  conditions
-}: EditPetFormProps) {
+  userId, 
+  species, 
+  conditions 
+}: { 
+  pet: Pet; 
+  userId: number; 
+  species: Species[]; 
+  conditions: Condition[] 
+}) {
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [state, formAction] = useActionState<UpdatePetState, FormData>(
-    (prevState, formData) => updatePet(pet.id, userId, prevState, formData),
-    {}
+    (prevState: UpdatePetState | null, formData: FormData) => 
+      updatePet(pet.id, userId, prevState, formData), 
+    {
+      success: false,
+      message: '',
+      errors: {}
+    }
   );
+
+  const [currentImages, setCurrentImages] = useState<string[]>(() => {
+    // Transformar las imágenes iniciales para usar /images/ en lugar de /dashboard/
+    return pet.fotos_url.map(img => 
+      img.startsWith('/dashboard/') ? img.replace('/dashboard/', '/images/') : 
+      img.startsWith('/images/') ? img : `/images/${img}`
+    );
+  });
+
   const router = useRouter();
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.success && !isRedirecting) {
+      setIsRedirecting(true);
       router.push('/dashboard/pets');
     }
-  }, [state, router]);
+  }, [state, router, isRedirecting]);
+
+  const handleImagesUpdate = (newImages: string[]) => {
+    setCurrentImages(newImages);
+  };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} key={String(state?.success)}>
+      <input type="hidden" name="userId" value={userId} />
+      <input 
+        type="hidden" 
+        name="fotos_url" 
+        id="fotos_url" 
+        value={JSON.stringify(
+          currentImages.map(img => img.replace('/images/', ''))
+        )} 
+      />
+      
       <div className="rounded-md bg-gray-200 p-4 md:p-6">
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
-          Editar información de mascota
+          Editar mascota: {pet.nombre}
         </h1>
 
         {/* Nombre */}
@@ -68,9 +96,10 @@ export default function EditPetForm({
                 id="nombre"
                 name="nombre"
                 type="text"
-                defaultValue={pet.nombre}
+                placeholder="Nombre de la mascota"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
+                defaultValue={pet.nombre}
               />
               <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -90,9 +119,9 @@ export default function EditPetForm({
               id="raza"
               name="raza"
               type="text"
-              defaultValue={pet.raza || ''}
               placeholder="Raza de la mascota (opcional)"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+              defaultValue={pet.raza || ''}
             />
             <InformationCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
           </div>
@@ -108,10 +137,10 @@ export default function EditPetForm({
               <input
                 type="radio"
                 name="sexo"
-                value="Macho"
-                defaultChecked={pet.sexo === 'Macho'}
+                value={Gender.MACHO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
+                defaultChecked={pet.sexo === Gender.MACHO}
               />
               <span className="ml-2 flex items-center">
                 <MarsIcon className="mr-1 h-4 w-4" /> Macho
@@ -121,16 +150,19 @@ export default function EditPetForm({
               <input
                 type="radio"
                 name="sexo"
-                value="Hembra"
-                defaultChecked={pet.sexo === 'Hembra'}
+                value={Gender.HEMBRA}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
+                defaultChecked={pet.sexo === Gender.HEMBRA}
               />
               <span className="ml-2 flex items-center">
                 <VenusIcon className="mr-1 h-4 w-4" /> Hembra
               </span>
             </label>
           </div>
+          {state?.errors?.sexo && (
+            <p className="mt-2 text-sm text-red-500">{state.errors.sexo.join(', ')}</p>
+          )}
         </div>
 
         {/* Edad */}
@@ -146,9 +178,9 @@ export default function EditPetForm({
                 type="number"
                 min="0"
                 max="30"
-                defaultValue={pet.edad || ''}
                 placeholder="Edad en años (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                defaultValue={pet.edad || ''}
               />
               <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -161,8 +193,8 @@ export default function EditPetForm({
             id="vacunado"
             name="vacunado"
             type="checkbox"
-            defaultChecked={pet.vacunado}
             className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+            defaultChecked={pet.vacunado}
           />
           <label htmlFor="vacunado" className="ml-2 text-sm font-medium">
             ¿Está vacunado?
@@ -179,10 +211,10 @@ export default function EditPetForm({
               <input
                 type="radio"
                 name="tamanio"
-                value="Chico"
-                defaultChecked={pet.tamanio === 'Chico'}
+                value={Size.CHICO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
+                defaultChecked={pet.tamanio === Size.CHICO}
               />
               <span className="ml-2">Pequeño</span>
             </label>
@@ -190,10 +222,10 @@ export default function EditPetForm({
               <input
                 type="radio"
                 name="tamanio"
-                value="Mediano"
-                defaultChecked={pet.tamanio === 'Mediano'}
+                value={Size.MEDIANO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
+                defaultChecked={pet.tamanio === Size.MEDIANO}
               />
               <span className="ml-2">Mediano</span>
             </label>
@@ -201,14 +233,17 @@ export default function EditPetForm({
               <input
                 type="radio"
                 name="tamanio"
-                value="Grande"
-                defaultChecked={pet.tamanio === 'Grande'}
+                value={Size.GRANDE}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
+                defaultChecked={pet.tamanio === Size.GRANDE}
               />
               <span className="ml-2">Grande</span>
             </label>
           </div>
+          {state?.errors?.tamanio && (
+            <p className="mt-2 text-sm text-red-500">{state.errors.tamanio.join(', ')}</p>
+          )}
         </div>
 
         {/* Fotos */}
@@ -216,12 +251,9 @@ export default function EditPetForm({
           <label className="mb-2 block text-sm font-medium">
             Fotos <span className="text-red-500">*</span>
           </label>
-          <ImageUploader initialImages={pet.fotos_url} />
-          <input 
-            type="hidden" 
-            name="fotos_url" 
-            id="fotos_url" 
-            defaultValue={JSON.stringify(pet.fotos_url)}
+          <ImageUploader 
+            userId={userId} 
+            initialImages={currentImages}
           />
           {state?.errors?.fotos_url && (
             <p className="mt-2 text-sm text-red-500">{state.errors.fotos_url.join(', ')}</p>
@@ -233,25 +265,13 @@ export default function EditPetForm({
           <label htmlFor="especie_id" className="mb-2 block text-sm font-medium">
             Especie <span className="text-red-500">*</span>
           </label>
-          <select
-            id="especie_id"
-            name="especie_id"
-            defaultValue={pet.especie_id.toString()}
-            className="block w-full rounded-md border border-gray-200 py-2 pl-3 pr-10 text-sm outline-2 placeholder:text-gray-500"
+          <SpeciesSelect 
+            species={species} 
+            defaultValue={pet.especie_id.toString()} 
             required
-            aria-describedby="especie-error"
-          >
-            <option value="" disabled>Seleccione una especie</option>
-            {species.map((specie) => (
-              <option key={specie.id} value={specie.id}>
-                {specie.nombre}
-              </option>
-            ))}
-          </select>
+          />
           {state?.errors?.especie_id && (
-            <div id="especie-error" className="mt-2 text-sm text-red-500">
-              {state.errors.especie_id.join(', ')}
-            </div>
+            <p className="mt-2 text-sm text-red-500">{state.errors.especie_id.join(', ')}</p>
           )}
         </div>
 
@@ -260,26 +280,28 @@ export default function EditPetForm({
           <label htmlFor="condicion_id" className="mb-2 block text-sm font-medium">
             Condición <span className="text-red-500">*</span>
           </label>
-          <select
-            id="condicion_id"
-            name="condicion_id"
-            defaultValue={pet.condicion_id.toString()}
-            className="block w-full rounded-md border border-gray-200 py-2 pl-3 pr-10 text-sm outline-2 placeholder:text-gray-500"
+          <ConditionSelect 
+            conditions={conditions} 
+            defaultValue={pet.condicion_id.toString()} 
             required
-            aria-describedby="condicion-error"
-          >
-            <option value="" disabled>Seleccione una condición</option>
-            {conditions.map((condition) => (
-              <option key={condition.id} value={condition.id}>
-                {condition.nombre}
-              </option>
-            ))}
-          </select>
+          />
           {state?.errors?.condicion_id && (
-            <div id="condicion-error" className="mt-2 text-sm text-red-500">
-              {state.errors.condicion_id.join(', ')}
-            </div>
+            <p className="mt-2 text-sm text-red-500">{state.errors.condicion_id.join(', ')}</p>
           )}
+        </div>
+
+        {/* Descripción */}
+        <div className="mb-4">
+          <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
+            Descripción (opcional)
+          </label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            rows={3}
+            className="peer block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
+            defaultValue={pet.descripcion || ''}
+          />
         </div>
 
         <UpdatePetButton />
@@ -294,14 +316,12 @@ export default function EditPetForm({
           </Link>
         </div>
 
-        <div aria-live="polite" aria-atomic="true">
-          {state?.message && !state.success && (
-            <p className="mt-2 flex items-center text-sm text-red-500">
-              <ExclamationCircleIcon className="mr-1 h-5 w-5" />
-              {state.message}
-            </p>
-          )}
-        </div>
+        {state?.message && !state.success && (
+          <p className="mt-2 flex items-center text-sm text-red-500">
+            <ExclamationCircleIcon className="mr-1 h-5 w-5" />
+            {state.message}
+          </p>
+        )}
       </div>
     </form>
   );
@@ -317,7 +337,8 @@ function UpdatePetButton() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? 'Actualizando...' : 'Actualizar Mascota'}
+      {pending ? 'Actualizando...' : 'Actualizar Mascota'} 
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }

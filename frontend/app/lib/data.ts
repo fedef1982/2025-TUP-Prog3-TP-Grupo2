@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { User, UsersTable, Role, UserStats, FilteredUser } from "./definitions";
-import { getRawToken, getToken } from "./server-utils";
+import { getRawToken, getToken, getUserId } from "./server-utils";
 
 export async function fetchAllUsers(): Promise<User[]> {
   try {
@@ -88,12 +88,11 @@ export async function fetchCurrentUserProfile(): Promise<User> {
 
 export async function fetchCurrentUserId() {
   try {
-    const tokenPl = await getToken();
-    if (!tokenPl?.sub) {
+    const userId = await getUserId();
+    if (!userId) {
       throw new Error('No se ha encontrado ID de usuario en el token');
     }
 
-    const userId = tokenPl.sub;
     return userId;
   } catch (error) {
     console.error('Error en fetchCurrentUserId:', error);

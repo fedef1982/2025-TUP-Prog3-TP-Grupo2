@@ -6,7 +6,6 @@ import {
   UserIcon,
   PhotoIcon,
   CakeIcon,
-  ScaleIcon,
   InformationCircleIcon,
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
@@ -16,28 +15,66 @@ import {
 } from 'lucide-react';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { createPet } from '@/app/lib/actionsPets';
 import Link from 'next/link';
 import { useFormStatus } from 'react-dom';
-import { useRouter } from 'next/navigation';
-import { CreatePetState } from '@/app/lib/definitionsPets';
+import { CreatePetState, Species, Condition, Gender, Size } from '@/app/lib/definitionsPets';
 import { SpeciesSelect } from './specie-select';
 import { ConditionSelect } from './condition-select';
 import { ImageUploader } from './image-uploader';
+import { useRouter } from 'next/navigation';
+import { fetchAllSpecies, fetchAllConditions } from '@/app/lib/dataPets';
 
 export default function CreatePetForm({ userId }: { userId: number }) {
-  const [state, formAction] = useActionState<CreatePetState, FormData>(createPet, {});
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [species, setSpecies] = useState<Species[]>([]);
+  const [conditions, setConditions] = useState<Condition[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [state, formAction] = useActionState<CreatePetState, FormData>(createPet, {
+    success: false,
+    message: '',
+    errors: {}
+  });
+
   const router = useRouter();
 
   useEffect(() => {
-    if (state?.success) {
+    async function loadData() {
+      try {
+        const [speciesData, conditionsData] = await Promise.all([
+          fetchAllSpecies(),
+          fetchAllConditions()
+        ]);
+        setSpecies(speciesData);
+        setConditions(conditionsData);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (state?.success && !isRedirecting) {
+      setIsRedirecting(true);
       router.push('/dashboard/pets');
     }
-  }, [state, router]);
+  }, [state, router, isRedirecting]);
 
+  if (loading) {
+    return (
+      <div className="rounded-md bg-gray-200 p-4 md:p-6 flex justify-center items-center h-64">
+        <p>Cargando formulario...</p>
+      </div>
+    );
+  }
+  
   return (
-    <form action={formAction}>
+    <form action={formAction} key={String(state?.success)}>
+      <input type="hidden" name="userId" value={userId} />
       <div className="rounded-md bg-gray-200 p-4 md:p-6">
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
           Registrar nueva mascota
@@ -93,7 +130,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               <input
                 type="radio"
                 name="sexo"
-                value="Macho"
+                value={Gender.MACHO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
               />
@@ -105,7 +142,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               <input
                 type="radio"
                 name="sexo"
-                value="Hembra"
+                value={Gender.HEMBRA}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
               />
@@ -114,6 +151,9 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               </span>
             </label>
           </div>
+          {state?.errors?.sexo && (
+            <p className="mt-2 text-sm text-red-500">{state.errors.sexo.join(', ')}</p>
+          )}
         </div>
 
         {/* Edad */}
@@ -160,7 +200,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               <input
                 type="radio"
                 name="tamanio"
-                value="Chico"
+                value={Size.CHICO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
               />
@@ -170,7 +210,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               <input
                 type="radio"
                 name="tamanio"
-                value="Mediano"
+                value={Size.MEDIANO}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
               />
@@ -180,13 +220,16 @@ export default function CreatePetForm({ userId }: { userId: number }) {
               <input
                 type="radio"
                 name="tamanio"
-                value="Grande"
+                value={Size.GRANDE}
                 className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-violet-500"
                 required
               />
               <span className="ml-2">Grande</span>
             </label>
           </div>
+          {state?.errors?.tamanio && (
+            <p className="mt-2 text-sm text-red-500">{state.errors.tamanio.join(', ')}</p>
+          )}
         </div>
 
         {/* Fotos */}
@@ -194,7 +237,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
           <label className="mb-2 block text-sm font-medium">
             Fotos <span className="text-red-500">*</span>
           </label>
-          <ImageUploader />
+          <ImageUploader userId={userId} />
           <input type="hidden" name="fotos_url" id="fotos_url" />
           {state?.errors?.fotos_url && (
             <p className="mt-2 text-sm text-red-500">{state.errors.fotos_url.join(', ')}</p>
@@ -206,7 +249,10 @@ export default function CreatePetForm({ userId }: { userId: number }) {
           <label htmlFor="especie_id" className="mb-2 block text-sm font-medium">
             Especie <span className="text-red-500">*</span>
           </label>
-          <SpeciesSelect />
+          <SpeciesSelect 
+            species={species} 
+            required
+          />
           {state?.errors?.especie_id && (
             <p className="mt-2 text-sm text-red-500">{state.errors.especie_id.join(', ')}</p>
           )}
@@ -217,25 +263,14 @@ export default function CreatePetForm({ userId }: { userId: number }) {
           <label htmlFor="condicion_id" className="mb-2 block text-sm font-medium">
             Condición <span className="text-red-500">*</span>
           </label>
-          <ConditionSelect />
+          <ConditionSelect 
+            conditions={conditions} 
+            required
+          />
           {state?.errors?.condicion_id && (
             <p className="mt-2 text-sm text-red-500">{state.errors.condicion_id.join(', ')}</p>
           )}
         </div>
-
-        {/* Descripción 
-        <div className="mb-4">
-          <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
-            Descripción
-          </label>
-          <textarea
-            id="descripcion"
-            name="descripcion"
-            rows={3}
-            placeholder="Descripción adicional sobre la mascota (opcional)"
-            className="peer block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-          />
-        </div> */}
 
         <CreatePetButton />
 
@@ -249,14 +284,12 @@ export default function CreatePetForm({ userId }: { userId: number }) {
           </Link>
         </div>
 
-        <div aria-live="polite" aria-atomic="true">
-          {state?.message && !state.success && (
-            <p className="mt-2 flex items-center text-sm text-red-500">
-              <ExclamationCircleIcon className="mr-1 h-5 w-5" />
-              {state.message}
-            </p>
-          )}
-        </div>
+        {state?.message && !state.success && (
+          <p className="mt-2 flex items-center text-sm text-red-500">
+            <ExclamationCircleIcon className="mr-1 h-5 w-5" />
+            {state.message}
+          </p>
+        )}
       </div>
     </form>
   );
