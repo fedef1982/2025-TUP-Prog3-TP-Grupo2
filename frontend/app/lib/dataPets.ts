@@ -52,10 +52,6 @@ export async function fetchPetById(petId: number): Promise<Pet> {
       throw new Error('Authentication required');
     }
 
-    console.log('#########################');
-    console.log('URL api FechPetBy ID ', `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${petId}` );
-    console.log('#########################');
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${petId}`,
       {
@@ -78,12 +74,6 @@ export async function fetchPetById(petId: number): Promise<Pet> {
 
     const petData: Pet = await response.json();
 
-    console.log('#########################');
-    console.log('Response FechPetBy ID ', JSON.stringify(petData));
-    console.log('#########################');
-
-
-    // Validación básica de la estructura de datos recibida
     if (!petData.id || !petData.nombre || !petData.sexo || !petData.tamanio ) {
       throw new Error('Datos de mascota incompletos o inválidos');
     }
@@ -155,6 +145,7 @@ export function formatPetsForTable(pets: FilteredPet[]): PetsTable[] {
   return pets.map(pet => ({
     id: pet.id.toString(),
     nombre: pet.nombre,
+    raza: pet.raza,
     especie: pet.especie?.nombre || pet.especie_id.toString(), 
     condicion: pet.condicion?.nombre || pet.condicion_id.toString(),
     tamanio: pet.tamanio,

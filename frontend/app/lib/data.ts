@@ -272,7 +272,7 @@ export async function fetchFilteredUsers({
         name: user.nombre,
         lastname: user.apellido, 
         email: user.email,
-        role: user.role_id,
+        role: Number(user.role_id),
         phone: user.telefono,
         address: user.direccion,
         createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',

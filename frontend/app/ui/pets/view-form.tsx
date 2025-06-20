@@ -83,6 +83,25 @@ export default function ReadOnlyPetForm({
         </div>
       </div>
 
+      {/* Fotos */}
+      <div className="mb-4">
+        <label className="mb-2 block text-sm font-medium">
+          Fotos
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-2 mt-2">
+          {pet.fotos_url.map((img, index) => (
+            <div key={index} className="relative h-50 w-full rounded-md overflow-hidden bg-gray-300">
+              <img 
+                src={img.startsWith('/dashboard/') ? img.replace('/dashboard/', '/images/') : 
+                     img.startsWith('/images/') ? img : `/images/${img}`}
+                alt={`Foto de ${pet.nombre}`}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Edad */}
       {pet.edad && (
         <div className="mb-4">
@@ -121,24 +140,7 @@ export default function ReadOnlyPetForm({
         </div>
       </div>
 
-      {/* Fotos */}
-      <div className="mb-4">
-        <label className="mb-2 block text-sm font-medium">
-          Fotos
-        </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-          {pet.fotos_url.map((img, index) => (
-            <div key={index} className="relative h-32 w-full rounded-md overflow-hidden bg-gray-300">
-              <img 
-                src={img.startsWith('/dashboard/') ? img.replace('/dashboard/', '/images/') : 
-                     img.startsWith('/images/') ? img : `/images/${img}`}
-                alt={`Foto de ${pet.nombre}`}
-                className="object-cover w-full h-full"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {/* Especie */}
       <div className="mb-4">
