@@ -14,7 +14,7 @@ rectangle "web AdoptAR" {
 }
 
 Publicador --> Registrarse
-Publicador --> IniciarSesion
-IniciarSesion --> CrearPublicacion
+Publicador -[#green]-> IniciarSesion
+IniciarSesion -[#green]-> CrearPublicacion
 
 @enduml
