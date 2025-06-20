@@ -42,6 +42,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @DocGetUsuarioFiltros()
   @Get(':id/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findUsuariosConFiltros(

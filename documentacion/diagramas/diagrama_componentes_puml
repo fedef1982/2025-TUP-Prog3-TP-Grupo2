@@ -11,8 +11,10 @@ package "Frontend (NextJS)" {
 package "Backend (NestJS)" {
   [Controller] as Controller
   [Service] as Service
+  package "capa de validacion" {
   [DTOs] as DTO
   [Models] as Models
+  }
   [Auth Module] as Auth
   [Swagger Doc] as Swagger
 }
