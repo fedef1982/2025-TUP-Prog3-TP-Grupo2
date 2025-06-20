@@ -57,7 +57,7 @@ class MascotasController <<Controller>> {
   remove(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<void>
   }
 
-class MascotaService <<Service>>{
+class MascotaService <<Service>> {
 
 validarMascota(id: number): Promise<Mascota>
 

@@ -27,12 +27,27 @@ interface JwtPayload {
     rol_id: number;
 }
 
-interface AuthenticatedRequest extends Request {
+interface AuthenticatedRequest {
     user: JwtPayload;
 }
 
-RolesGuard <<Guard>> {
+class RolesGuard <<Guard>> {
     canActivate(context: ExecutionContext): boolean
 }
 
+class AccesoService{
+
+    verificarAcceso(usuarioAuth: JwtPayload, recurso: {{usuario_id: number;}): void    
+    
+    verificarUsuarioDeRutaverificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void
+
+}
+
+class QueryOpcionesDto <<DTO>> {
+    q: string
+    page: number
+    limit: number
+    sortBy: string
+    sortOrder: string
+}
 @enduml
