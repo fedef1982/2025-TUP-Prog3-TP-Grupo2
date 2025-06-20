@@ -13,7 +13,7 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { Rol } from './rol.model';
-import { Mascota } from 'src/mascota/mascota.model';
+import { Mascota } from '../../src/mascota/mascota.model';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'usuarios', paranoid: true })
