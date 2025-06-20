@@ -7,7 +7,7 @@ import {
   DataType,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'especies', timestamps: false })
+@Table({ tableName: 'especies', timestamps: false, paranoid: true })
 export class Especie extends Model<Especie> {
   @PrimaryKey
   @AutoIncrement

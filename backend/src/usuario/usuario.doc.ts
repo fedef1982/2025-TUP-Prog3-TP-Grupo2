@@ -20,7 +20,7 @@ export function DocPostUsuario() {
 
 export function DocPatchUsuario() {
   return applyDecorators(
-    ApiOperation({ summary: 'Modifica parametros de un usuario' }),
+    ApiOperation({ summary: 'Modifica parámetros de un usuario' }),
     ApiParam({ name: 'id', type: Number, description: 'ID del usuario' }),
     ApiBody({ type: UpdateUsuarioDto }),
     //ApiReqest({}),
@@ -43,7 +43,7 @@ export function DocGetIdUsuario() {
     ApiParam({ name: 'id', type: Number, description: 'ID del usuario' }),
     ApiResponse({
       status: 200,
-      description: 'usuario obtenido correctamente.',
+      description: 'Usuario obtenido correctamente.',
     }),
   );
 }
@@ -54,7 +54,7 @@ export function DocGetIdPerfilUsuario() {
       summary:
         'Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)',
     }),
-    ApiParam({ name: 'id', type: Number, description: 'perfil del usuario' }),
+    ApiParam({ name: 'id', type: Number, description: 'Perfil del usuario' }),
   );
 }
 
@@ -71,7 +71,7 @@ export function DocDeleteIdUsuario() {
 
 export function DocGetUsuarioEstadisticas() {
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve las estadisticas de un usuario' }),
+    ApiOperation({ summary: 'Devuelve la cantidad total de usuarios, mascotas, publicaciones y visitas que le pertenecen a un usuario. Si el usuario es un publicador, la cantidad de usuarios siempre es 1.' }),
     ApiParam({
       name: 'id',
       type: Number,

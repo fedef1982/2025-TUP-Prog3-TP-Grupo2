@@ -2,13 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
-import { Especie } from './especie.model';
-import { Condicion } from './condicion.model';
-import { User } from '../usuario/usuario.model';
+import { Especie } from './especie/especie.model';
+import { Condicion } from './condicion/condicion.model';
+import { User } from 'src/usuario/usuario.model';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { Role } from '../auth/roles.enum';
-import { JwtPayload } from '../auth/jwt-playload.interface';
-import { AccesoService } from '../acceso/acceso.service';
+import { Role } from 'src/auth/roles.enum';
+import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { AccesoService } from 'src/acceso/acceso.service';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class MascotaService {
@@ -121,5 +123,45 @@ export class MascotaService {
   ): Promise<void> {
     const mascota = await this.findOne(id, usuarioId, usuario);
     await mascota.destroy();
+  }
+
+  async findMascotasConFiltros(
+    usuarioId: number,
+    usuario: JwtPayload,
+    params: QueryOpcionesDto,
+  ): Promise<{ mascotas: Mascota[]; total: number; totalPages: number }> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'nombre',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const where =
+      usuario.rol_id === Number(Role.ADMIN) ? {} : { usuario_id: usuario.sub };
+
+    if (q) {
+      where[Op.or] = [
+        { raza: { [Op.iLike]: `%${q}%` } },
+        { nombre: { [Op.iLike]: `%${q}%` } },
+      ];
+    }
+
+    const { count, rows } = await this.mascotaModel.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [Especie, Condicion, User],
+    });
+
+    return {
+      mascotas: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 }

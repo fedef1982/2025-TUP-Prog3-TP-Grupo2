@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,16 +7,16 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Role } from '../auth/roles.enum';
+import { Role } from '../../src/auth/roles.enum';
 import * as bcrypt from 'bcrypt';
-import { AccesoService } from '../acceso/acceso.service';
-import { JwtPayload } from '../auth/jwt-playload.interface';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { JwtPayload } from '../../src/auth/jwt-playload.interface';
 import { Rol } from './rol.model';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
-import { Mascota } from '../mascota/mascota.model';
-import { Publicacion } from '../publicacion/publicacion.model';
-import { Visita } from '../visita/visita.model';
-import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
+import { Visita } from '../../src/visita/visita.model';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -45,7 +44,7 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({
       where: { email },
       include: [Rol],
@@ -143,22 +142,21 @@ export class UsersService {
   }
 
   async findUsuariosConFiltros(
-    id:number,
+    id: number,
     usuario: JwtPayload,
-    params: QueryUsuariosDto, 
+    params: QueryOpcionesDto,
   ): Promise<{ users: User[]; total: number; totalPages: number }> {
     const esPublicador = usuario.rol_id === Number(Role.PUBLICADOR);
 
-    if (esPublicador)
-    {
-     const user:User[] = [await this.findOne(id,usuario)];
-     return { 
-              users: user,
-              total:1,
-              totalPages: 1,
-     }
-    }   
-    
+    if (esPublicador) {
+      const user: User[] = [await this.findOne(id, usuario)];
+      return {
+        users: user,
+        total: 1,
+        totalPages: 1,
+      };
+    }
+
     const {
       q,
       page = 1,
@@ -192,4 +190,3 @@ export class UsersService {
     };
   }
 }
-

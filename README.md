@@ -34,10 +34,12 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 
 <ul>
   <li>Frontend: Next.js, TypeScript, Tailwind CSS.</li>
-  <li>Backend: NestJS, TypeScript, Sequelize.</li>
+  <li>Backend: NestJS, TypeScript.</li>
   <li>Base de datos: PostgreSQL.</li>
+  <li>ORM: Sequelize con Sequelize-TypeScript.</li>
   <li>Autenticación: JWT.</li>
-  <li>ORM: Sequelize-TypeScript.</li>
+  <li>Validación de datos: class-validator, class-transformer.</li>
+  <li>Testing: Jest.</li>
 </ul>
 
 ## Colaboradores

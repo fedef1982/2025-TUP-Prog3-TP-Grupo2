@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtPayload } from '../auth/auth.guard';
-import { Role } from '../auth/roles.enum';
+import { JwtPayload } from '../../src/auth/auth.guard';
+import { Role } from '../../src/auth/roles.enum';
 
 @Injectable()
 export class AccesoService {

@@ -3,12 +3,12 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Publicacion } from './publicacion.model';
 import { PublicacionesService } from './publicacion.service';
 import { PublicacionesController } from './publicacion.controller';
-import { Mascota } from '../mascota/mascota.model';
-import { AccesoModule } from '../acceso/acceso.module';
-import { Especie } from '../mascota/especie.model';
-import { Condicion } from '../mascota/condicion.model';
-import { User } from '../usuario/usuario.model';
-import { MascotaModule } from '../mascota/mascota.module';
+import { Mascota } from 'src/mascota/mascota.model';
+import { AccesoModule } from 'src/acceso/acceso.module';
+import { Especie } from 'src/mascota/especie/especie.model';
+import { Condicion } from 'src/mascota/condicion/condicion.model';
+import { User } from 'src/usuario/usuario.model';
+import { MascotaModule } from 'src/mascota/mascota.module';
 
 @Module({
   imports: [

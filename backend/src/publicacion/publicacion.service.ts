@@ -9,13 +9,14 @@ import { Mascota } from '../mascota/mascota.model';
 import { MascotaService } from '../mascota/mascota.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { JwtPayload } from '../auth/jwt-playload.interface';
-import { Role } from '../auth/roles.enum';
-import { AccesoService } from '../acceso/acceso.service';
-import { Especie } from '../mascota/especie.model';
-import { Condicion } from '../mascota/condicion.model';
-import { User } from '../usuario/usuario.model';
+import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { Role } from 'src/auth/roles.enum';
+import { AccesoService } from 'src/acceso/acceso.service';
+import { Especie } from 'src/mascota/especie/especie.model';
+import { Condicion } from 'src/mascota/condicion/condicion.model';
+import { User } from 'src/usuario/usuario.model';
 import { Op } from 'sequelize';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
 
 @Injectable()
 export class PublicacionesService {
@@ -198,5 +199,58 @@ export class PublicacionesService {
     }
 
     return publicacion;
+  }
+
+  async findPublicacionesConFiltros(
+    usuarioId: number,
+    usuario: JwtPayload,
+    params: QueryOpcionesDto,
+  ): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'titulo',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const wherePublicacion = q
+      ? {
+          [Op.or]: [
+            { titulo: { [Op.iLike]: `%${q}%` } },
+            { descripcion: { [Op.iLike]: `%${q}%` } },
+            { ubicacion: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {};
+    const includeMascota =
+      usuario.rol_id === Number(Role.ADMIN)
+        ? [Mascota]
+        : [
+            {
+              model: Mascota,
+              include: [Especie, Condicion, User],
+              where: { usuario_id: usuarioId },
+            },
+          ];
+    const { count, rows } = await this.publicacionModel.findAndCountAll({
+      where: wherePublicacion,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: includeMascota,
+    });
+
+    return {
+      publicaciones: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 }

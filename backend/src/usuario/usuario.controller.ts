@@ -9,7 +9,6 @@ import {
   Patch,
   Req,
   Query,
-  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
@@ -29,7 +28,7 @@ import {
   DocGetUsuarioEstadisticas,
 } from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
-import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 
 @Controller('usuarios')
 export class UsersController {
@@ -47,12 +46,11 @@ export class UsersController {
   findUsuariosConFiltros(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
-    @Query() params: QueryUsuariosDto,
-  ): Promise<{ users: User[]; total: number }> {
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{ users: User[]; total: number; totalPages: number }> {
     return this.usersService.findUsuariosConFiltros(id, req.user, params);
   }
 
-  //Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)
   @DocGetIdPerfilUsuario()
   @Get(':id/perfil')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
@@ -70,7 +68,6 @@ export class UsersController {
     return this.usersService.create(createUsuarioDto);
   }
 
-  //Devuelve el perfil del usuario con ID indicado, solo puede acceder el ADMIN (para que el admin pueda acceder al perfil de cualquier publicador)
   @DocGetIdUsuario()
   @Get(':id')
   @Roles(Role.ADMIN)

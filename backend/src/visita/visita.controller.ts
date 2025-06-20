@@ -8,6 +8,7 @@ import {
   Patch,
   Body,
   Req,
+  Query,
 } from '@nestjs/common';
 import { VisitaService } from './visita.service';
 import { Visita } from './visita.model';
@@ -26,6 +27,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
 import { Public } from '../auth/decorators/public.decorator';
 import { TrackingVisita } from './dto/tracking-visita.dto';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
 
 @Controller()
 export class VisitaController {
@@ -41,6 +43,25 @@ export class VisitaController {
   ): Promise<Visita[]> {
     return this.visitaService.findAll(usuarioId, req.user);
   }
+
+  @Get('usuarios/:usuarioId/visitas/filtros')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  findVisitasConFiltros(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Req() req: AuthenticatedRequest,
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{
+    visitas: Visita[];
+    total: number;
+    totalPages: number;
+  }> {
+    return this.visitaService.findVisitasConFiltros(
+      usuarioId,
+      req.user,
+      params,
+    );
+  }
+
   @DocGetIdVisita()
   @Get('usuarios/:usuarioId/visitas/:visitaId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
@@ -51,7 +72,7 @@ export class VisitaController {
   ): Promise<Visita> {
     return this.visitaService.findOne(visitaId, usuarioId, req.user);
   }
-  
+
   @DocPatchVisita()
   @Patch('usuarios/:usuarioId/visitas/:visitaId')
   update(

@@ -13,8 +13,8 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { Mascota } from '../mascota/mascota.model';
-import { Visita } from '../visita/visita.model';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { Visita } from '../../src/visita/visita.model';
 
 export enum EstadoPublicacion {
   Abierta = 'Abierta',
@@ -57,7 +57,7 @@ export class Publicacion extends Model<Publicacion, Partial<Publicacion>> {
   })
   declare contacto: string;
 
-  @ApiProperty()  
+  @ApiProperty()
   @Column({
     type: DataType.DATE,
     allowNull: true,
