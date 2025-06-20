@@ -4,10 +4,12 @@ import {
   ApiResponse,
   ApiBody,
   ApiParam,
+  ApiQuery,
   //ApiRequest,
 } from '@nestjs/swagger';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 
 export function DocPostUsuario() {
   return applyDecorators(
@@ -78,4 +80,11 @@ export function DocGetUsuarioEstadisticas() {
       description: 'ID del usuario',
     }),
   );
+}
+export function DocGetUsuarioFiltros(){
+  return applyDecorators(
+    ApiOperation({ summary: 'Devuelve un listado de usuarios que cumplan con el criterio de la Query utilizada' }),
+    ApiQuery({ type: QueryOpcionesDto }),
+  );
+
 }

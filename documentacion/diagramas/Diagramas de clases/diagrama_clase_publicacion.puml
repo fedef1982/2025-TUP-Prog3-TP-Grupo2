@@ -1,0 +1,82 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class Publicacion <<Model>> {
+  id: number
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  publicado : timestamp
+  estado : EstadoPublicacion
+  mascota_id : integer <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+
+}
+
+class CreatePublicacionDto <<DTO>> {
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  mascota_id : integer <<FK>>
+  }
+
+class UpdatePublicacionDto <<DTO>>{
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  mascota_id : integer <<FK>>
+  publicado : timestamp
+  estado : EstadoPublicacion
+  }
+
+class PublicacionesController <<Controller>> {
+  
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Publicacion[]>
+  
+  create(createPublicacionDto: CreatePublicacionDto, usuarioId: number, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  findOne(usuarioId: number, publicacionId: number, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  update(usuarioId: number, publicacionId: number, updatePublicacionDto: UpdatePublicacionDto, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  remove(usuarioId: number, publicacionId: number, req: AuthenticatedRequest): Promise<void>
+  
+  findAllPublicadas(): Promise<Publicacion[]>
+  
+  findOnePublicada(id: number): Promise<Publicacion>
+
+  }
+
+class PublicacionesService <<Service>>{
+validarPublicacion(id: number): Promise<Publicacion>
+
+validarAccesoAPublicacion(id: number,  usuario: JwtPayload): Promise<Publicacion>
+
+findAll(usuarioId: number,  usuario: JwtPayload): Promise<Publicacion[]>
+
+findOne(id: number,usuarioId: number,usuario: JwtPayload,): Promise<Publicacion>
+
+create(publicacionDto: CreatePublicacionDto,  usuarioId: number,  usuario: JwtPayload): Promise<Publicacion>
+
+update(id: number,  dto: UpdatePublicacionDto,  usuarioId: number,  usuario: JwtPayload): Promise<Publicacion> 
+
+remove(id: number,  usuarioId: number,  usuario: JwtPayload): Promise<void> 
+
+findPublicadasYAbiertas(): Promise<Publicacion[]> 
+
+findOnePublicada(id: number): Promise<Publicacion> 
+
+}
+
+enum EstadoPublicacion {
+  Abierta = 'Abierta',
+  Cerrada = 'Cerrada',
+}
+
+@enduml
