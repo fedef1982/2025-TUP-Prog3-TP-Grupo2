@@ -1,0 +1,38 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class AuthService <<Service>> {
+    validateUser(email: string, pass: string): Promise<User>
+
+    signIn(email: string, pass: string): Promise<{access_token: string}>
+
+}
+
+class AuthService <<Controller>> {
+
+    signIn(loginDto: LoginDto): Promise<{access_token: string}>
+
+    getProfile(req: AuthRequest): User
+}
+
+class LoginDto <<DTO>> {
+    email: string
+    contrasenia: string
+}
+
+interface JwtPayload {
+    sub: number
+    username: string;
+    rol_id: number;
+}
+
+interface AuthenticatedRequest extends Request {
+    user: JwtPayload;
+}
+
+RolesGuard <<Guard>> {
+    canActivate(context: ExecutionContext): boolean
+}
+
+@enduml

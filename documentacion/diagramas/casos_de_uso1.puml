@@ -2,7 +2,6 @@
 
 'caso de uso 1 
 'Usuario publicador (registrado y autenticado):
-'Ver Registrarse o Iniciar sesión o Crear publicación
 
 actor "Usuario publicador" as Publicador
 

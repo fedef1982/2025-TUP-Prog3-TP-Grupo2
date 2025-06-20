@@ -21,13 +21,13 @@ package "Backend (NestJS)" {
 database "PostgreSQL" as DB
 
 ' Relaciones
-UI --> APIClient : Solicita datos
-APIClient --> Controller : HTTP Request
-Service --> DTO : Usa para validar  
-Controller --> Service : Lógica de negocio
-Service --> Models : Acceso a datos
-Models --> DB : ORM (Sequelize)
-Service --> Auth : Verificación JWT
+UI <--> APIClient : Solicita datos
+APIClient <--> Controller : HTTP Request
+Service <--> DTO : Usa para validar  
+Controller <--> Service : Lógica de negocio
+Service <--> Models : Acceso a datos
+Models <--> DB : ORM (Sequelize)
+Service <--> Auth : Verificación JWT
 
 ' Notas
 note right of Swagger

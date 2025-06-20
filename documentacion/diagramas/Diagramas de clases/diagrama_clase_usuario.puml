@@ -17,18 +17,34 @@ class User <<Model>> {
 }
 
 class CreateUsuarioDto <<DTO>> {
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string
   }
 
 class UpdateUsuarioDto <<DTO>>{
-    
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string  
   }
 
 class QueryUsuariosDto <<DTO>>{
+  q: string
+  page: number
+  limit: number
+  sortBy: string
+  sortOrder: string
 
   }
 class UsersController <<Controller>> {
 
-  constructor UsersController(usersService: UsersService): UsersController
+  'constructor UsersController(usersService: UsersService): UsersController
 
   findAll() : Promise<User[]>
 
@@ -43,8 +59,9 @@ class UsersController <<Controller>> {
   getEstadisticas(id: number,req: AuthenticatedRequest) : Promise<EstadisticasUsuarioDto>
 
   update(id: number,UpdateUsuarioDto: UpdateUsuarioDto,req: AuthenticatedRequest) : Promise<User>
-  
+
   remove(id: number, req: AuthenticatedRequest): Promise<void>
+
   }
 /' 
 note right of UsersController::create
@@ -52,9 +69,24 @@ note right of UsersController::create
 end note
 '/
 class UsersService <<Service>>{
-  constructor UsersService(userModel: typeof User, mascotaModel: typeof Mascota, publicacionModel: typeof Publicacion, visitaModel: typeof Visita, accesoService: AccesoService): UsersService
-  
+  'constructor UsersService(userModel: typeof User, mascotaModel: typeof Mascota, publicacionModel: typeof Publicacion, visitaModel: typeof Visita, accesoService: AccesoService): UsersService
+  findAll(): Promise<User[]> 
 
+  findOne(id: number, usuario: JwtPayload): Promise<User> 
+
+  findByEmail(email: string): Promise<User> 
+
+  validarEmailUnico(email: string): Promise<void> 
+
+  create(dto: CreateUsuarioDto): Promise<User> 
+
+  update(id: number,dto: UpdateUsuarioDto,usuario: JwtPayload): Promise<User>
+
+  remove(id: number, usuario: JwtPayload): Promise<void> 
+
+  getEstadisticas(id: number,usuario: JwtPayload,): Promise<EstadisticasUsuarioDto> 
+  
+  findUsuariosConFiltros(params: QueryUsuariosDto,): Promise<users: User[]; total: number; totalPages: number}>
 }
 
 enum ROLES{

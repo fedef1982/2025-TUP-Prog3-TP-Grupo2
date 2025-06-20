@@ -1,0 +1,94 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class Visita <<Model>> {
+  id: number
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+  tracking : string
+  publicacion_id : number <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+class CreateVisitaDto <<DTO>> {
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+}
+
+class UpdateVisitaDto <<DTO>>{
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+  estado : EstadoVisita
+}
+
+class VisitaController <<Controller>> {
+  
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Visita[]>
+  
+  findOne(usuarioId: number, visitaId: number, req: AuthenticatedRequest): Promise<Visita>
+  
+  update(usuarioId: number, visitaId: number, updateVisitaDto: UpdateVisitaDto, req: AuthenticatedRequest): Promise<Visita>
+  
+  remove(usuarioId: number, visitaId: number, req: AuthenticatedRequest): Promise<void>
+  
+  create(createVisitaDto: CreateVisitaDto, publicacionId: number): Promise<Visita>
+  
+  getEstado(tracking: string): Promise<TrackingVisita>
+  
+}
+
+class VisitaService <<Service>>{
+
+  validarVisita(id: number): Promise<Visita> 
+
+  validarAccesoAVisita( id: number, usuario: JwtPayload): Promise<Visita> 
+
+  findAll(usuarioId: number, usuario: JwtPayload): Promise<Visita[]> 
+
+  findOne(id: number, usuarioId: number, usuario: JwtPayload): Promise<Visita> 
+
+  generarTracking(): string 
+
+  create(dto: CreateVisitaDto, publicacionId: number): Promise<Visita> 
+
+  update(id: number,dto: UpdateVisitaDto,usuarioId: number,usuario: JwtPayload): Promise<Visita> 
+
+  remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
+
+  getTracking(tracking: string): Promise<TrackingVisita> 
+}
+
+enum EstadoVisita {
+  Pendiente = 'Pendiente',
+  Aprobado = 'Aprobado',
+  Rechazado = 'Rechazado',
+}
+
+enum DisponibilidadHoraria {
+  Maniana = 'Maniana',
+  Tarde = 'Tarde',
+  Noche = 'Noche',
+}
+
+@enduml

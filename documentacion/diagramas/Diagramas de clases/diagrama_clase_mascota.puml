@@ -1,0 +1,90 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class Mascota <<Model>> {
+  id: number 
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  usuario_id : number <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+class CreateMascotaDto <<DTO>> {
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  }
+
+class UpdateMascotaDto <<DTO>>{
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  }
+
+class MascotasController <<Controller>> {
+
+  '
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Mascota[]>
+
+  create(createMascotaDto: CreateMascotaDto, usuarioId: number, req: AuthenticatedRequest): Promise<Mascota>
+
+  findOne(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<Mascota>
+
+  update(usuarioId: number, mascotaId: number, updateMascotaDto: UpdateMascotaDto, req: AuthenticatedRequest): Promise<Mascota>
+
+  remove(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<void>
+  }
+
+class MascotaService <<Service>>{
+
+validarMascota(id: number): Promise<Mascota>
+
+validarEspecie(id: number): Promise<void>
+
+validarCondicion(id: number): Promise<void> 
+
+findAll(usuarioId: number, usuario: JwtPayload): Promise<Mascota[]>
+
+findOne(id: number,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+create(dto: CreateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+update(id: number,dto: UpdateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
+
+}
+
+enum tamanio_enum{
+  Chico = 'Chico',
+  Mediano = 'Mediano',
+  Grande = 'Grande',
+}
+enum sexo_enum{
+  Macho = 'Macho',
+  Hembra = 'Hembra',
+}
+
+@enduml
