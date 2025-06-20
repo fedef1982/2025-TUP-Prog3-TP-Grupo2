@@ -9,14 +9,14 @@ import { Mascota } from '../mascota/mascota.model';
 import { MascotaService } from '../mascota/mascota.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
-import { Role } from 'src/auth/roles.enum';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { Especie } from 'src/mascota/especie/especie.model';
-import { Condicion } from 'src/mascota/condicion/condicion.model';
-import { User } from 'src/usuario/usuario.model';
+import { JwtPayload } from '../auth/jwt-playload.interface';
+import { Role } from '../auth/roles.enum';
+import { AccesoService } from '../acceso/acceso.service';
+import { Especie } from '../mascota/especie/especie.model';
+import { Condicion } from '../mascota/condicion/condicion.model';
+import { User } from '../usuario/usuario.model';
 import { Op } from 'sequelize';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 
 @Injectable()
 export class PublicacionesService {

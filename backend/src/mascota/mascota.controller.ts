@@ -24,8 +24,8 @@ import {
   DocPatchMascota,
   DocPostMascota,
 } from './mascota.doc';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 @Controller('usuarios/:usuarioId/mascotas')
 export class MascotasController {

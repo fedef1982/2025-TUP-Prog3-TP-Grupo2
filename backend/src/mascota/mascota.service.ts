@@ -4,12 +4,12 @@ import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { Especie } from './especie/especie.model';
 import { Condicion } from './condicion/condicion.model';
-import { User } from 'src/usuario/usuario.model';
+import { User } from '../usuario/usuario.model';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { Role } from 'src/auth/roles.enum';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { Role } from '../auth/roles.enum';
+import { JwtPayload } from '../auth/jwt-playload.interface';
+import { AccesoService } from '../acceso/acceso.service';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 
 @Injectable()

@@ -27,7 +27,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
 import { Public } from '../auth/decorators/public.decorator';
 import { TrackingVisita } from './dto/tracking-visita.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 
 @Controller()
 export class VisitaController {

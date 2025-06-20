@@ -26,7 +26,7 @@ import {
   DocPatchPublicacion,
   DocPostPublicacion,
 } from './publicacion.doc';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 @Controller()
 export class PublicacionesController {
