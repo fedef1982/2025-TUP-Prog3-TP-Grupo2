@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsInt, Min, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class QueryUsuariosDto {
+export class QueryOpcionesDto {
   @IsOptional()
   @IsString()
   q?: string;

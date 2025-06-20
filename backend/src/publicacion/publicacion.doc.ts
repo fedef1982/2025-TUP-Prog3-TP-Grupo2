@@ -14,7 +14,7 @@ export function DocPostPublicacion() {
 
 export function DocPatchPublicacion() {
   return applyDecorators(
-    ApiOperation({ summary: 'Modifica parametros de una publicación' }),
+    ApiOperation({ summary: 'Modifica parámetros de una publicación' }),
     ApiParam({ name: 'id', type: Number, description: 'ID de la publicación' }),
     ApiBody({ type: UpdatePublicacionDto }),
   );
@@ -32,14 +32,14 @@ export function DocGetPublicacion() {
 
 export function DocGetIdPublicacion() {
   return applyDecorators(
-    ApiOperation({ summary: 'Listar publicacion por ID' }),
+    ApiOperation({ summary: 'Listar publicación por ID' }),
     ApiParam({ name: 'id', type: Number, description: 'ID de la publicación' }),
   );
 }
 
 export function DocDeleteIdPublicacion() {
   return applyDecorators(
-    ApiOperation({ summary: 'Eliminar publicacion por ID' }),
+    ApiOperation({ summary: 'Eliminar publicación por ID' }),
     ApiParam({ name: 'id', type: Number, description: 'ID de la publicación' }),
   );
 }

@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,7 +16,7 @@ import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { Mascota } from 'src/mascota/mascota.model';
 import { Publicacion } from 'src/publicacion/publicacion.model';
 import { Visita } from 'src/visita/visita.model';
-import { QueryUsuariosDto } from './dto/query-usuario.dto';
+import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 
 @Injectable()
@@ -143,12 +142,25 @@ export class UsersService {
   }
 
   async findUsuariosConFiltros(
-    params: QueryUsuariosDto,
+    id: number,
+    usuario: JwtPayload,
+    params: QueryOpcionesDto,
   ): Promise<{ users: User[]; total: number; totalPages: number }> {
+    const esPublicador = usuario.rol_id === Number(Role.PUBLICADOR);
+
+    if (esPublicador) {
+      const user: User[] = [await this.findOne(id, usuario)];
+      return {
+        users: user,
+        total: 1,
+        totalPages: 1,
+      };
+    }
+
     const {
       q,
       page = 1,
-      limit = 10,
+      limit = 5,
       sortBy = 'nombre',
       sortOrder = 'asc',
     } = params;
@@ -178,4 +190,3 @@ export class UsersService {
     };
   }
 }
-

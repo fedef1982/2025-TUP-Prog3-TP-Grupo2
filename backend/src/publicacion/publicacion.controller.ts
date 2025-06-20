@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   Req,
+  Query,
 } from '@nestjs/common';
 import { PublicacionesService } from './publicacion.service';
 import { Publicacion } from './publicacion.model';
@@ -25,6 +26,7 @@ import {
   DocPatchPublicacion,
   DocPostPublicacion,
 } from './publicacion.doc';
+import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
 
 @Controller()
 export class PublicacionesController {
@@ -39,6 +41,24 @@ export class PublicacionesController {
     @Req() req: AuthenticatedRequest,
   ): Promise<Publicacion[]> {
     return this.publicacionesService.findAll(usuarioId, req.user);
+  }
+
+  @Get('usuarios/:usuarioId/publicaciones/filtros')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
+  findPublicacionesConFiltros(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+    @Req() req: AuthenticatedRequest,
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    return this.publicacionesService.findPublicacionesConFiltros(
+      usuarioId,
+      req.user,
+      params,
+    );
   }
 
   @DocPostPublicacion()
