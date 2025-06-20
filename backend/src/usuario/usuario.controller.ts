@@ -14,10 +14,10 @@ import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { Public } from '../../src/auth/decorators/public.decorator';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { Role } from '../../src/auth/roles.enum';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
