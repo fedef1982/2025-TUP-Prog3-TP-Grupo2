@@ -9,11 +9,11 @@ rectangle "web AdoptAR" {
     
     (Registrarse) as Registrarse
     (Iniciar sesión) as IniciarSesion
-    (Crear publicación) as CrearPublicacion
+    (Crear mascota) as CrearMascota
 }
 
 Publicador --> Registrarse
 Publicador -[#green]-> IniciarSesion
-IniciarSesion -[#green]-> CrearPublicacion
+IniciarSesion -[#green]-> CrearMascota
 
 @enduml

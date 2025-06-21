@@ -47,7 +47,10 @@ export function DocDeleteIdMascota() {
 
 export function DocGetMascotaFiltros(){
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve un listado de mascotas que cumplan con el criterio de la Query utilizada' }),
+    ApiOperation({
+      summary:
+        'Devuelve un listado de mascotas que cumplan con el criterio de la Query utilizada',
+    }),
     ApiQuery({ type: QueryOpcionesDto }),
   );
 }

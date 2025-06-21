@@ -1,0 +1,467 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+package Visitas {
+  class Visita <<Model>> {
+  id: number
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+  tracking : string
+  publicacion_id : number <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+class CreateVisitaDto <<DTO>> {
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+}
+
+class UpdateVisitaDto <<DTO>>{
+  estado : EstadoVisita
+  nombre : string
+  apellido : string
+  telefono : string
+  email : string
+  disponibilidad_fecha : date
+  disponibilidad_horario : DisponibilidadHoraria
+  descripcion : string
+  estado : EstadoVisita
+}
+
+class VisitaController <<Controller>> {
+  
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Visita[]>
+  
+  findOne(usuarioId: number, visitaId: number, req: AuthenticatedRequest): Promise<Visita>
+  
+  update(usuarioId: number, visitaId: number, updateVisitaDto: UpdateVisitaDto, req: AuthenticatedRequest): Promise<Visita>
+  
+  remove(usuarioId: number, visitaId: number, req: AuthenticatedRequest): Promise<void>
+  
+  create(createVisitaDto: CreateVisitaDto, publicacionId: number): Promise<Visita>
+  
+  getEstado(tracking: string): Promise<TrackingVisita>
+  
+}
+
+class VisitaService <<Service>>{
+
+  validarVisita(id: number): Promise<Visita> 
+
+  validarAccesoAVisita( id: number, usuario: JwtPayload): Promise<Visita> 
+
+  findAll(usuarioId: number, usuario: JwtPayload): Promise<Visita[]> 
+
+  findOne(id: number, usuarioId: number, usuario: JwtPayload): Promise<Visita> 
+
+  generarTracking(): string 
+
+  create(dto: CreateVisitaDto, publicacionId: number): Promise<Visita> 
+
+  update(id: number,dto: UpdateVisitaDto,usuarioId: number,usuario: JwtPayload): Promise<Visita> 
+
+  remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
+
+  getTracking(tracking: string): Promise<TrackingVisita> 
+}
+
+enum EstadoVisita {
+  Pendiente = 'Pendiente',
+  Aprobado = 'Aprobado',
+  Rechazado = 'Rechazado',
+}
+
+enum DisponibilidadHoraria {
+  Maniana = 'Maniana',
+  Tarde = 'Tarde',
+  Noche = 'Noche',
+}
+
+/' Relaciones '/
+VisitaController ..> VisitaService 
+VisitaService ..> CreateVisitaDto 
+VisitaService ..> UpdateVisitaDto 
+VisitaService ..> Visita
+
+CreateVisitaDto  ..> EstadoVisita
+CreateVisitaDto  ..> DisponibilidadHoraria
+UpdateVisitaDto  ..> EstadoVisita
+UpdateVisitaDto  ..> DisponibilidadHoraria
+Visita ..> EstadoVisita
+Visita ..> DisponibilidadHoraria
+
+}
+
+package Users {
+  class User <<Model>> {
+  id: number 
+  email: string
+  nombre: string
+  apellido: string 
+  password: string 
+  role: ROLES
+  telefono: string 
+  direccion: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+class CreateUsuarioDto <<DTO>> {
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string
+  }
+
+class UpdateUsuarioDto <<DTO>>{
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string  
+  }
+/' 
+class QueryUsuariosDto <<DTO>>{
+  q: string
+  page: number
+  limit: number
+  sortBy: string
+  sortOrder: string
+
+  }
+  '/
+
+class UsersController <<Controller>> {
+
+  'constructor UsersController(usersService: UsersService): UsersController
+
+  findAll() : Promise<User[]>
+
+  findUsuariosConFiltros(params: QueryOpcionesDto) : Promise<{ users: User[]; total: number }>
+
+  getPerfil(id: number,req: AuthenticatedRequest): Promise<User>
+
+  create(createUsuarioDto: CreateUsuarioDto): Promise<User>
+
+  findOne(id: number,req: AuthenticatedRequest): Promise<User>
+
+  getEstadisticas(id: number,req: AuthenticatedRequest) : Promise<EstadisticasUsuarioDto>
+
+  update(id: number,UpdateUsuarioDto: UpdateUsuarioDto,req: AuthenticatedRequest) : Promise<User>
+
+  remove(id: number, req: AuthenticatedRequest): Promise<void>
+
+  }
+/' 
+note right of UsersController::create
+ test
+end note
+'/
+class UsersService <<Service>>{
+  'constructor UsersService(userModel: typeof User, mascotaModel: typeof Mascota, publicacionModel: typeof Publicacion, visitaModel: typeof Visita, accesoService: AccesoService): UsersService
+  findAll(): Promise<User[]> 
+
+  findOne(id: number, usuario: JwtPayload): Promise<User> 
+
+  findByEmail(email: string): Promise<User> 
+
+  validarEmailUnico(email: string): Promise<void> 
+
+  create(dto: CreateUsuarioDto): Promise<User> 
+
+  update(id: number,dto: UpdateUsuarioDto,usuario: JwtPayload): Promise<User>
+
+  remove(id: number, usuario: JwtPayload): Promise<void> 
+
+  getEstadisticas(id: number,usuario: JwtPayload,): Promise<EstadisticasUsuarioDto> 
+  
+  findUsuariosConFiltros(params: QueryOpcionesDto): Promise<users: User[]; total: number; totalPages: number}>
+}
+
+enum ROLES{
+    ADMIN = 'Admin',
+    PUBLICADOR = 'Publicador'
+}
+
+/' Relaciones '/
+UsersController ..> UsersService 
+UsersService ..> CreateUsuarioDto 
+UsersService ..> UpdateUsuarioDto 
+UsersService ..> User
+
+User ..> ROLES
+
+}
+
+
+package Publicaciones {
+  class Publicacion <<Model>> {
+  id: number
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  publicado : timestamp
+  estado : EstadoPublicacion
+  mascota_id : integer <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+
+}
+
+class CreatePublicacionDto <<DTO>> {
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  mascota_id : integer <<FK>>
+  }
+
+class UpdatePublicacionDto <<DTO>>{
+  titulo : string
+  descripcion : string
+  ubicacion : string
+  contacto : string
+  mascota_id : integer <<FK>>
+  publicado : timestamp
+  estado : EstadoPublicacion
+  }
+
+class PublicacionesController <<Controller>> {
+  
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Publicacion[]>
+  
+  create(createPublicacionDto: CreatePublicacionDto, usuarioId: number, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  findOne(usuarioId: number, publicacionId: number, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  update(usuarioId: number, publicacionId: number, updatePublicacionDto: UpdatePublicacionDto, req: AuthenticatedRequest): Promise<Publicacion>
+  
+  remove(usuarioId: number, publicacionId: number, req: AuthenticatedRequest): Promise<void>
+  
+  findAllPublicadas(): Promise<Publicacion[]>
+  
+  findOnePublicada(id: number): Promise<Publicacion>
+
+  }
+
+class PublicacionesService <<Service>>{
+validarPublicacion(id: number): Promise<Publicacion>
+
+validarAccesoAPublicacion(id: number,  usuario: JwtPayload): Promise<Publicacion>
+
+findAll(usuarioId: number,  usuario: JwtPayload): Promise<Publicacion[]>
+
+findOne(id: number,usuarioId: number,usuario: JwtPayload,): Promise<Publicacion>
+
+create(publicacionDto: CreatePublicacionDto,  usuarioId: number,  usuario: JwtPayload): Promise<Publicacion>
+
+update(id: number,  dto: UpdatePublicacionDto,  usuarioId: number,  usuario: JwtPayload): Promise<Publicacion> 
+
+remove(id: number,  usuarioId: number,  usuario: JwtPayload): Promise<void> 
+
+findPublicadasYAbiertas(): Promise<Publicacion[]> 
+
+findOnePublicada(id: number): Promise<Publicacion> 
+
+}
+
+enum EstadoPublicacion {
+  Abierta = 'Abierta',
+  Cerrada = 'Cerrada',
+}
+
+/' Relaciones '/
+PublicacionesController ..> PublicacionesService 
+PublicacionesService ..> CreatePublicacionDto 
+PublicacionesService ..> UpdatePublicacionDto 
+PublicacionesService ..> Publicacion
+
+Publicacion ..> EstadoPublicacion
+UpdatePublicacionDto ..> EstadoPublicacion
+
+}
+
+
+package Mascotas {
+  class Mascota <<Model>> {
+  id: number 
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  usuario_id : number <<FK>>
+  created_at : timestamp
+  updated_at : timestamp
+  deleted_at : timestamp
+}
+
+class CreateMascotaDto <<DTO>> {
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  }
+
+class UpdateMascotaDto <<DTO>>{
+  nombre: string
+  raza : string
+  sexo : sexo_enum
+  edad : number
+  vacunado : boolean
+  tamanio : tamanio_enum
+  fotos_url : json
+  especie_id : number <<FK>>
+  condicion_id : number <<FK>>
+  }
+
+class MascotasController <<Controller>> {
+
+  '
+  findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Mascota[]>
+
+  create(createMascotaDto: CreateMascotaDto, usuarioId: number, req: AuthenticatedRequest): Promise<Mascota>
+
+  findOne(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<Mascota>
+
+  update(usuarioId: number, mascotaId: number, updateMascotaDto: UpdateMascotaDto, req: AuthenticatedRequest): Promise<Mascota>
+
+  remove(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<void>
+  }
+
+class MascotaService <<Service>> {
+
+validarMascota(id: number): Promise<Mascota>
+
+validarEspecie(id: number): Promise<void>
+
+validarCondicion(id: number): Promise<void> 
+
+findAll(usuarioId: number, usuario: JwtPayload): Promise<Mascota[]>
+
+findOne(id: number,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+create(dto: CreateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+update(id: number,dto: UpdateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+
+remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
+
+}
+
+enum tamanio_enum{
+  Chico = 'Chico',
+  Mediano = 'Mediano',
+  Grande = 'Grande',
+}
+enum sexo_enum{
+  Macho = 'Macho',
+  Hembra = 'Hembra',
+}
+
+/' Relaciones '/
+MascotasController ..> MascotaService 
+MascotaService ..> CreateMascotaDto 
+MascotaService ..> UpdateMascotaDto 
+MascotaService ..> Mascota 
+
+Mascota  ..> tamanio_enum
+Mascota  ..> sexo_enum
+
+UpdateMascotaDto ..> tamanio_enum
+UpdateMascotaDto ..> sexo_enum
+
+CreateMascotaDto ..> tamanio_enum
+CreateMascotaDto ..> sexo_enum
+
+}
+
+
+package extras{
+
+  class AuthService <<Service>> {
+    validateUser(email: string, pass: string): Promise<User>
+
+    signIn(email: string, pass: string): Promise<{access_token: string}>
+
+}
+
+class AuthController <<Controller>> {
+
+    signIn(loginDto: LoginDto): Promise<{access_token: string}>
+
+    getProfile(req: AuthRequest): User
+}
+
+class LoginDto <<DTO>> {
+    email: string
+    contrasenia: string
+}
+
+interface JwtPayload {
+    sub: number
+    username: string;
+    rol_id: number;
+}
+
+interface AuthenticatedRequest {
+    user: JwtPayload;
+}
+
+class RolesGuard <<Guard>> {
+    canActivate(context: ExecutionContext): boolean
+}
+
+class AccesoService{
+
+    verificarAcceso(usuarioAuth: JwtPayload, recurso: {{usuario_id: number;}): void    
+    
+    verificarUsuarioDeRutaverificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void
+
+}
+
+class QueryOpcionesDto <<DTO>> {
+    q: string
+    page: number
+    limit: number
+    sortBy: string
+    sortOrder: string
+}
+
+/' Relaciones '/
+AuthController ..> AuthService 
+
+
+}
+
+@enduml
