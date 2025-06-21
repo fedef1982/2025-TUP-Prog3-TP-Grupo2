@@ -48,7 +48,7 @@ export class UpdateVisitaDto {
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-  disponibilidad_fecha: Date;
+  disponibilidad_fecha?: Date;
 
   @ApiProperty({ example: DisponibilidadHoraria.Tarde })
   @IsOptional()

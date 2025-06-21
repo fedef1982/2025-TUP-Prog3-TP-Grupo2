@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Condicion } from './condicion.model';
 
@@ -11,5 +11,12 @@ export class CondicionService {
 
   async findAll(): Promise<Condicion[]> {
     return this.condicionModel.findAll();
+  }
+
+  async validarCondicion(id: number): Promise<void> {
+    const condicion = await this.condicionModel.findByPk(id);
+    if (!condicion) {
+      throw new NotFoundException(`La condición con id ${id} no existe`);
+    }
   }
 }

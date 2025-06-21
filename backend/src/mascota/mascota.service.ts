@@ -4,13 +4,15 @@ import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { Especie } from './especie/especie.model';
 import { Condicion } from './condicion/condicion.model';
-import { User } from 'src/usuario/usuario.model';
+import { User } from '../../src/usuario/usuario.model';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { Role } from 'src/auth/roles.enum';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { Role } from '../../src/auth/roles.enum';
+import { JwtPayload } from '../../src/auth/jwt-playload.interface';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
+import { EspecieService } from './especie/especie.service';
+import { CondicionService } from './condicion/condicion.service';
 
 @Injectable()
 export class MascotaService {
@@ -26,6 +28,9 @@ export class MascotaService {
 
     @InjectModel(User)
     private userModel: typeof User,
+
+    private readonly condicionService: CondicionService,
+    private readonly especieService: EspecieService,
     private readonly accesoService: AccesoService,
   ) {}
 
@@ -37,20 +42,6 @@ export class MascotaService {
       throw new NotFoundException(`La mascota con ID ${id} no existe`);
     }
     return mascota;
-  }
-
-  private async validarEspecie(id: number): Promise<void> {
-    const especie = await this.especieModel.findByPk(id);
-    if (!especie) {
-      throw new NotFoundException(`La especie con id ${id} no existe`);
-    }
-  }
-
-  private async validarCondicion(id: number): Promise<void> {
-    const condicion = await this.condicionModel.findByPk(id);
-    if (!condicion) {
-      throw new NotFoundException(`La condición con id ${id} no existe`);
-    }
   }
 
   async findAll(usuarioId: number, usuario: JwtPayload): Promise<Mascota[]> {
@@ -80,8 +71,8 @@ export class MascotaService {
     usuario: JwtPayload,
   ): Promise<Mascota> {
     this.accesoService.verificarUsuarioDeRuta(usuario, usuarioId);
-    await this.validarEspecie(dto.especie_id);
-    await this.validarCondicion(dto.condicion_id);
+    await this.especieService.validarEspecie(dto.especie_id);
+    await this.condicionService.validarCondicion(dto.condicion_id);
 
     return this.mascotaModel.create({
       nombre: dto.nombre,
@@ -106,11 +97,11 @@ export class MascotaService {
     const mascota = await this.findOne(id, usuarioId, usuario);
 
     if (dto.especie_id && dto.especie_id !== mascota.especie_id) {
-      await this.validarEspecie(dto.especie_id);
+      await this.especieService.validarEspecie(dto.especie_id);
     }
 
     if (dto.condicion_id && dto.condicion_id !== mascota.condicion_id) {
-      await this.validarCondicion(dto.condicion_id);
+      await this.condicionService.validarCondicion(dto.condicion_id);
     }
     await mascota.update(dto);
     return mascota;
