@@ -2,56 +2,86 @@
 
 skinparam Linetype ortho
 
-class AuthService <<Service>> {
-    validateUser(email: string, pass: string): Promise<User>
+package Acceso_Service{
 
-    signIn(email: string, pass: string): Promise<{access_token: string}>
+    class AllServices {
 
-}
+    }
 
-class AuthController <<Controller>> {
-
-    signIn(loginDto: LoginDto): Promise<{access_token: string}>
-
-    getProfile(req: AuthRequest): User
-}
-
-class LoginDto <<DTO>> {
-    email: string
-    contrasenia: string
-}
-
-interface JwtPayload {
-    sub: number
-    username: string;
-    rol_id: number;
-}
-
-interface AuthenticatedRequest {
-    user: JwtPayload;
-}
-
-class RolesGuard <<Guard>> {
-    canActivate(context: ExecutionContext): boolean
-}
-
-class AccesoService{
+    class AccesoService{
 
     verificarAcceso(usuarioAuth: JwtPayload, recurso: {{usuario_id: number;}): void    
-    
+
     verificarUsuarioDeRutaverificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void
 
+    }
+
 }
 
-class QueryOpcionesDto <<DTO>> {
-    q: string
-    page: number
-    limit: number
-    sortBy: string
-    sortOrder: string
+package Guards {
+    class AuthGuard <<Guard>> {
+
+        canActivate(context: ExecutionContext): Promise<boolean>
+
+        extractTokenFromHeader(request: Request): string | undefined
+    }
+
+    class RolesGuard <<Guard>> {
+
+        canActivate(context: ExecutionContext): boolean
+    }
 }
+
+package Auth {
+
+    class AuthService <<Service>> {
+        validateUser(email: string, pass: string): Promise<User>
+
+        signIn(email: string, pass: string): Promise<{access_token: string}>
+
+    }
+
+    class AuthController <<Controller>> {
+
+        signIn(loginDto: LoginDto): Promise<{access_token: string}>
+
+        getProfile(req: AuthRequest): User
+    }
+
+    class LoginDto <<DTO>> {
+    email: string
+    contrasenia: string
+    }
+}
+
+package Jwt {
+
+    class AllControllers{
+
+    }
+
+    interface JwtPayload {
+        sub: number
+        username: string;
+        rol_id: number;
+    }
+
+    interface AuthenticatedRequest {
+        user: JwtPayload;
+    }
+}
+
+
+
+
 
 /' Relaciones '/
 AuthController ..> AuthService 
+AuthService ..> LoginDto
+
+AuthenticatedRequest ..> JwtPayload
+
+AllServices ..> AccesoService
+AllControllers ..> AuthenticatedRequest
 
 @enduml

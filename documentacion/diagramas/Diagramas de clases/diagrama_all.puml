@@ -156,7 +156,7 @@ class UsersController <<Controller>> {
 
   findAll() : Promise<User[]>
 
-  findUsuariosConFiltros(params: QueryUsuariosDto) : Promise<{ users: User[]; total: number }>
+  findUsuariosConFiltros(params: QueryOpcionesDto) : Promise<{ users: User[]; total: number }>
 
   getPerfil(id: number,req: AuthenticatedRequest): Promise<User>
 
@@ -194,7 +194,7 @@ class UsersService <<Service>>{
 
   getEstadisticas(id: number,usuario: JwtPayload,): Promise<EstadisticasUsuarioDto> 
   
-  findUsuariosConFiltros(params: QueryUsuariosDto,): Promise<users: User[]; total: number; totalPages: number}>
+  findUsuariosConFiltros(params: QueryOpcionesDto): Promise<users: User[]; total: number; totalPages: number}>
 }
 
 enum ROLES{
