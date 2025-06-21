@@ -1,0 +1,19 @@
+@startuml caso de uso 1
+
+'caso de uso 1 
+'Usuario publicador (registrado y autenticado):
+
+actor "Usuario publicador" as Publicador
+
+rectangle "web AdoptAR" {
+    
+    (Registrarse) as Registrarse
+    (Iniciar sesión) as IniciarSesion
+    (Crear mascota) as CrearMascota
+}
+
+Publicador --> Registrarse
+Publicador -[#green]-> IniciarSesion
+IniciarSesion -[#green]-> CrearMascota
+
+@enduml

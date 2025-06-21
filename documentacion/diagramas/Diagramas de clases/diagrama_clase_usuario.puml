@@ -1,0 +1,108 @@
+@startuml AdoptAR
+
+skinparam Linetype ortho
+
+class User <<Model>> {
+  id: number 
+  email: string
+  nombre: string
+  apellido: string 
+  password: string 
+  role: ROLES
+  telefono: string 
+  direccion: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date
+}
+
+class CreateUsuarioDto <<DTO>> {
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string
+  }
+
+class UpdateUsuarioDto <<DTO>>{
+  email: string
+  nombre: string
+  apellido : string
+  contrasenia : string
+  telefono : string
+  direccion : string  
+  }
+
+class UsersController <<Controller>> {
+
+  'constructor UsersController(usersService: UsersService): UsersController
+
+  findAll() : Promise<User[]>
+
+  findUsuariosConFiltros(params: QueryOpcionesDto) : Promise<{ users: User[]; total: number }>
+
+  getPerfil(id: number,req: AuthenticatedRequest): Promise<User>
+
+  create(createUsuarioDto: CreateUsuarioDto): Promise<User>
+
+  findOne(id: number,req: AuthenticatedRequest): Promise<User>
+
+  getEstadisticas(id: number,req: AuthenticatedRequest) : Promise<EstadisticasUsuarioDto>
+
+  update(id: number,UpdateUsuarioDto: UpdateUsuarioDto,req: AuthenticatedRequest) : Promise<User>
+
+  remove(id: number, req: AuthenticatedRequest): Promise<void>
+
+  }
+/' 
+note right of UsersController::create
+ test
+end note
+'/
+class UsersService <<Service>>{
+  'constructor UsersService(userModel: typeof User, mascotaModel: typeof Mascota, publicacionModel: typeof Publicacion, visitaModel: typeof Visita, accesoService: AccesoService): UsersService
+  findAll(): Promise<User[]> 
+
+  findOne(id: number, usuario: JwtPayload): Promise<User> 
+
+  findByEmail(email: string): Promise<User> 
+
+  validarEmailUnico(email: string): Promise<void> 
+
+  create(dto: CreateUsuarioDto): Promise<User> 
+
+  update(id: number,dto: UpdateUsuarioDto,usuario: JwtPayload): Promise<User>
+
+  remove(id: number, usuario: JwtPayload): Promise<void> 
+
+  getEstadisticas(id: number,usuario: JwtPayload,): Promise<EstadisticasUsuarioDto> 
+  
+  findUsuariosConFiltros(params: QueryOpcionesDto,): Promise<users: User[]; total: number; totalPages: number}>
+}
+
+enum ROLES{
+    ADMIN = 'Admin',
+    PUBLICADOR = 'Publicador'
+}
+
+class QueryOpcionesDto <<DTO>> {
+    q: string
+    page: number
+    limit: number
+    sortBy: string
+    sortOrder: string
+}
+
+/' Relaciones '/
+UsersController ..> UsersService 
+UsersService ..> CreateUsuarioDto 
+UsersService ..> UpdateUsuarioDto 
+UsersService ..> User
+
+User ..> ROLES
+
+UsersController ..> QueryOpcionesDto
+UsersService ..> QueryOpcionesDto
+
+@enduml

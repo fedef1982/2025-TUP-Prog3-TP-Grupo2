@@ -1,0 +1,88 @@
+@startuml AdoptDog_Class_Diagram
+
+' ==== Configuración ====
+skinparam class {
+    BackgroundColor #f9f9f9
+    BorderColor #333333
+    ArrowColor #666666
+    FontSize 13
+}
+hide circle
+hide empty members
+
+' ==== Entidades del Backend ====
+
+class Usuario {
+  +id: number <<PK>>
+  +email: string <<unique>> <<not null>>
+  +nombre: string <<not null>>
+  +apellido: string <<not null>>
+  +password: string <<not null>>
+  +role: "Admin" | "Publicador" <<not null>>
+  +telefono: string 
+  +direccion: string
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
+}
+
+class Publicacion {
+  +id: number <<PK>>
+  +titulo: string <<not null>>
+  +descripcion: string <<not null>>
+  +ubicacion: string <<not null>>
+  +contacto: string <<not null>>
+  +fotos_url: string[] <<not null>>
+  +publicado: timestamp
+  +estado: "Abierto" | "Cerrado"
+  +mascota_id: number <<not null>>
+  +usuario_id: number <<not null>>
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
+}
+
+class Mascota {
+  +id: number <<PK>>
+  +especie: "Perro" | "Gato" | "Pájaro" <<not null>>
+  +raza: string <<not null>>
+  +edad: number 
+  +tamanio: "Pequenio" | "Mediano" | "Grande"
+  +condicion: "Casa" | "Refugio" | "Transito"
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
+}
+
+class Visita {
+  +id: number <<PK>>
+  +estado: "Pendiente" | "Aprobado" | "Rechazado"
+  +nombre: string
+  +apellido: string
+  +telefono: string
+  +email: string
+  +disponibilidad_fecha: date;
+  +disponibilidad_horaria: "Maniana" | "Tarde" | "Noche"
+  +descripcion: string
+  +publicacion_id: number
+  +createdAt: timestamp
+  +updatedAt: timestamp
+  +deletedAt: timestamp
+}
+
+' ==== Relaciones ====
+
+' Backend
+Usuario "1" *-- "0..*" Publicacion
+Publicacion "1" *-- "1" Mascota
+Publicacion "1" *-- "0..*" Visita 
+
+
+' ==== Notas ====
+note top of Usuario
+  <<Entity>>
+  Tabla: usuarios
+  Autenticación con JWT
+end note
+
+@enduml
