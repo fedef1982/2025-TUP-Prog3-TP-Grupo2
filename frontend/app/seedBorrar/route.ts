@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+/*import bcrypt from 'bcrypt';
 import postgres from 'postgres';
 import { users } from '../lib/placeholder-data';
 
@@ -65,4 +65,4 @@ export async function GET() {
   } catch (error) {
     return Response.json({ error }, { status: 500 });
   }
-}
+}*/

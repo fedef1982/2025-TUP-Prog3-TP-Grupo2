@@ -2,7 +2,6 @@
 
 import { getRawToken, getUserId } from "./server-utils";
 import { CreatePublicationDto, CreatePublicationState, UpdatePublicationDto, UpdatePublicationState, PublicationStatus } from './definitionsPublications';
-import { redirect } from "next/navigation";
 
 export async function createPublication(
   prevState: CreatePublicationState | null, 

@@ -8,8 +8,6 @@ import { fetchPublicationsPages } from '@/app/lib/dataPublications';
 import { Metadata } from 'next';
 import { PublicationsTableSkeleton } from '@/app/ui/skeletons';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: 'Publicaciones',
 };

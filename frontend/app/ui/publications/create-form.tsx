@@ -67,13 +67,13 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
       <input type="hidden" name="userId" value={userId} />
       <div className="rounded-md bg-gray-200 p-4 md:p-6">
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
-          Create New Publication
+          Crear una nueva Publicación
         </h1>
 
-        {/* Title */}
+        {/* Titulo */}
         <div className="mb-4">
           <label htmlFor="titulo" className="mb-2 block text-sm font-medium">
-            Title <span className="text-red-500">*</span>
+            Título <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -81,7 +81,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="titulo"
                 name="titulo"
                 type="text"
-                placeholder="Publication title"
+                placeholder="Publication título"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -93,17 +93,17 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
           </div>
         </div>
 
-        {/* Description */}
+        {/* Descripción */}
         <div className="mb-4">
           <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
-            Description <span className="text-red-500">*</span>
+            Descripción <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <textarea
               id="descripcion"
               name="descripcion"
               rows={4}
-              placeholder="Detailed description of the publication"
+              placeholder="Descripción de la publicación"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               required
             />
@@ -114,10 +114,10 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
           )}
         </div>
 
-        {/* Location */}
+        {/* Ubicación */}
         <div className="mb-4">
           <label htmlFor="ubicacion" className="mb-2 block text-sm font-medium">
-            Location <span className="text-red-500">*</span>
+            Ubicación <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -125,7 +125,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="ubicacion"
                 name="ubicacion"
                 type="text"
-                placeholder="Where is the pet located?"
+                placeholder="Donde esta la mascota Ubicación?"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -137,10 +137,10 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
           </div>
         </div>
 
-        {/* Contact */}
+        {/* Contacto */}
         <div className="mb-4">
           <label htmlFor="contacto" className="mb-2 block text-sm font-medium">
-            Contact Information <span className="text-red-500">*</span>
+            Indormacion de contacto <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -148,7 +148,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="contacto"
                 name="contacto"
                 type="text"
-                placeholder="Phone number or email"
+                placeholder="Telefono o email"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -160,10 +160,10 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
           </div>
         </div>
 
-        {/* Pet Selection */}
+        {/* Seleccion de mascota */}
         <div className="mb-4">
           <label htmlFor="mascota_id" className="mb-2 block text-sm font-medium">
-            Select Pet <span className="text-red-500">*</span>
+            Elija una mascota <span className="text-red-500">*</span>
           </label>
           <PetSelect 
             userId={userId}
@@ -182,7 +182,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
             className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
-            Back to Publications
+            Volver a publicaciones
           </Link>
         </div>
 
