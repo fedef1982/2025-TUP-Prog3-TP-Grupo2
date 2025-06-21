@@ -14,7 +14,6 @@ export default async function PetsTable({
   });
   const formattedPets = formatPetsForTable(pets.pets);
 
-  // Función para formatear la fecha
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
