@@ -25,6 +25,7 @@ export function ViewPet({ id }: { id: string }) {
   );
 }
 
+
 export function UpdatePet({ id }: { id: string }) {
   return (
     <Link
@@ -48,3 +49,26 @@ export function DeletePet({ id }: { id: string }) {
     </form>
   );
 }
+
+/*
+export function DeletePet({ id }: { id: string }) {
+  const deletePetWithId = deletePet.bind(null, Number(id));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const confirmed = window.confirm("¿Estás seguro de que quieres eliminar esta mascota?");
+    if (confirmed) {
+      deletePetWithId();
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+*/

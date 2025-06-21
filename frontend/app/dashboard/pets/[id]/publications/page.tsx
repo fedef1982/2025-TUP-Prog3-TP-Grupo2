@@ -4,9 +4,9 @@ import Table from '@/app/ui/pets/table';
 import { CreatePet } from '@/app/ui/pets/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { fetchPetsPages } from '@/app/lib/dataPets';
+import { fetchUsersPages } from '@/app/lib/data';
 import { Metadata } from 'next';
-import { PetsTableSkeleton } from '@/app/ui/skeletons';
+import { UsersTableSkeleton } from '@/app/ui/skeletons';
 
 export const metadata: Metadata = {
   title: 'pets',
@@ -22,7 +22,7 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchPetsPages(query) || 1;
+  const totalPages = await fetchUsersPages(query) || 1;
   
   return (
     <div className="w-full">
@@ -33,7 +33,7 @@ export default async function Page(props: {
         <Search placeholder="Buscar mascotas..." />
         <CreatePet />
       </div>
-      <Suspense key={query + currentPage} fallback={<PetsTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense> 
       <div className="mt-5 flex w-full justify-center">

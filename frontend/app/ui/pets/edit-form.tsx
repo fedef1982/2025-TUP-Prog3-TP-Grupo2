@@ -290,20 +290,6 @@ export default function EditPetForm({
           )}
         </div>
 
-        {/* Descripción */}
-        <div className="mb-4">
-          <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
-            Descripción (opcional)
-          </label>
-          <textarea
-            id="descripcion"
-            name="descripcion"
-            rows={3}
-            className="peer block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-            defaultValue={pet.descripcion || ''}
-          />
-        </div>
-
         <UpdatePetButton />
 
         <div className="mt-4 flex justify-center">
