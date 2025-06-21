@@ -4,7 +4,7 @@ import { UsersService } from '../../src/usuario/usuario.service';
 import { mockUserData } from '../_mocks_/usuario.model.mock';
 import { EstadisticasUsuarioDto } from '../../src/usuario/dto/estadisticas-usuario.dto';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import { Role } from '../../src/auth/roles.enum';
 
 const mockUsersService = {
