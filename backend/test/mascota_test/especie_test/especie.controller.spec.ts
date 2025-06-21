@@ -29,8 +29,8 @@ describe('EspecieController', () => {
   describe('findAll', () => {
     it('debería retornar un arreglo de especies', async () => {
       const result: Especie[] = [
-        { id: 1, nombre: 'Especie 1' } as Especie,
-        { id: 2, nombre: 'Especie 2' } as Especie,
+        { id: 1, nombre: 'Canino' } as Especie,
+        { id: 2, nombre: 'Felino' } as Especie,
       ];
 
       jest.spyOn(especieService, 'findAll').mockResolvedValue(result);
