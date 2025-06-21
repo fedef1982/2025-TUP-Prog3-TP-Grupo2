@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiBody, ApiParam,ApiQuery } from '@nestjs/swagger';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 export function DocPostPublicacion() {
   return applyDecorators(
