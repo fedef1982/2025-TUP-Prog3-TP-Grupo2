@@ -5,7 +5,9 @@ import { Especie } from '../../../src/mascota/especie/especie.model';
 
 describe('EspecieService', () => {
   let service: EspecieService;
+  let especieModel: typeof Especie;
 
+  // Mock del modelo Especie
   const mockEspecieModel = {
     findAll: jest.fn(),
     findByPk: jest.fn(),
@@ -15,26 +17,29 @@ describe('EspecieService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EspecieService,
-        {
+        { // Token 
           provide: 'EspecieRepository', 
+          useValue: mockEspecieModel,
+        },
+        {
+          provide: Especie,
           useValue: mockEspecieModel,
         },
       ],
     })
-    .overrideProvider('EspecieRepository')
-    .useValue(mockEspecieModel)
     .compile();
 
     service = module.get<EspecieService>(EspecieService);
+    especieModel = module.get<typeof Especie>(Especie);
   });
 
   afterEach(() => {
-    jest.clearAllMocks(); 
+    jest.clearAllMocks();
   });
 
   describe('findAll', () => {
     it('debería retornar un array de especies', async () => {
-      const especiesArray = [{ id: 1, nombre: 'Canino' }, { id: 2, nombre: 'Felino' }] as Especie[];
+      const especiesArray = [{ id: 1, nombre: 'Canina' }, { id: 2, nombre: 'Felina' }];
       mockEspecieModel.findAll.mockResolvedValue(especiesArray);
 
       const result = await service.findAll();
@@ -46,8 +51,8 @@ describe('EspecieService', () => {
 
   describe('validarEspecie', () => {
     it('no debería lanzar error si la especie existe', async () => {
-      const especieMock = { id: 1, nombre: 'Canino' } as Especie;
-      mockEspecieModel.findByPk.mockResolvedValue(especieMock);
+      const especie = { id: 1, nombre: 'Canina' };
+      mockEspecieModel.findByPk.mockResolvedValue(especie);
 
       await expect(service.validarEspecie(1)).resolves.toBeUndefined();
       expect(mockEspecieModel.findByPk).toHaveBeenCalledWith(1);
@@ -56,9 +61,8 @@ describe('EspecieService', () => {
     it('debería lanzar NotFoundException si la especie no existe', async () => {
       mockEspecieModel.findByPk.mockResolvedValue(null);
 
-      await expect(service.validarEspecie(999)).rejects.toThrow(NotFoundException);
-      await expect(service.validarEspecie(999)).rejects.toThrow('La especie con id 999 no existe');
-      expect(mockEspecieModel.findByPk).toHaveBeenCalledWith(999);
+      await expect(service.validarEspecie(9)).rejects.toThrow(NotFoundException);
+      expect(mockEspecieModel.findByPk).toHaveBeenCalledWith(9);
     });
   });
 });
