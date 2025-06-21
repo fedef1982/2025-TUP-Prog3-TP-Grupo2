@@ -22,12 +22,12 @@ import {
   DocPatchVisita,
   DocPostVisita,
 } from './visita.doc';
-import { Role } from 'src/auth/roles.enum';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Role } from '../../src/auth/roles.enum';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
+import { Public } from '../../src/auth/decorators/public.decorator';
 import { TrackingVisita } from './dto/tracking-visita.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 @Controller()
 export class VisitaController {
