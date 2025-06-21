@@ -1,13 +1,16 @@
 import { Test } from '@nestjs/testing';
+import { Publicacion, EstadoPublicacion } from '../../src/publicacion/publicacion.model';
 import { PublicacionesController } from '../../src/publicacion/publicacion.controller';
 import { PublicacionesService } from '../../src/publicacion/publicacion.service';
 import { CreatePublicacionDto } from '../../src/publicacion/dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from '../../src/publicacion/dto/update-publicacion.dto';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
-import { Publicacion } from '../../src/publicacion/publicacion.model';
 import { Role } from '../../src/auth/roles.enum';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { Visita } from '../../src/visita/visita.model';
+import { DisponibilidadHoraria } from '../../src/visita/dto/create-visita.dto';
+import { EstadoVisita } from '../../src/visita/dto/create-visita.dto';
 
-// Mock service implementation
 const mockPublicacionesService = {
   findAll: jest.fn(),
   findPublicacionesConFiltros: jest.fn(),
@@ -19,13 +22,66 @@ const mockPublicacionesService = {
   findOnePublicada: jest.fn(),
 };
 
-// Mock request object with user data
 const mockRequest = {
   user: {
     id: 1,
     roles: [Role.PUBLICADOR],
   },
 };
+
+const mockMascota: Mascota = {
+  id: 1,
+  nombre: 'Rocky',
+  raza: 'Labrador',
+  sexo: 'Macho',
+  edad: 3,
+  vacunado: true,
+  tamanio: 'Mediano',
+  fotos_url: [
+    'https://sitioWeb.com/foto1.jpg',
+    'https://sitioWeb.com/foto2.jpg'
+  ],
+  especie_id: 1,
+  condicion_id: 1,
+  usuario_id: 1,
+  createdAt: new Date('2025-06-19T10:00:00Z'),
+  updatedAt: new Date('2025-06-20T10:00:00Z'),
+  deletedAt: new Date('2025-06-20T10:00:00Z'),
+} as Mascota;
+
+const mockVisita: Visita = {
+  id: 1,
+  estado: EstadoVisita.Pendiente,
+  nombre: 'Marcos',
+  apellido: 'Velardez',
+  telefono: '11-2233-4455',
+  email: 'publicadortest@gmail.com',
+  disponibilidad_fecha: new Date('2025-06-01'),
+  disponibilidad_horario: DisponibilidadHoraria.Tarde,
+  descripcion: 'Motivo de la visita',
+  tracking: 'VISIT-20250614-ABC123',
+  publicacion_id: 1,
+  createdAt: new Date('2025-06-20T12:00:00Z'),
+  updatedAt: new Date('2025-06-20T12:00:00Z'),
+  deletedAt: new Date('2025-06-20T12:00:00Z'),
+} as Visita;
+
+
+const mockPublicacion: Publicacion = {
+  id: 1,
+  titulo: 'Publicación de prueba',
+  descripcion: 'Descripción de la publicación de prueba',
+  ubicacion: 'Buenos Aires',
+  contacto: 'contactotest@gmail.com',
+  publicado: new Date('2025-06-20T12:00:00Z'),
+  estado: EstadoPublicacion.Abierta,
+  mascota_id: 1,
+  mascota: mockMascota as Mascota,
+  visita: [mockVisita as Visita],    
+  createdAt: new Date('2025-06-19T10:00:00Z'),
+  updatedAt: new Date('2025-06-20T10:00:00Z'),
+  deletedAt: new Date('2025-06-20T10:00:00Z'),
+} as Publicacion;
 
 describe('PublicacionesController', () => {
   let controller: PublicacionesController;
@@ -44,12 +100,12 @@ describe('PublicacionesController', () => {
 
     controller = moduleRef.get<PublicacionesController>(PublicacionesController);
     service = moduleRef.get<PublicacionesService>(PublicacionesService);
+    
     jest.clearAllMocks();
   });
 
-  // Test 1: Authenticated user - Get all posts
   describe('findAll', () => {
-    it('should return posts for authenticated user', async () => {
+    it('Debería devolver las publicaciones del usuario autenticado.', async () => {
       const result = [{ id: 1 }] as Publicacion[];
       jest.spyOn(service, 'findAll').mockResolvedValue(result);
 
@@ -58,10 +114,9 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 2: Filtered posts with pagination
   describe('findPublicacionesConFiltros', () => {
-    it('should return filtered posts', async () => {
-      const mockResult = { publicaciones: [{}], total: 10, totalPages: 2 };
+    it('Deberían devolverse las publicaciones filtradas.', async () => {
+      const mockResult = { publicaciones: [ mockPublicacion ], total: 10, totalPages: 2 };
       const queryParams = new QueryOpcionesDto();
       jest.spyOn(service, 'findPublicacionesConFiltros').mockResolvedValue(mockResult);
 
@@ -80,9 +135,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 3: Create post
   describe('create', () => {
-    it('should create new post', async () => {
+    it('Debería crear una nueva publicación', async () => {
       const dto = new CreatePublicacionDto();
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'create').mockResolvedValue(result);
@@ -92,9 +146,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 4: Get single post (authenticated)
   describe('findOne', () => {
-    it('should return single post', async () => {
+    it('Debería devolver una sola publicación', async () => {
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'findOne').mockResolvedValue(result);
 
@@ -103,9 +156,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 5: Update post
   describe('update', () => {
-    it('should update existing post', async () => {
+    it('Debería actualizar la publicación existente', async () => {
       const dto = new UpdatePublicacionDto();
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'update').mockResolvedValue(result);
@@ -115,9 +167,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 6: Delete post
   describe('remove', () => {
-    it('should delete post', async () => {
+    it('Debería eliminar la publicación', async () => {
       jest.spyOn(service, 'remove').mockResolvedValue(undefined);
 
       await controller.remove(1, 2, mockRequest as any);
@@ -125,9 +176,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 7: Public endpoint - Get all published posts
   describe('findAllPublicadas', () => {
-    it('should return public posts', async () => {
+    it('Deberían devolverse las publicaciones públicas.', async () => {
       const result = [{ id: 1 }] as Publicacion[];
       jest.spyOn(service, 'findPublicadasYAbiertas').mockResolvedValue(result);
 
@@ -135,9 +185,8 @@ describe('PublicacionesController', () => {
     });
   });
 
-  // Test 8: Public endpoint - Get single published post
   describe('findOnePublicada', () => {
-    it('should return single public post', async () => {
+    it('Debería devolver una única publicación pública.', async () => {
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'findOnePublicada').mockResolvedValue(result);
 
