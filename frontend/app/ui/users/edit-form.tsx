@@ -19,7 +19,6 @@ import { useRouter } from 'next/navigation';
 import { CreateUserState, EditUserFormProps, UpdateUserDto, UpdateUserState } from '@/app/lib/definitions';
 
 
-
 export default function EditUserForm({ user }: EditUserFormProps) {
   const [state, formAction] = useActionState<UpdateUserState, FormData>(
     (prevState, formData) => updateUser(user.id, prevState, formData),
@@ -29,7 +28,8 @@ export default function EditUserForm({ user }: EditUserFormProps) {
 
   useEffect(() => {
     if (state?.success) {
-      router.push('/dashboard'); // Or wherever you want to redirect after update
+      router.push('/dashboard'); 
+        router.refresh(); 
     }
   }, [state, router]);
 

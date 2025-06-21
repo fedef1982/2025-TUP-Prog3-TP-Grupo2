@@ -107,7 +107,7 @@ usuarios::rol_id -right-> roles::id
 'visitas::publicacion_id --> publicaciones::id
 
 usuarios ||--o{ publicaciones : tiene
-publicaciones ||-l-|| mascotas : tiene
+publicaciones }o-l-|| mascotas : tiene
 publicaciones ||-r-o{ visitas : tiene
 
 ' Notas

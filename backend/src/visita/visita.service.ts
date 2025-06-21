@@ -7,17 +7,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Visita } from './visita.model';
 import { CreateVisitaDto, EstadoVisita } from './dto/create-visita.dto';
 import { UpdateVisitaDto } from './dto/update-visita.dto';
-import { JwtPayload } from '../auth/jwt-playload.interface';
-import { AccesoService } from '../acceso/acceso.service';
-import { Publicacion } from '../publicacion/publicacion.model';
-import { Role } from '../auth/roles.enum';
-import { Mascota } from '../mascota/mascota.model';
-import { PublicacionesService } from '../publicacion/publicacion.service';
-import { Especie } from '../mascota/especie/especie.model';
-import { Condicion } from '../mascota/condicion/condicion.model';
-import { User } from '../usuario/usuario.model';
+import { JwtPayload } from '../../src/auth/jwt-playload.interface';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
+import { Role } from '../../src/auth/roles.enum';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { PublicacionesService } from '../../src/publicacion/publicacion.service';
+import { Especie } from '../../src/mascota/especie/especie.model';
+import { Condicion } from '../../src/mascota/condicion/condicion.model';
+import { User } from '../../src/usuario/usuario.model';
 import { TrackingVisita } from './dto/tracking-visita.dto';
-import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 
 @Injectable()

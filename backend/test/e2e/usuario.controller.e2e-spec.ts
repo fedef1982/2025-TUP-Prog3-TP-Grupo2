@@ -3,15 +3,12 @@ import { UsersController } from '../../src/usuario/usuario.controller';
 import { UsersService } from '../../src/usuario/usuario.service';
 import { CreateUsuarioDto } from '../../src/usuario/dto/create-usuario.dto';
 import { UpdateUsuarioDto } from '../../src/usuario/dto/update-usuario.dto';
-
-import { mockUser, mockUsersArray } from '../mocks/mock-user';
-import { mockUsersService } from '../mocks/mock-users-service';
+import { mockUser, mockUsersArray } from '../mocks_2/mock-user';
+import { mockUsersService } from '../mocks_2/mock-users-service';
 import { AuthGuard } from '../../src/auth/auth.guard';
-import { MockAuthGuard } from '../mocks/mock-auth.guard';
+import { MockAuthGuard } from '../mocks_2/mock-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
-
 import { ExecutionContext } from '@nestjs/common';
-
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -63,7 +60,7 @@ describe('UsersController', () => {
       // Simulamos ExecutionContext (contexto de tiempo de ejecución) con la request vacía 
       const mockExecutionContext = {
        switchToHttp: () => ({
-        getRequest: () => ({}),
+          getRequest: () => ({}),
         }),
       } as ExecutionContext;
 

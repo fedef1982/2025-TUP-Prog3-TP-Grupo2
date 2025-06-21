@@ -14,15 +14,16 @@ import { MascotaService } from './mascota.service';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../auth/roles.enum';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { Role } from '../../src/auth/roles.enum';
 import {
   DocDeleteIdMascota,
   DocGetIdMascota,
   DocGetMascota,
   DocPatchMascota,
   DocPostMascota,
+  DocGetMascotaFiltros,
 } from './mascota.doc';
 import { AccesoService } from '../../src/acceso/acceso.service';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
@@ -44,6 +45,7 @@ export class MascotasController {
     return this.mascotaService.findAll(usuarioId, req.user);
   }
 
+  @DocGetMascotaFiltros()
   @Get('filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findMascotasConFiltros(
@@ -60,7 +62,7 @@ export class MascotasController {
 
   @DocPostMascota()
   @Post()
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   create(
     @Body() createMascotaDto: CreateMascotaDto,
     @Param('usuarioId', ParseIntPipe) usuarioId: number,

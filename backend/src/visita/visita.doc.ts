@@ -1,7 +1,9 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiBody, ApiParam,ApiQuery } from '@nestjs/swagger';
 import { CreateVisitaDto } from './dto/create-visita.dto';
 import { UpdateVisitaDto } from './dto/update-visita.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
+
 
 export function DocPostVisita() {
   return applyDecorators(
@@ -53,4 +55,12 @@ export function DocGetTrackingVisita() {
       description: 'codigo tracking de la visita',
     }),
   );
+}
+
+export function DocGetVisitaFiltros(){
+  return applyDecorators(
+    ApiOperation({ summary: 'Devuelve un listado de visitas que cumplan con el criterio de la Query utilizada' }),
+    ApiQuery({ type: QueryOpcionesDto }),
+  );
+
 }

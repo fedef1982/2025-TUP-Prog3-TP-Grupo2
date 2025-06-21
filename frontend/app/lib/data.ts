@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { User, UsersTable, Role, UserStats, FilteredUser } from "./definitions";
-import { getRawToken, getToken } from "./server-utils";
+import { getRawToken, getToken, getUserId } from "./server-utils";
 
 export async function fetchAllUsers(): Promise<User[]> {
   try {
@@ -86,38 +86,20 @@ export async function fetchCurrentUserProfile(): Promise<User> {
   }
 }
 
-/*export async function fetchLatestUsers(): Promise<LatestUser[]> {
+export async function fetchCurrentUserId() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(await cookies()).get('token')?.value}`
-      },
-      next: { revalidate: 3600 }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Fallo al recuperar usuarios: ${response.status}`);
+    const userId = await getUserId();
+    if (!userId) {
+      throw new Error('No se ha encontrado ID de usuario en el token');
     }
 
-    const usersData = await response.json();
-
-    return usersData.map((user: any) => ({
-      id: user.id.toString(),
-      name: user.nombre,
-      lastname: user.apellido,
-      email: user.email,
-      phone: user.telefono,
-      address: user.direccion,
-      role: user.rol_id === 1 ? Role.ADMIN : Role.PUBLICADOR, 
-    }));
-
+    return userId;
   } catch (error) {
-    console.error('Failed to fetch latest users:', error);
-    throw new Error('Failed to fetch latest users');
+    console.error('Error en fetchCurrentUserId:', error);
+    throw error;
   }
-}*/
+  
+}
 
 export async function fetchUserStats(): Promise<UserStats> {
   try {

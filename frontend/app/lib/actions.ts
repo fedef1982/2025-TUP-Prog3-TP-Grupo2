@@ -4,6 +4,7 @@ import { getRawToken, getToken } from "./server-utils";
 import { CreateUserDto, CreateUserState, LoginState, UpdateUserDto, UpdateUserState, User } from './definitions'
 import { cookies } from 'next/headers';
 
+// autenticate
 export async function authenticate(
   prevState: LoginState | undefined,
   formData: FormData
@@ -57,16 +58,13 @@ export async function authenticate(
       };
     }
 
-    // Guardar token en cookies
     (await cookies()).set('token', token, {
       path: '/',
-      maxAge: 60 * 60 * 24, // 1 día en segundos
+      maxAge: 60 * 60 * 24,
       sameSite: 'strict',
       secure: process.env.NODE_ENV === 'production',
     });
    
-
-    // Retornar éxito (la redirección debería manejarse en el cliente)
     return {
       success: true,
       message: 'Login exitoso',
@@ -79,6 +77,7 @@ export async function authenticate(
   }
 }
 
+// Create user
 export async function createUser(
   prevState: CreateUserState | undefined,
   formData: FormData) {
@@ -97,9 +96,6 @@ export async function createUser(
         telefono: telefono,
         direccion: direccion,
     }
-    console.log('######################################################');
-    console.log(userData);
-    console.log('######################################################');
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios`, {
       method: 'POST',
@@ -144,10 +140,6 @@ export async function updateUser(
     if (contrasenia) userData.contrasenia = contrasenia;
     if (telefono) userData.telefono = telefono;
     if (direccion) userData.direccion = direccion;
-
-    console.log('######################################################');
-    console.log('Updating user with ID:', id, 'Data:', userData);
-    console.log('######################################################');
     
     const token = await getRawToken();
 

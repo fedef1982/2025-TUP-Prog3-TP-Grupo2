@@ -14,10 +14,10 @@ import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Public } from '../auth/decorators/public.decorator';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../auth/roles.enum';
-import { AuthenticatedRequest } from '../auth/jwt-playload.interface';
+import { Public } from '../../src/auth/decorators/public.decorator';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { Role } from '../../src/auth/roles.enum';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
@@ -26,6 +26,7 @@ import {
   DocPatchUsuario,
   DocPostUsuario,
   DocGetUsuarioEstadisticas,
+  DocGetUsuarioFiltros,
 } from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
@@ -41,6 +42,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @DocGetUsuarioFiltros()
   @Get(':id/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findUsuariosConFiltros(
@@ -57,7 +59,7 @@ export class UsersController {
   getPerfil(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
-  ) {
+  ): Promise<User> {
     return this.usersService.findOne(id, req.user);
   }
 

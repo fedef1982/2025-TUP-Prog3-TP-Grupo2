@@ -3,7 +3,7 @@ skinparam componentStyle rectangle
 
 ' Frontend
 package "Frontend (NextJS)" {
-  [UI (Pantallas)] as UI
+  [UI (Tailwind)] as UI
   [API Client (axios)] as APIClient
 }
 
@@ -11,8 +11,10 @@ package "Frontend (NextJS)" {
 package "Backend (NestJS)" {
   [Controller] as Controller
   [Service] as Service
+  package "capa de validacion" {
   [DTOs] as DTO
-  [Models/Entities] as Models
+  [Models] as Models
+  }
   [Auth Module] as Auth
   [Swagger Doc] as Swagger
 }
@@ -20,16 +22,20 @@ package "Backend (NestJS)" {
 ' Base de datos
 database "PostgreSQL" as DB
 
-' Relaciones internas
-UI --> APIClient : Solicita datos
-APIClient --> Controller : HTTP Request
-Controller --> DTO : Usa para validación  
-Controller --> Service : Lógica de negocio
-Service --> Models : Acceso a datos
-Models --> DB : ORM (Sequelize)
+' Relaciones
+UI <--> APIClient : Solicita datos
+APIClient <--> Controller : HTTP Request
+Service <--> DTO : Usa para validar  
+Controller <--> Service : Lógica de negocio
+Service <--> Models : Acceso a datos
+Models <--> DB : ORM (Sequelize)
+Service <--> Auth : Verificación JWT
 
-' Opcional: relaciones auxiliares
-Controller --> Swagger : Documentación API
-Controller --> Auth : Verificación JWT/token
+' Notas
+note right of Swagger
+Documentación API
+decorando Controllers,
+DTOs y Models
+end note
 
 @enduml

@@ -25,6 +25,7 @@ import {
   DocGetPublicacion,
   DocPatchPublicacion,
   DocPostPublicacion,
+  DocGetPublicacionFiltros,
 } from './publicacion.doc';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
@@ -43,6 +44,7 @@ export class PublicacionesController {
     return this.publicacionesService.findAll(usuarioId, req.user);
   }
 
+  @DocGetPublicacionFiltros()
   @Get('usuarios/:usuarioId/publicaciones/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findPublicacionesConFiltros(

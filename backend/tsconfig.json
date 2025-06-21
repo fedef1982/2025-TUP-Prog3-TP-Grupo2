@@ -22,7 +22,7 @@
   "include": [
     "src/**/*",
     "src/test/*.*"
-, "test/usuario.controller.e2e-spec.ts", "test/mocks/mock-auth.guard.ts", "test/mocks/mock-user.ts", "test/mocks/mock-users-service.ts", "test/e2e/usuario.model.e2e-spec.ts"  ],
+, "test/usuario.controller.e2e-spec.ts", "test/mocks_2/mock-auth.guard.ts", "test/mocks_2/mock-user.ts", "test/mocks_2/mock-users-service.ts"  ],
   "exclude": [
     "node_modules"
   ]

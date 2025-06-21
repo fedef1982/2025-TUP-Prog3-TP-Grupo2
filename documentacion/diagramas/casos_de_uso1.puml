@@ -2,7 +2,6 @@
 
 'caso de uso 1 
 'Usuario publicador (registrado y autenticado):
-'Ver Registrarse o Iniciar sesión o Crear publicación
 
 actor "Usuario publicador" as Publicador
 
@@ -10,11 +9,11 @@ rectangle "web AdoptAR" {
     
     (Registrarse) as Registrarse
     (Iniciar sesión) as IniciarSesion
-    (Crear publicación) as CrearPublicacion
+    (Crear mascota) as CrearMascota
 }
 
 Publicador --> Registrarse
-Publicador --> IniciarSesion
-IniciarSesion --> CrearPublicacion
+Publicador -[#green]-> IniciarSesion
+IniciarSesion -[#green]-> CrearMascota
 
 @enduml
