@@ -9,7 +9,7 @@ class AuthService <<Service>> {
 
 }
 
-class AuthService <<Controller>> {
+class AuthController <<Controller>> {
 
     signIn(loginDto: LoginDto): Promise<{access_token: string}>
 
@@ -50,4 +50,8 @@ class QueryOpcionesDto <<DTO>> {
     sortBy: string
     sortOrder: string
 }
+
+/' Relaciones '/
+AuthController ..> AuthService 
+
 @enduml

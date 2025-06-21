@@ -33,7 +33,7 @@ class UpdateUsuarioDto <<DTO>>{
   telefono : string
   direccion : string  
   }
-
+/' 
 class QueryUsuariosDto <<DTO>>{
   q: string
   page: number
@@ -42,6 +42,8 @@ class QueryUsuariosDto <<DTO>>{
   sortOrder: string
 
   }
+  '/
+
 class UsersController <<Controller>> {
 
   'constructor UsersController(usersService: UsersService): UsersController
@@ -93,5 +95,13 @@ enum ROLES{
     ADMIN = 'Admin',
     PUBLICADOR = 'Publicador'
 }
+
+/' Relaciones '/
+UsersController ..> UsersService 
+UsersService ..> CreateUsuarioDto 
+UsersService ..> UpdateUsuarioDto 
+UsersService ..> User
+
+User ..> ROLES
 
 @enduml

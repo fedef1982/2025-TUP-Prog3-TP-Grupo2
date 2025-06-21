@@ -91,4 +91,17 @@ enum DisponibilidadHoraria {
   Noche = 'Noche',
 }
 
+/' Relaciones '/
+VisitaController ..> VisitaService 
+VisitaService ..> CreateVisitaDto 
+VisitaService ..> UpdateVisitaDto 
+VisitaService ..> Visita
+
+CreateVisitaDto  ..> EstadoVisita
+CreateVisitaDto  ..> DisponibilidadHoraria
+UpdateVisitaDto  ..> EstadoVisita
+UpdateVisitaDto  ..> DisponibilidadHoraria
+Visita ..> EstadoVisita
+Visita ..> DisponibilidadHoraria
+
 @enduml

@@ -79,4 +79,13 @@ enum EstadoPublicacion {
   Cerrada = 'Cerrada',
 }
 
+/' Relaciones '/
+PublicacionesController ..> PublicacionesService 
+PublicacionesService ..> CreatePublicacionDto 
+PublicacionesService ..> UpdatePublicacionDto 
+PublicacionesService ..> Publicacion
+
+Publicacion ..> EstadoPublicacion
+UpdatePublicacionDto ..> EstadoPublicacion
+
 @enduml
