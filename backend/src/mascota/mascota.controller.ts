@@ -23,6 +23,7 @@ import {
   DocGetMascota,
   DocPatchMascota,
   DocPostMascota,
+  DocGetMascotaFiltros,
 } from './mascota.doc';
 import { AccesoService } from '../../src/acceso/acceso.service';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
@@ -44,6 +45,7 @@ export class MascotasController {
     return this.mascotaService.findAll(usuarioId, req.user);
   }
 
+  @DocGetMascotaFiltros()
   @Get('filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findMascotasConFiltros(
@@ -60,7 +62,7 @@ export class MascotasController {
 
   @DocPostMascota()
   @Post()
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   create(
     @Body() createMascotaDto: CreateMascotaDto,
     @Param('usuarioId', ParseIntPipe) usuarioId: number,

@@ -21,6 +21,7 @@ import {
   DocGetVisita,
   DocPatchVisita,
   DocPostVisita,
+  DocGetVisitaFiltros,
 } from './visita.doc';
 import { Role } from '../../src/auth/roles.enum';
 import { Roles } from '../../src/auth/decorators/roles.decorator';
@@ -44,6 +45,7 @@ export class VisitaController {
     return this.visitaService.findAll(usuarioId, req.user);
   }
 
+  @DocGetVisitaFiltros()
   @Get('usuarios/:usuarioId/visitas/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findVisitasConFiltros(

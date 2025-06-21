@@ -26,6 +26,7 @@ import {
   DocPatchUsuario,
   DocPostUsuario,
   DocGetUsuarioEstadisticas,
+  DocGetUsuarioFiltros,
 } from './usuario.doc';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
 import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
@@ -41,6 +42,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @DocGetUsuarioFiltros()
   @Get(':id/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findUsuariosConFiltros(
@@ -57,7 +59,7 @@ export class UsersController {
   getPerfil(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
-  ) {
+  ): Promise<User> {
     return this.usersService.findOne(id, req.user);
   }
 

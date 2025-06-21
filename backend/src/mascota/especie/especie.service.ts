@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Especie } from './especie.model';
 
+
 @Injectable()
 export class EspecieService {
   constructor(

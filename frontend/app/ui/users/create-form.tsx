@@ -26,6 +26,7 @@ export default function CreateUserForm() {
   useEffect(() => {
     if (state?.success) {
       router.push('/login');
+      router.refresh(); 
     }
   }, [state, router]);
 
