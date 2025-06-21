@@ -15,8 +15,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return "Bienvenido a la API de AdoptAR!"', () => {
+      expect(appController.getHello()).toBe(
+        'Bienvenido a la API de AdoptAR! Puedes ver la documentación en http://localhost:3001/api',
+      );
     });
   });
 });

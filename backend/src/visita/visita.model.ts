@@ -13,7 +13,7 @@ import {
 } from 'sequelize-typescript';
 import { EstadoVisita } from './dto/create-visita.dto';
 import { DisponibilidadHoraria } from './dto/create-visita.dto';
-import { Publicacion } from 'src/publicacion/publicacion.model';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'visitas', paranoid: true })
