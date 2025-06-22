@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PublicacionesService } from '../../src/publicacion/publicacion.service';
-import { Publicacion, EstadoPublicacion } from '../../src/publicacion/publicacion.model';
+import {
+  Publicacion,
+  EstadoPublicacion,
+} from '../../src/publicacion/publicacion.model';
 import { MascotaService } from '../../src/mascota/mascota.service';
 import { AccesoService } from '../../src/acceso/acceso.service';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
@@ -17,7 +20,7 @@ const mockPublicacionModel = {
 };
 
 const mockMascotaModel = {
-  // PublicacionesService ya está inyectando el modelo correspondiente 
+  // PublicacionesService ya está inyectando el modelo correspondiente
 };
 
 const mockMascotaService = {
@@ -32,14 +35,14 @@ const mockAccesoService = {
 describe('PublicacionesService', () => {
   let service: PublicacionesService;
 
-  const mockPublicador: JwtPayload = { 
-    sub: 1, 
-    rol_id: Number(Role.PUBLICADOR) 
+  const mockPublicador: JwtPayload = {
+    sub: 1,
+    rol_id: Number(Role.PUBLICADOR),
   } as JwtPayload;
 
-  const mockAdmin: JwtPayload = { 
-    sub: 99, 
-    rol_id: Number(Role.ADMIN) 
+  const mockAdmin: JwtPayload = {
+    sub: 99,
+    rol_id: Number(Role.ADMIN),
   } as JwtPayload;
 
   const mockPublicacion = {
@@ -91,13 +94,18 @@ describe('PublicacionesService', () => {
       const result = await service.validarPublicacion(1);
 
       expect(result).toEqual(mockPublicacion);
-      expect(mockPublicacionModel.findByPk).toHaveBeenCalledWith(1, expect.any(Object));
+      expect(mockPublicacionModel.findByPk).toHaveBeenCalledWith(
+        1,
+        expect.any(Object),
+      );
     });
 
     it('debería lanzar NotFoundException si no existe la publicación', async () => {
       mockPublicacionModel.findByPk.mockResolvedValue(null);
 
-      await expect(service.validarPublicacion(1)).rejects.toThrow(NotFoundException);
+      await expect(service.validarPublicacion(1)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -108,14 +116,19 @@ describe('PublicacionesService', () => {
 
       const result = await service.findAll(mockPublicador.sub, mockPublicador);
 
-      expect(mockAccesoService.verificarUsuarioDeRuta).toHaveBeenCalledWith(mockPublicador, mockPublicador.sub);
-      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(expect.objectContaining({
-        include: expect.arrayContaining([
-          expect.objectContaining({
-            where: { usuario_id: mockPublicador.sub },
-          }),
-        ]),
-      }));
+      expect(mockAccesoService.verificarUsuarioDeRuta).toHaveBeenCalledWith(
+        mockPublicador,
+        mockPublicador.sub,
+      );
+      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.arrayContaining([
+            expect.objectContaining({
+              where: { usuario_id: mockPublicador.sub },
+            }),
+          ]),
+        }),
+      );
       expect(result).toEqual([mockPublicacion]);
     });
 
@@ -125,13 +138,15 @@ describe('PublicacionesService', () => {
 
       const result = await service.findAll(mockPublicador.sub, mockAdmin);
 
-      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(expect.objectContaining({
-        include: expect.arrayContaining([
-          expect.objectContaining({
-            where: {},
-          }),
-        ]),
-      }));
+      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          include: expect.arrayContaining([
+            expect.objectContaining({
+              where: {},
+            }),
+          ]),
+        }),
+      );
 
       expect(result).toEqual([mockPublicacion]);
     });
@@ -153,78 +168,94 @@ describe('PublicacionesService', () => {
       mockAccesoService.verificarUsuarioDeRuta.mockImplementation(() => {});
       mockAccesoService.verificarAcceso.mockImplementation(() => {});
 
-      const result = await service.create(createDto, mockPublicador.sub, mockPublicador);
+      const result = await service.create(
+        createDto,
+        mockPublicador.sub,
+        mockPublicador,
+      );
 
-      expect(mockMascotaService.validarMascota).toHaveBeenCalledWith(createDto.mascota_id);
-      expect(mockAccesoService.verificarAcceso).toHaveBeenCalledWith(mockPublicador, { usuario_id: mockMascota.usuario_id });
-      expect(mockPublicacionModel.create).toHaveBeenCalledWith(expect.objectContaining({
-        titulo: createDto.titulo,
-        descripcion: createDto.descripcion,
-        ubicacion: createDto.ubicacion,
-        contacto: createDto.contacto,
-        mascota_id: mockMascota.id,
-        estado: EstadoPublicacion.Abierta,
-      }));
+      expect(mockMascotaService.validarMascota).toHaveBeenCalledWith(
+        createDto.mascota_id,
+      );
+      expect(mockAccesoService.verificarAcceso).toHaveBeenCalledWith(
+        mockPublicador,
+        { usuario_id: mockMascota.usuario_id },
+      );
+      expect(mockPublicacionModel.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          titulo: createDto.titulo,
+          descripcion: createDto.descripcion,
+          ubicacion: createDto.ubicacion,
+          contacto: createDto.contacto,
+          mascota_id: mockMascota.id,
+          estado: EstadoPublicacion.Abierta,
+        }),
+      );
 
       expect(result).toEqual(mockPublicacion);
     });
   });
 
   describe('update', () => {
-  it('debería actualizar la publicación si usuario es admin y estado es correcto', async () => {
-    const updateDto = {
-      titulo: 'Nueva Publicación',
-      descripcion: 'Nueva descripción',
-      ubicacion: 'Bs. As.',
-      contacto: '1122223333',
-      // Se agrega para simular publicación
-      publicado: new Date('2025-06-19T10:00:00Z'), 
-    };
+    it('debería actualizar la publicación si usuario es admin y estado es correcto', async () => {
+      const updateDto = {
+        titulo: 'Nueva Publicación',
+        descripcion: 'Nueva descripción',
+        ubicacion: 'Bs. As.',
+        contacto: '1122223333',
+        // Se agrega para simular publicación
+        publicado: new Date('2025-06-19T10:00:00Z'),
+      };
 
-    jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
-    mockPublicacion.estado = EstadoPublicacion.Abierta;
-    mockPublicacion.update = jest.fn().mockResolvedValue(mockPublicacion);
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
+      mockPublicacion.estado = EstadoPublicacion.Abierta;
+      mockPublicacion.update = jest.fn().mockResolvedValue(mockPublicacion);
 
-    const result = await service.update(1, updateDto, mockAdmin.sub, mockAdmin);
+      const result = await service.update(
+        1,
+        updateDto,
+        mockAdmin.sub,
+        mockAdmin,
+      );
 
-    expect(result).toEqual(mockPublicacion);
-    expect(mockPublicacion.update).toHaveBeenCalledWith(updateDto);
+      expect(result).toEqual(mockPublicacion);
+      expect(mockPublicacion.update).toHaveBeenCalledWith(updateDto);
+    });
+
+    it('debería lanzar ForbiddenException si usuario no es admin y quiere publicar', async () => {
+      const updateDto = {
+        // Necesario para activar la validación
+        publicado: new Date('2025-06-19T10:00:00Z'),
+        titulo: 'Nuevo título',
+        descripcion: 'descripción',
+        ubicacion: 'Nueva ubicación',
+        contacto: '1122223333',
+      };
+
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
+      mockPublicacion.estado = EstadoPublicacion.Abierta;
+
+      await expect(
+        service.update(1, updateDto, mockPublicador.sub, mockPublicador),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('debería lanzar ForbiddenException si estado no es Abierta y se intenta cerrar', async () => {
+      const updateDto = {
+        titulo: 'Nuevo título',
+        descripcion: 'descripción',
+        ubicacion: 'Nueva ubicación',
+        contacto: '1122223333',
+        estado: EstadoPublicacion.Cerrada,
+      };
+      jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
+      mockPublicacion.estado = EstadoPublicacion.Cerrada;
+
+      await expect(
+        service.update(1, updateDto, mockAdmin.sub, mockAdmin),
+      ).rejects.toThrow(ForbiddenException);
+    });
   });
-
-  it('debería lanzar ForbiddenException si usuario no es admin y quiere publicar', async () => {
-    const updateDto = { 
-      // Necesario para activar la validación
-      publicado: new Date('2025-06-19T10:00:00Z'), 
-      titulo: 'Nuevo título',
-      descripcion: 'descripción',
-      ubicacion: 'Nueva ubicación',
-      contacto: '1122223333'
-    };
-    
-    jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
-    mockPublicacion.estado = EstadoPublicacion.Abierta;
-
-    await expect(
-      service.update(1, updateDto, mockPublicador.sub, mockPublicador)
-    ).rejects.toThrow(ForbiddenException);
-  });
-
-  it('debería lanzar ForbiddenException si estado no es Abierta y se intenta cerrar', async () => {
-    const updateDto = { 
-      titulo: 'Nuevo título',
-      descripcion: 'descripción',
-      ubicacion: 'Nueva ubicación',
-      contacto: '1122223333',
-      estado: EstadoPublicacion.Cerrada 
-    };
-    jest.spyOn(service, 'findOne').mockResolvedValue(mockPublicacion);
-    mockPublicacion.estado = EstadoPublicacion.Cerrada;
-
-    await expect(
-      service.update(1, updateDto, mockAdmin.sub, mockAdmin)
-    ).rejects.toThrow(ForbiddenException);
-  });
-});
 
   describe('remove', () => {
     it('debería eliminar la publicación', async () => {
@@ -243,41 +274,133 @@ describe('PublicacionesService', () => {
 
       const result = await service.findPublicadasYAbiertas();
 
-      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(expect.objectContaining({
-        where: {
-          estado: EstadoPublicacion.Abierta,
-          publicado: { [Op.not]: null },
-        },
-      }));
+      expect(mockPublicacionModel.findAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            estado: EstadoPublicacion.Abierta,
+            publicado: { [Op.not]: null },
+          },
+        }),
+      );
 
       expect(result).toEqual([mockPublicacion]);
     });
   });
-  
+
   describe('findOnePublicada', () => {
     it('debería devolver una publicación abierta y publicada', async () => {
       mockPublicacionModel.findOne.mockResolvedValue(mockPublicacion);
 
       const result = await service.findOnePublicada(1);
 
-      expect(mockPublicacionModel.findOne).toHaveBeenCalledWith(expect.objectContaining({
-        where: {
-          id: 1,
-          estado: EstadoPublicacion.Abierta,
-          publicado: { [Op.not]: null },
-        },
-      }));
-      
+      expect(mockPublicacionModel.findOne).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            id: 1,
+            estado: EstadoPublicacion.Abierta,
+            publicado: { [Op.not]: null },
+          },
+        }),
+      );
+
       expect(result).toEqual(mockPublicacion);
     });
 
     it('debería lanzar NotFoundException si no existe publicación abierta y publicada', async () => {
       mockPublicacionModel.findOne.mockResolvedValue(null);
 
-      await expect(service.findOnePublicada(1)).rejects.toThrow(NotFoundException);
+      await expect(service.findOnePublicada(1)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
-  
+
+  describe('findPublicadasYAbiertasConFiltros', () => {
+    it('debería devolver publicaciones abiertas y publicadas SIN filtro de texto', async () => {
+      const mockFindAndCount = {
+        count: 2,
+        rows: [mockPublicacion, mockPublicacion],
+      };
+
+      const params = {
+        page: 1,
+        limit: 10,
+        sortBy: 'titulo',
+        sortOrder: 'asc',
+      };
+
+      mockPublicacionModel.findAndCountAll.mockResolvedValue(mockFindAndCount);
+
+      const result = await service.findPublicadasYAbiertasConFiltros(
+        params as any,
+      );
+
+      expect(mockPublicacionModel.findAndCountAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            estado: EstadoPublicacion.Abierta,
+            publicado: { [Op.not]: null },
+          },
+          limit: 10,
+          offset: 0,
+          order: [['titulo', 'asc']],
+          include: expect.any(Array),
+        }),
+      );
+
+      expect(result).toEqual({
+        publicaciones: mockFindAndCount.rows,
+        total: mockFindAndCount.count,
+        totalPages: Math.ceil(mockFindAndCount.count / 10),
+      });
+    });
+
+    it('debería devolver publicaciones abiertas y publicadas CON filtro de texto', async () => {
+      const mockFindAndCount = {
+        count: 1,
+        rows: [mockPublicacion],
+      };
+
+      const params = {
+        q: 'Test',
+        page: 2,
+        limit: 5,
+        sortBy: 'titulo',
+        sortOrder: 'desc',
+      };
+
+      mockPublicacionModel.findAndCountAll.mockResolvedValue(mockFindAndCount);
+
+      const result = await service.findPublicadasYAbiertasConFiltros(
+        params as any,
+      );
+
+      expect(mockPublicacionModel.findAndCountAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: {
+            estado: EstadoPublicacion.Abierta,
+            publicado: { [Op.not]: null },
+            [Op.or]: [
+              { titulo: { [Op.iLike]: '%Test%' } },
+              { descripcion: { [Op.iLike]: '%Test%' } },
+              { ubicacion: { [Op.iLike]: '%Test%' } },
+            ],
+          },
+          limit: 5,
+          offset: 5,
+          order: [['titulo', 'desc']],
+          include: expect.any(Array),
+        }),
+      );
+
+      expect(result).toEqual({
+        publicaciones: mockFindAndCount.rows,
+        total: mockFindAndCount.count,
+        totalPages: Math.ceil(mockFindAndCount.count / 5),
+      });
+    });
+  });
+
   describe('findPublicacionesConFiltros', () => {
     it('debería devolver publicaciones filtradas con paginación', async () => {
       mockAccesoService.verificarUsuarioDeRuta.mockReturnValue(undefined);
@@ -296,15 +419,21 @@ describe('PublicacionesService', () => {
         sortOrder: 'asc',
       };
 
-      const result = await service.findPublicacionesConFiltros(1, mockPublicador, params as any);
+      const result = await service.findPublicacionesConFiltros(
+        1,
+        mockPublicador,
+        params as any,
+      );
 
-      expect(mockPublicacionModel.findAndCountAll).toHaveBeenCalledWith(expect.objectContaining({
-        where: expect.any(Object),
-        limit: 2,
-        offset: 0,
-        order: [['titulo', 'asc']],
-        include: expect.any(Array),
-      }));
+      expect(mockPublicacionModel.findAndCountAll).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.any(Object),
+          limit: 2,
+          offset: 0,
+          order: [['titulo', 'asc']],
+          include: expect.any(Array),
+        }),
+      );
 
       expect(result).toEqual({
         publicaciones: mockFindAndCount.rows,
