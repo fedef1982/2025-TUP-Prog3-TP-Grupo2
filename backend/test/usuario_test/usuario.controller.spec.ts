@@ -38,6 +38,10 @@ describe('UsersController', () => {
     controller = module.get<UsersController>(UsersController);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('findAll', () => {
     it('debería devolver todos los usuarios', async () => {
       mockUsersService.findAll.mockResolvedValue([mockUserData]);
