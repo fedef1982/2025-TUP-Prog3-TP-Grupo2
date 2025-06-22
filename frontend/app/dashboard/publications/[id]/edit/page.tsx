@@ -1,70 +1,64 @@
 import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
-import { fetchPetById, fetchAllSpecies, fetchAllConditions } from '@/app/lib/dataPets';
+import { fetchPublicationById } from '@/app/lib/dataPublications';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import EditPetForm from '@/app/ui/pets/edit-form';
-import { Pet, Species, Condition } from '@/app/lib/definitionsPets';
+import EditPublicationForm from '@/app/ui/publications/edit-form';
+import { fetchUserPets } from '@/app/lib/dataPets';
 
 export const metadata: Metadata = {
-  title: 'Editar mascota',
+  title: 'Editar publicación',
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-
   if (!params?.id) {
-    console.error('Parámetro petId no definido en la URL');
+    console.error('Parámetro publicationId no definido en la URL');
     notFound();
   }
 
   try {
+    const publicationId = Math.floor(Number(params.id));
 
-    const petId = Math.floor(Number(params.id));
-
-    if (!Number.isSafeInteger(petId) || petId <= 0) {
-      console.error(`ID de mascota inválido: ${params.id}`);
+    if (!Number.isSafeInteger(publicationId) || publicationId <= 0) {
+      console.error(`ID de publicación inválido: ${params.id}`);
       notFound();
     }
 
-    const data = await Promise.allSettled([
-      fetchPetById(petId),
-      fetchAllSpecies(),
-      fetchAllConditions()
+    // Obtener la publicación y las mascotas del usuario en paralelo
+    const [publicationResult, petsResult] = await Promise.allSettled([
+      fetchPublicationById(publicationId),
+      fetchUserPets() // Asumo que tienes o crearás esta función
     ]);
 
-    const [petResult, speciesResult, conditionsResult] = data;
-
-    if (petResult.status === 'rejected' || !petResult.value) {
-      console.error('Error al obtener mascota:', petResult.status === 'rejected' ? petResult.reason : 'Datos vacíos');
+    if (publicationResult.status === 'rejected' || !publicationResult.value) {
+      console.error('Error al obtener publicación:', publicationResult.status === 'rejected' ? publicationResult.reason : 'Datos vacíos');
       notFound();
     }
 
-    const pet = petResult.value;
+    const publication = publicationResult.value;
 
-    if (!pet || pet.id !== petId) {
-      console.error(`Mismatch en ID de mascota: Esperado ${petId}, Obtenido ${pet?.id}`);
+    if (!publication || publication.id !== publicationId) {
+      console.error(`Mismatch en ID de publicación: Esperado ${publicationId}, Obtenido ${publication?.id}`);
       notFound();
     }
 
-    const species = speciesResult.status === 'fulfilled' ? speciesResult.value : [];
-    const conditions = conditionsResult.status === 'fulfilled' ? conditionsResult.value : [];
+    const pets = petsResult.status === 'fulfilled' ? petsResult.value : [];
 
     return (
       <main>
         <Breadcrumbs
           breadcrumbs={[
-            { label: 'Mascotas', href: '/dashboard/pets' },
+            { label: 'Publicaciones', href: '/dashboard/publications' },
             {
-              label: 'Editar mascota',
-              href: `/dashboard/pets/${petId}/edit`,
+              label: 'Editar publicación',
+              href: `/dashboard/publications/${publicationId}/edit`,
               active: true,
             },
           ]}
         />
-        <EditPetForm 
-          pet={pet} 
-          userId={pet.usuario_id}
-          species={species}
-          conditions={conditions}
+        <EditPublicationForm 
+          publication={publication} 
+          userId={publication.mascota.usuario_id}
+          pets={pets}
         />
       </main>
     );

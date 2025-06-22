@@ -61,6 +61,7 @@ export default function EditPetForm({
     if (state?.success && !isRedirecting) {
       setIsRedirecting(true);
       router.push('/dashboard/pets');
+      router.refresh(); 
     }
   }, [state, router, isRedirecting]);
 

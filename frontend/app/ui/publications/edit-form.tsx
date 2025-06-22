@@ -8,6 +8,7 @@ import {
   InformationCircleIcon,
   ArrowLeftIcon,
   DocumentTextIcon,
+  CheckCircleIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
@@ -19,7 +20,6 @@ import { UpdatePublicationState, PublicationWithPet } from '@/app/lib/definition
 import { useRouter } from 'next/navigation';
 import { PetSelect } from './pet-select';
 import { Pet } from '@/app/lib/definitionsPets';
-
 
 export default function EditPublicationForm({ 
   publication, 
@@ -47,6 +47,7 @@ export default function EditPublicationForm({
     if (state?.success && !isRedirecting) {
       setIsRedirecting(true);
       router.push('/dashboard/publications');
+      router.refresh(); 
     }
   }, [state, router, isRedirecting]);
 
@@ -56,13 +57,19 @@ export default function EditPublicationForm({
       
       <div className="rounded-md bg-gray-200 p-4 md:p-6">
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
-          Edit Publication: {publication.titulo}
+          Editar Publicación: {publication.titulo}
         </h1>
 
-        {/* Title */}
+        {state?.success && (
+          <div className="mb-4 flex items-center rounded-md bg-green-100 p-4 text-green-700">
+            <CheckCircleIcon className="mr-2 h-5 w-5" />
+            <p>{state.message || 'Publication updated successfully!'}</p>
+          </div>
+        )}
+
         <div className="mb-4">
           <label htmlFor="titulo" className="mb-2 block text-sm font-medium">
-            Title <span className="text-red-500">*</span>
+            Título <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -73,12 +80,17 @@ export default function EditPublicationForm({
                 placeholder="Publication title"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
+                minLength={3}
+                maxLength={100}
                 defaultValue={publication.titulo}
+                aria-describedby="titulo-error"
               />
               <DocumentTextIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             {state?.errors?.titulo && (
-              <p className="mt-2 text-sm text-red-500">{state.errors.titulo.join(', ')}</p>
+              <p id="titulo-error" className="mt-2 text-sm text-red-500">
+                {state.errors.titulo.join(', ')}
+              </p>
             )}
           </div>
         </div>
@@ -86,7 +98,7 @@ export default function EditPublicationForm({
         {/* Description */}
         <div className="mb-4">
           <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
-            Description <span className="text-red-500">*</span>
+            Descripción <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <textarea
@@ -96,19 +108,23 @@ export default function EditPublicationForm({
               placeholder="Detailed description of the publication"
               className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               required
+              minLength={10}
+              maxLength={500}
               defaultValue={publication.descripcion}
+              aria-describedby="descripcion-error"
             />
             <InformationCircleIcon className="pointer-events-none absolute left-3 top-4 h-[18px] w-[18px] text-gray-500 peer-focus:text-gray-900" />
           </div>
           {state?.errors?.descripcion && (
-            <p className="mt-2 text-sm text-red-500">{state.errors.descripcion.join(', ')}</p>
+            <p id="descripcion-error" className="mt-2 text-sm text-red-500">
+              {state.errors.descripcion.join(', ')}
+            </p>
           )}
         </div>
 
-        {/* Location */}
         <div className="mb-4">
           <label htmlFor="ubicacion" className="mb-2 block text-sm font-medium">
-            Location <span className="text-red-500">*</span>
+            Ubicación <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -119,20 +135,24 @@ export default function EditPublicationForm({
                 placeholder="Where is the pet located?"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
+                minLength={3}
+                maxLength={100}
                 defaultValue={publication.ubicacion}
+                aria-describedby="ubicacion-error"
               />
               <MapPinIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             {state?.errors?.ubicacion && (
-              <p className="mt-2 text-sm text-red-500">{state.errors.ubicacion.join(', ')}</p>
+              <p id="ubicacion-error" className="mt-2 text-sm text-red-500">
+                {state.errors.ubicacion.join(', ')}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Contact */}
         <div className="mb-4">
           <label htmlFor="contacto" className="mb-2 block text-sm font-medium">
-            Contact Information <span className="text-red-500">*</span>
+            Informacion de contacto <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -143,12 +163,17 @@ export default function EditPublicationForm({
                 placeholder="Phone number or email"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
+                minLength={5}
+                maxLength={50}
                 defaultValue={publication.contacto}
+                aria-describedby="contacto-error"
               />
               <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             {state?.errors?.contacto && (
-              <p className="mt-2 text-sm text-red-500">{state.errors.contacto.join(', ')}</p>
+              <p id="contacto-error" className="mt-2 text-sm text-red-500">
+                {state.errors.contacto.join(', ')}
+              </p>
             )}
           </div>
         </div>
@@ -164,14 +189,15 @@ export default function EditPublicationForm({
             required
           />
           {state?.errors?.estado && (
-            <p className="mt-2 text-sm text-red-500">{state.errors.estado.join(', ')}</p>
+            <p className="mt-2 text-sm text-red-500">
+              {state.errors.estado.join(', ')}
+            </p>
           )}
         </div>
 
-        {/* Publication Status */}
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium">
-            Status
+            Estado <span className="text-red-500">*</span>
           </label>
           <div className="flex gap-4">
             <label className="flex items-center">
@@ -181,6 +207,7 @@ export default function EditPublicationForm({
                 value="Abierta"
                 className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
                 defaultChecked={publication.estado === 'Abierta'}
+                aria-describedby="estado-error"
               />
               <span className="ml-2">Open</span>
             </label>
@@ -191,32 +218,54 @@ export default function EditPublicationForm({
                 value="Cerrada"
                 className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
                 defaultChecked={publication.estado === 'Cerrada'}
+                aria-describedby="estado-error"
               />
               <span className="ml-2">Closed</span>
             </label>
           </div>
           {state?.errors?.estado && (
-            <p className="mt-2 text-sm text-red-500">{state.errors.estado.join(', ')}</p>
+            <p id="estado-error" className="mt-2 text-sm text-red-500">
+              {state.errors.estado.join(', ')}
+            </p>
           )}
         </div>
 
-        <UpdatePublicationButton />
+        {publication.mascota.usuario_id === 1 && (
+          <div className="mb-4">
+            <label className="mb-2 block text-sm font-medium">
+              Publicado
+            </label>
+            <div className="flex items-center">
+              <input
+                id="publicado"
+                name="publicado"
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                defaultChecked={publication.publicado !== null}
+              />
+              <label htmlFor="publicado" className="ml-2 text-sm">
+                Publicar
+              </label>
+            </div>
+          </div>
+        )}
 
-        <div className="mt-4 flex justify-center">
+        <div className="flex gap-4">
+          <UpdatePublicationButton />
           <Link 
             href="/dashboard/publications" 
-            className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+            className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
-            Back to Publications
+            Cancelar
           </Link>
         </div>
 
         {state?.message && !state.success && (
-          <p className="mt-2 flex items-center text-sm text-red-500">
-            <ExclamationCircleIcon className="mr-1 h-5 w-5" />
-            {state.message}
-          </p>
+          <div className="mt-4 flex items-center rounded-md bg-red-100 p-4 text-red-700">
+            <ExclamationCircleIcon className="mr-2 h-5 w-5" />
+            <p>{state.message}</p>
+          </div>
         )}
       </div>
     </form>
@@ -233,8 +282,20 @@ function UpdatePublicationButton() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? 'Updating...' : 'Update Publication'} 
-      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      {pending ? (
+        <span className="flex items-center justify-center">
+          <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Updating...
+        </span>
+      ) : (
+        <>
+          Update Publication
+          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </>
+      )}
     </Button>
   );
 }

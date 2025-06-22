@@ -125,11 +125,12 @@ export async function updatePublication(
       };
     }
 
-    const titulo = formData.get('titulo') as string;
-    const descripcion = formData.get('descripcion') as string;
-    const ubicacion = formData.get('ubicacion') as string;
-    const contacto = formData.get('contacto') as string;
-    const estado = formData.get('estado') as string;
+    const titulo = formData.get('titulo')?.toString();
+    const descripcion = formData.get('descripcion')?.toString();
+    const ubicacion = formData.get('ubicacion')?.toString();
+    const contacto = formData.get('contacto')?.toString();
+    const estado = formData.get('estado')?.toString();
+    const publicado = formData.get('publicado')?.toString();
 
     const errors: Record<string, string[]> = {};
     if (titulo && !titulo.trim()) errors.titulo = ['Title cannot be empty'];
@@ -145,13 +146,13 @@ export async function updatePublication(
       };
     }
 
-    const publicationData: UpdatePublicationDto = {
-      ...(titulo && { titulo }),
-      ...(descripcion && { descripcion }),
-      ...(ubicacion && { ubicacion }),
-      ...(contacto && { contacto }),
-      ...(estado && { estado: estado as PublicationStatus }),
-    };
+    const publicationData: Record<string, any> = {};
+    if (titulo) publicationData.titulo = titulo;
+    if (descripcion) publicationData.descripcion = descripcion;
+    if (ubicacion) publicationData.ubicacion = ubicacion;
+    if (contacto) publicationData.contacto = contacto;
+    if (estado) publicationData.estado = estado;
+    if (publicado) publicationData.publicado = publicado === 'true';
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/${id}`, {
       method: 'PATCH', 
@@ -164,6 +165,15 @@ export async function updatePublication(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      
+      if (response.status === 403) {
+        return {
+          success: false,
+          message: errorData.message || 'Operation not permitted',
+          errors: {}
+        };
+      }
+
       return {
         success: false,
         message: errorData.message || 'Error updating publication',
@@ -175,7 +185,7 @@ export async function updatePublication(
 
     return { 
       success: true,
-      message: 'Publication updated successfully'
+      message: 'Publication updated successfully',
     };
 
   } catch (error) {

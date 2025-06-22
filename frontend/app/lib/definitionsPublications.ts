@@ -18,9 +18,9 @@ export interface Publication {
   estado: PublicationStatus;
   mascota_id: number;
   mascota: Pet;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  deletedAt?: string | Date;
 }
 
 export interface CreatePublicationDto {
@@ -101,6 +101,15 @@ export interface PublicationsTable {
 
 export interface PublicationWithPet extends Publication {
   mascota: Pet & {
+    especie?: {
+      id: number;
+      nombre: string;
+    };
+    condicion?: {
+      id: number;
+      nombre: string;
+      descripcion: string;
+    };
     usuario?: User;
   };
 }
@@ -132,7 +141,22 @@ export interface FilteredPublication {
 }
 
 export interface PublicationsResponse {
-  publications: Publication[];
+  publicaciones: Publication[];
   total: number;
   totalPages: number;
+}
+
+export interface FullPublicationResponse extends Publication {
+  mascota: Pet & {
+    especie: {
+      id: number;
+      nombre: string;
+    };
+    condicion: {
+      id: number;
+      nombre: string;
+      descripcion: string;
+    };
+    usuario: User;
+  };
 }

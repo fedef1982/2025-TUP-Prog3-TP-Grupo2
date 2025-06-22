@@ -61,6 +61,7 @@ export default function CreatePetForm({ userId }: { userId: number }) {
     if (state?.success && !isRedirecting) {
       setIsRedirecting(true);
       router.push('/dashboard/pets');
+      router.refresh(); 
     }
   }, [state, router, isRedirecting]);
 

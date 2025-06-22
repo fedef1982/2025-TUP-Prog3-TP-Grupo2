@@ -1,5 +1,7 @@
-import { Publication, PublicationsResponse, FilteredPublication, PublicationWithPet, FilteredPublicationsParams } from "./definitionsPublications";
+import { url } from "inspector";
+import { Publication, PublicationsResponse, FilteredPublication, PublicationWithPet, FilteredPublicationsParams, PublicationsTable } from "./definitionsPublications";
 import { getRawToken, getToken, getUserId } from "./server-utils";
+import { Pet } from "./definitionsPets";
 
 export async function fetchAllPublications(): Promise<Publication[]> {
   try {
@@ -141,6 +143,11 @@ export async function fetchPublicationsPages(query: string): Promise<number> {
 
     const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/filtros?${params.toString()}`);
 
+
+    console.log('##########################');
+    console.log('Publicacion Pages GET ',apiUrl);
+    console.log('##########################');
+
     const response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {
@@ -156,6 +163,10 @@ export async function fetchPublicationsPages(query: string): Promise<number> {
     }
 
     const data = await response.json();
+
+    console.log('##########################');
+    console.log('Publications pages data ',data.totalPages);
+    console.log('##########################');
 
     return data.totalPages || 1; 
     
@@ -197,14 +208,128 @@ export async function fetchFilteredPublications({
       params.append('published', published.toString());
     }
 
+
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/filtros?${params.toString()}`;
 
+    console.log('##########################');
+    console.log('Publications fitered GET ',apiUrl);
+    console.log('##########################');
+    
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
+      next: { revalidate: 3600 } 
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error fetching filtered publications');
+    }
+
+    const data = await response.json();
+
+    console.log('##########################');
+    console.log('Publications fitered data ',data);
+    console.log('##########################');
+    
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching filtered publications:', error);
+    throw new Error('Error loading publication data. Please try again.');
+  }
+}
+
+/*export function formatPublishedForTable(published: FilteredPublication[]): PublicationsTable[] {
+  if (!published) {
+    return [];
+  }
+  return published.map(publi => ({
+    id: publi.id.toString(),
+    titulo: publi.titulo,
+    descripcion: publi.descripcion,
+    ubicacion: publi.ubicacion, 
+    status: publi.estado,
+    createdAt: publi.createdAt|| new Date().toISOString()
+  }));
+}*/
+
+export async function fetchPublishedPages(query: string): Promise<number> {
+  try {
+    const page = 1;
+    const limit = 5;
+    const sortBy = 'titulo';
+    const sortOrder = 'asc';
+
+    const params = new URLSearchParams({
+      q: query,
+      page: page.toString(),
+      limit: limit.toString(),
+      sortBy,
+      sortOrder
+    });
+
+    const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/publicaciones/filtros?${params.toString()}`);
+
+    const response = await fetch(apiUrl.toString(), {
+      method: 'GET',
+      headers: {},
+      next: { revalidate: 3600 }
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error fetching total pages');
+    }
+
+    const data = await response.json();
+
+    return data.totalPages || 1; 
+    
+  } catch (error) {
+    console.error('Error fetching total pages:', error);
+    return 1;
+  }
+}
+
+export async function fetchFilteredPublished({
+  query = '', 
+  page = 1, 
+  limit = 5, 
+  estado,
+  sortBy = 'titulo',
+  sortOrder = 'asc',
+  published
+}: FilteredPublicationsParams = {}): Promise<PublicationsResponse> {
+  try {
+
+    const params = new URLSearchParams({
+      q: query,
+      page: page.toString(),
+      limit: limit.toString(),
+      sortBy,
+      sortOrder
+    });
+
+    if (estado) {
+      params.append('estado', estado);
+    }
+    if (published !== undefined) {
+      params.append('published', published.toString());
+    }
+
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/publicaciones/filtros?${params.toString()}`;
+    
+    console.log('###############################');
+    console.log('Publicados GET ',apiUrl);
+    console.log('###############################');
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {},
       next: { revalidate: 3600 } 
     });
 
@@ -220,3 +345,4 @@ export async function fetchFilteredPublications({
     throw new Error('Error loading publication data. Please try again.');
   }
 }
+

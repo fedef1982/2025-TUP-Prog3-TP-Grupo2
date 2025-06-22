@@ -51,6 +51,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
     if (state?.success && !isRedirecting) {
       setIsRedirecting(true);
       router.push('/dashboard/publications');
+      router.refresh(); 
     }
   }, [state, router, isRedirecting]);
 

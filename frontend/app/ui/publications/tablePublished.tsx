@@ -1,5 +1,5 @@
-import { UpdatePublication, DeletePublication, ViewPublication } from '@/app/ui/publications/buttons';
-import { fetchFilteredPublications } from '@/app/lib/dataPublications';
+import { ViewPublication } from '@/app/ui/publications/buttons';
+import { fetchFilteredPublished } from '@/app/lib/dataPublications';
 import PublicationStatus from '@/app/ui/publications/status';
 
 export default async function PublicationsTablePublished({
@@ -9,7 +9,7 @@ export default async function PublicationsTablePublished({
   query: string;
   currentPage: number;
 }) {
-  const { publications, total, totalPages } = await fetchFilteredPublications({
+  const { publications, total, totalPages } = await fetchFilteredPublished({
     query,
     page: currentPage,
   });
