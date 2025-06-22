@@ -7,15 +7,15 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Role } from 'src/auth/roles.enum';
+import { Role } from '../../src/auth/roles.enum';
 import * as bcrypt from 'bcrypt';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { JwtPayload } from '../../src/auth/jwt-playload.interface';
 import { Rol } from './rol.model';
 import { EstadisticasUsuarioDto } from './dto/estadisticas-usuario.dto';
-import { Mascota } from 'src/mascota/mascota.model';
-import { Publicacion } from 'src/publicacion/publicacion.model';
-import { Visita } from 'src/visita/visita.model';
+import { Mascota } from '../../src/mascota/mascota.model';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
+import { Visita } from '../../src/visita/visita.model';
 import { QueryOpcionesDto } from '../common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 
@@ -44,7 +44,7 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({
       where: { email },
       include: [Rol],

@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiBody, ApiParam,ApiQuery } from '@nestjs/swagger';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 export function DocPostMascota() {
   return applyDecorators(
@@ -47,7 +47,10 @@ export function DocDeleteIdMascota() {
 
 export function DocGetMascotaFiltros(){
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve un listado de mascotas que cumplan con el criterio de la Query utilizada' }),
+    ApiOperation({
+      summary:
+        'Devuelve un listado de mascotas que cumplan con el criterio de la Query utilizada',
+    }),
     ApiQuery({ type: QueryOpcionesDto }),
   );
 }

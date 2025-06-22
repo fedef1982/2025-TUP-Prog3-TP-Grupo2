@@ -87,4 +87,29 @@ enum sexo_enum{
   Hembra = 'Hembra',
 }
 
+class AccesoService{
+
+    verificarAcceso(usuarioAuth: JwtPayload, recurso: {{usuario_id: number;}): void    
+    
+    verificarUsuarioDeRutaverificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void
+
+}
+
+/' Relaciones '/
+MascotasController ..> MascotaService 
+MascotaService ..> CreateMascotaDto 
+MascotaService ..> UpdateMascotaDto 
+MascotaService ..> Mascota 
+
+Mascota  ..> tamanio_enum
+Mascota  ..> sexo_enum
+
+UpdateMascotaDto ..> tamanio_enum
+UpdateMascotaDto ..> sexo_enum
+
+CreateMascotaDto ..> tamanio_enum
+CreateMascotaDto ..> sexo_enum
+
+MascotaService ..> AccesoService
+
 @enduml
