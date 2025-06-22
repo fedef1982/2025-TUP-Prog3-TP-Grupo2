@@ -34,11 +34,11 @@ export async function createPublication(
     const mascota_id = formData.get('mascota_id') as string;
 
     const errors: Record<string, string[]> = {};
-    if (!titulo) errors.titulo = ['Title is required'];
-    if (!descripcion) errors.descripcion = ['Description is required'];
-    if (!ubicacion) errors.ubicacion = ['Location is required'];
-    if (!contacto) errors.contacto = ['Contact is required'];
-    if (!mascota_id) errors.mascota_id = ['Pet ID is required'];
+    if (!titulo) errors.titulo = ['Titulo es requrido'];
+    if (!descripcion) errors.descripcion = ['Descripción es requerida'];
+    if (!ubicacion) errors.ubicacion = ['Unicación es requerida'];
+    if (!contacto) errors.contacto = ['Contacto es requerido'];
+    if (!mascota_id) errors.mascota_id = ['Mascota es requrida'];
 
     if (Object.keys(errors).length > 0) {
       return {
@@ -55,6 +55,11 @@ export async function createPublication(
       contacto,
       mascota_id: parseInt(mascota_id),
     };
+
+    console.log('#########################');
+    console.log('POST ',`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones`);
+    console.log('Create publication: ', JSON.stringify(publicationData));
+    console.log('#########################');
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones`, {
       method: 'POST',
@@ -76,9 +81,13 @@ export async function createPublication(
 
     const data = await response.json();
 
+    console.log('#########################');
+    console.log('respuesta: ', data);
+    console.log('#########################');
+
     return { 
       success: true,
-      message: 'Publication created successfully'
+      message: 'Publicacion createda exitosamente'
     };
 
   } catch (error) {

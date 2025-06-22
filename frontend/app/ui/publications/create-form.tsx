@@ -140,7 +140,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
         {/* Contacto */}
         <div className="mb-4">
           <label htmlFor="contacto" className="mb-2 block text-sm font-medium">
-            Indormacion de contacto <span className="text-red-500">*</span>
+            Información de contacto <span className="text-red-500">*</span>
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -163,7 +163,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
         {/* Seleccion de mascota */}
         <div className="mb-4">
           <label htmlFor="mascota_id" className="mb-2 block text-sm font-medium">
-            Elija una mascota <span className="text-red-500">*</span>
+            Elijá una mascota <span className="text-red-500">*</span>
           </label>
           <PetSelect 
             userId={userId}
