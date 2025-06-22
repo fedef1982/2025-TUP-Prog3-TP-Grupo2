@@ -128,6 +128,18 @@ export class PublicacionesController {
     return this.publicacionesService.findPublicadasYAbiertas();
   }
 
+  @Public()
+  @Get('publicaciones/filtros')
+  findPublicadasYAbiertasConFiltros(
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    return this.publicacionesService.findPublicadasYAbiertasConFiltros(params);
+  }
+
   @DocGetIdPublicacion()
   @Public()
   @Get('publicaciones/:id')
