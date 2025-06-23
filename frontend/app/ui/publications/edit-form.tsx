@@ -274,7 +274,7 @@ function UpdatePublicationButton() {
         </span>
       ) : (
         <>
-          Update Publication
+          Actualizar Publicación
           <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </>
       )}

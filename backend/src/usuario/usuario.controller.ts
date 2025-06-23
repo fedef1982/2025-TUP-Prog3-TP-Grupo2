@@ -92,6 +92,7 @@ export class UsersController {
 
   @DocPatchUsuario()
   @Patch(':id')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateUsuarioDto: UpdateUsuarioDto,
@@ -102,6 +103,7 @@ export class UsersController {
 
   @DocDeleteIdUsuario()
   @Delete(':id')
+  @Roles(Role.ADMIN)
   remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,

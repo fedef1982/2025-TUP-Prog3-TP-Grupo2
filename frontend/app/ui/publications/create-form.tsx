@@ -82,7 +82,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="titulo"
                 name="titulo"
                 type="text"
-                placeholder="Publication título"
+                placeholder="Título de la publicación"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -126,7 +126,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="ubicacion"
                 name="ubicacion"
                 type="text"
-                placeholder="Donde esta la mascota Ubicación?"
+                placeholder="Ubicación de la mascota"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -149,7 +149,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
                 id="contacto"
                 name="contacto"
                 type="text"
-                placeholder="Telefono o email"
+                placeholder="Teléfono o email"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
@@ -164,7 +164,7 @@ export default function CreatePublicationForm({ userId }: { userId: number }) {
         {/* Seleccion de mascota */}
         <div className="mb-4">
           <label htmlFor="mascota_id" className="mb-2 block text-sm font-medium">
-            Elijá una mascota <span className="text-red-500">*</span>
+            Mascota <span className="text-red-500">*</span>
           </label>
           <PetSelect 
             userId={userId}
@@ -208,7 +208,7 @@ function CreatePublicationButton() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? 'Creating...' : 'Create Publication'} 
+      {pending ? 'Creating...' : 'Crear Publicación'} 
       <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
