@@ -8,7 +8,7 @@ export default function PublicationStatus({
   status: string; 
   published: Date | null
 }) {
-  const isPublished = published !== null && status === 'Activo';
+  const isPublished = published !== null && status === 'Abierta';
   
   return (
     <span

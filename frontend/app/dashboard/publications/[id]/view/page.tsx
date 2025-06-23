@@ -1,72 +1,56 @@
-import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
-import { fetchPetById, fetchAllSpecies, fetchAllConditions } from '@/app/lib/dataPets';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import ReadOnlyPetForm from '@/app/ui/pets/view-form';
+import ViewPublicationForm from '@/app/ui/publications/view-form';
+import Breadcrumbs from '@/app/ui/publications/breadcrumbs';
+import { fetchPublicationById } from '@/app/lib/dataPublications';
+import { getToken } from '@/app/lib/server-utils';
 
 export const metadata: Metadata = {
-  title: 'Ver mascota',
+  title: 'View Publication',
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
   if (!params?.id) {
-    console.error('Parámetro petId no definido en la URL');
+    console.error('Publication ID parameter not defined in URL');
     notFound();
   }
+  
+  const tokenPl = await getToken();
+  const rolId = tokenPl?.rol_id ?? 2;
 
   try {
-    const petId = Math.floor(Number(params.id));
+    const publicationId = Math.floor(Number(params.id));
 
-    if (!Number.isSafeInteger(petId) || petId <= 0) {
-      console.error(`ID de mascota inválido: ${params.id}`);
+    if (!Number.isSafeInteger(publicationId) || publicationId <= 0) {
+      console.error(`Invalid publication ID: ${params.id}`);
       notFound();
     }
 
-    const data = await Promise.allSettled([
-      fetchPetById(petId),
-      fetchAllSpecies(),
-      fetchAllConditions()
-    ]);
+    const publication = await fetchPublicationById(publicationId);
 
-    const [petResult, speciesResult, conditionsResult] = data;
-
-    if (petResult.status === 'rejected' || !petResult.value) {
-      console.error('Error al obtener mascota:', petResult.status === 'rejected' ? petResult.reason : 'Datos vacíos');
+    if (!publication || publication.id !== publicationId) {
+      console.error(`Publication ID mismatch: Expected ${publicationId}, Got ${publication?.id}`);
       notFound();
     }
-
-    const pet = petResult.value;
-
-    if (!pet || pet.id !== petId) {
-      console.error(`Mismatch en ID de mascota: Esperado ${petId}, Obtenido ${pet?.id}`);
-      notFound();
-    }
-
-    const species = speciesResult.status === 'fulfilled' ? speciesResult.value : [];
-    const conditions = conditionsResult.status === 'fulfilled' ? conditionsResult.value : [];
 
     return (
       <main>
         <Breadcrumbs
           breadcrumbs={[
-            { label: 'Mascotas', href: '/dashboard/pets' },
+            { label: 'Publications', href: '/dashboard/publications' },
             {
-              label: 'Ver mascota',
-              href: `/dashboard/pets/${petId}/view`,
+              label: 'View Publication',
+              href: `/dashboard/publications/${publicationId}/view`,
               active: true,
             },
           ]}
         />
-        <ReadOnlyPetForm 
-          pet={pet}
-          species={species}
-          conditions={conditions}
-        />
+        <ViewPublicationForm publication={publication} rol_id={rolId}  />
       </main>
     );
 
   } catch (error) {
-    console.error('Error inesperado en la página:', error);
+    console.error('Unexpected error in publication view page:', error);
     notFound();
   }
 }

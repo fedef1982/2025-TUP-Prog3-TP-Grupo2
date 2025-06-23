@@ -181,7 +181,7 @@ export default function EditPublicationForm({
         {/* Pet Selection */}
         <div className="mb-4">
           <label htmlFor="mascota_id" className="mb-2 block text-sm font-medium">
-            Pet <span className="text-red-500">*</span>
+            Mascota <span className="text-red-500">*</span>
           </label>
           <PetSelect 
             userId={userId}
@@ -209,7 +209,7 @@ export default function EditPublicationForm({
                 defaultChecked={publication.estado === 'Abierta'}
                 aria-describedby="estado-error"
               />
-              <span className="ml-2">Open</span>
+              <span className="ml-2">Abierta</span>
             </label>
             <label className="flex items-center">
               <input
@@ -220,7 +220,7 @@ export default function EditPublicationForm({
                 defaultChecked={publication.estado === 'Cerrada'}
                 aria-describedby="estado-error"
               />
-              <span className="ml-2">Closed</span>
+              <span className="ml-2">Cerrada</span>
             </label>
           </div>
           {state?.errors?.estado && (
@@ -230,34 +230,16 @@ export default function EditPublicationForm({
           )}
         </div>
 
-        {publication.mascota.usuario_id === 1 && (
-          <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium">
-              Publicado
-            </label>
-            <div className="flex items-center">
-              <input
-                id="publicado"
-                name="publicado"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                defaultChecked={publication.publicado !== null}
-              />
-              <label htmlFor="publicado" className="ml-2 text-sm">
-                Publicar
-              </label>
-            </div>
-          </div>
-        )}
-
         <div className="flex gap-4">
           <UpdatePublicationButton />
+        </div>
+        <div className="mt-4 flex justify-center">
           <Link 
             href="/dashboard/publications" 
-            className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="flex items-center text-sm font-medium text-violet-600 hover:text-violet-800"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
-            Cancelar
+            Volver a publicaciones
           </Link>
         </div>
 

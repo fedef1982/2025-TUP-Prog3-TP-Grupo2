@@ -9,7 +9,7 @@ export default async function PublicationsTablePublished({
   query: string;
   currentPage: number;
 }) {
-  const { publications, total, totalPages } = await fetchFilteredPublished({
+  const { publicaciones, total, totalPages } = await fetchFilteredPublished({
     query,
     page: currentPage,
   });
@@ -19,7 +19,7 @@ export default async function PublicationsTablePublished({
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-200 p-2 md:pt-0">
           <div className="md:hidden">
-            {publications?.map((pub) => (
+            {publicaciones?.map((pub) => (
               <div
                 key={pub.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
@@ -61,7 +61,7 @@ export default async function PublicationsTablePublished({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {publications?.map((pub) => (
+              {publicaciones?.map((pub) => (
                 <tr
                   key={pub.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"

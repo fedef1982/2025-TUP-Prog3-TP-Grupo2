@@ -76,10 +76,10 @@ export default async function PublicationsTable({
                   Ubicación
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Estado
+                  Creado
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Creado
+                  Estado
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Publicado
@@ -107,16 +107,22 @@ export default async function PublicationsTable({
                     {pub.ubicacion}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
+                    {formatDate(pub.createdAt)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                      pub.estado === 'Abierta' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {pub.estado}
+                    </span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
                     <PublicationStatus 
                       status={pub.estado} 
                       published={pub.publicado} 
                     />
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDate(pub.createdAt)}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {pub.publicado ? formatDate(pub.publicado) : '-'}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

@@ -56,11 +56,6 @@ export async function createPublication(
       mascota_id: parseInt(mascota_id),
     };
 
-    console.log('#########################');
-    console.log('POST ',`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones`);
-    console.log('Create publication: ', JSON.stringify(publicationData));
-    console.log('#########################');
-
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones`, {
       method: 'POST',
       headers: { 
@@ -80,10 +75,6 @@ export async function createPublication(
     }
 
     const data = await response.json();
-
-    console.log('#########################');
-    console.log('respuesta: ', data);
-    console.log('#########################');
 
     return { 
       success: true,
@@ -244,6 +235,8 @@ export async function publishPublication(
       };
     }
 
+    const publishedDate = new Date();
+    
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/${publicationId}`,
       {
@@ -253,7 +246,7 @@ export async function publishPublication(
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          publicado: new Date().toISOString(),
+          publicado: publishedDate.toISOString(),
           estado: PublicationStatus.Abierta
         }),
       }

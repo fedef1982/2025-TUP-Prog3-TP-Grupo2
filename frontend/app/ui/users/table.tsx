@@ -72,9 +72,6 @@ export default async function usersTable({
                 <th scope="col" className="px-3 py-5 font-medium">
                   Fecha Creación
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Estado
-                </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Acciones</span>
                 </th>
@@ -102,12 +99,6 @@ export default async function usersTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {user.createdAt}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs 
-                      ${user.status === 'Activo' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                      {user.status}
-                    </span>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

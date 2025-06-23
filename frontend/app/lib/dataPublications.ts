@@ -143,11 +143,6 @@ export async function fetchPublicationsPages(query: string): Promise<number> {
 
     const apiUrl = new URL(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/filtros?${params.toString()}`);
 
-
-    console.log('##########################');
-    console.log('Publicacion Pages GET ',apiUrl);
-    console.log('##########################');
-
     const response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {
@@ -163,10 +158,6 @@ export async function fetchPublicationsPages(query: string): Promise<number> {
     }
 
     const data = await response.json();
-
-    console.log('##########################');
-    console.log('Publications pages data ',data.totalPages);
-    console.log('##########################');
 
     return data.totalPages || 1; 
     
@@ -208,13 +199,8 @@ export async function fetchFilteredPublications({
       params.append('published', published.toString());
     }
 
-
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/publicaciones/filtros?${params.toString()}`;
 
-    console.log('##########################');
-    console.log('Publications fitered GET ',apiUrl);
-    console.log('##########################');
-    
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -231,10 +217,6 @@ export async function fetchFilteredPublications({
 
     const data = await response.json();
 
-    console.log('##########################');
-    console.log('Publications fitered data ',data);
-    console.log('##########################');
-    
     return data;
 
   } catch (error) {
@@ -322,10 +304,6 @@ export async function fetchFilteredPublished({
     }
 
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/publicaciones/filtros?${params.toString()}`;
-    
-    console.log('###############################');
-    console.log('Publicados GET ',apiUrl);
-    console.log('###############################');
 
     const response = await fetch(apiUrl, {
       method: 'GET',

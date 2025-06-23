@@ -10,7 +10,6 @@ import {
   UserIcon,
   PhotoIcon,
   CakeIcon,
-  ArrowRightIcon,
 } from '@heroicons/react/24/outline';
 import {  
   MarsIcon,
@@ -19,48 +18,12 @@ import {
 import Link from 'next/link';
 import { PublicationWithPet } from '@/app/lib/definitionsPublications';
 import { Gender, Size } from '@/app/lib/definitionsPets';
-import { Button } from '@/app/ui/button';
-import { useFormStatus } from 'react-dom';
-import { getToken, JwtPayload} from '@/app/lib/server-utils';
-import { publishPublication } from '@/app/lib/actionsPublications';
-
-function PublishButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      className="mt-4 w-full bg-green-600 hover:bg-green-500"
-      aria-disabled={pending}
-      disabled={pending}
-    >
-      {pending ? (
-        <span className="flex items-center justify-center">
-          <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Publicando...
-        </span>
-      ) : (
-        <>
-          Publicar
-          <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </>
-      )}
-    </Button>
-  );
-}
 
 export default function ViewPublicationForm({ 
-  publication, 
-  rol_id
+  publication 
 }: { 
   publication: PublicationWithPet;
-  rol_id: number
 }) {
-  const isAdmin = rol_id === 1;
-
   return (
     <div className="rounded-md bg-gray-200 p-4 md:p-6">
       <div className="mb-6">
@@ -252,16 +215,7 @@ export default function ViewPublicationForm({
         )}
       </div>
 
-      <div className="mt-6 flex flex-col gap-4">
-        {isAdmin && !publication.publicado && (
-        <form action={() => {
-              publishPublication (publication.id, publication.mascota.usuario_id) 
-            }}
-        >
-          <PublishButton />
-        </form>
-        )}
-        
+      <div className="mt-6">
         <Link 
           href="/dashboard/publications" 
           className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
