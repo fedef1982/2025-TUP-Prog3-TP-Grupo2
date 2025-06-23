@@ -309,3 +309,17 @@ export async function fetchAllConditions(): Promise<Condition[]> {
     throw error;
   }
 }
+
+export async function fetchUserPets(): Promise<Pet[]> {
+  const response = await fetch(`${process.env.API_URL}/usuario/mascotas`, {
+    headers: {
+      'Authorization': `Bearer ${await getToken()}`
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch user pets');
+  }
+  
+  return response.json();
+}

@@ -7,8 +7,8 @@ export interface JwtPayload {
   sub: number;
   username: string;
   rol_id: number;
-  iat?: number;  // timestamp de creación (opcional)
-  exp?: number;  // timestamp de expiración (opcional)
+  iat?: number;  
+  exp?: number;  
 }
 
 // Función síncrona para obtener el token

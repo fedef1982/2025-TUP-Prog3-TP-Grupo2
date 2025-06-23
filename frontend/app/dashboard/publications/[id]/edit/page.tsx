@@ -1,45 +1,70 @@
-import Breadcrumbs from '@/app/ui/users/breadcrumbs';
-import { fetchUserById } from '@/app/lib/data';
+import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
+import { fetchPublicationById } from '@/app/lib/dataPublications';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import EditUserForm from '@/app/ui/users/edit-form';
-import { EditUserFormData } from '@/app/lib/definitions';
+import EditPublicationForm from '@/app/ui/publications/edit-form';
+import { fetchUserPets } from '@/app/lib/dataPets';
 
 export const metadata: Metadata = {
-  title: 'Edit user',
+  title: 'Editar publicación',
 };
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
-  const params = await props.params;
-  const id = params.id;
-  const [user] = await Promise.all([fetchUserById(Number(id))]);
-
-  if (!user) {
+export default async function Page({ params }: { params: { id?: string } }) {
+  if (!params?.id) {
+    console.error('Parámetro publicationId no definido en la URL');
     notFound();
   }
 
-  const userForEdit: EditUserFormData = {
-    id: Number(user.id),
-    email: user.email,
-    nombre: user.nombre,        
-    apellido: user.apellido, 
-    telefono: user.telefono || "",    
-    direccion: user.direccion || "" 
-  };
+  try {
+    const publicationId = Math.floor(Number(params.id));
 
-  return (
-    <main>
-      <Breadcrumbs
-        breadcrumbs={[
-          { label: 'Usuarios', href: '/dashboard/users' },
-          {
-            label: 'Esditar usuario',
-            href: `/dashboard/users/${id}/edit`,
-            active: true,
-          },
-        ]}
-      />
-      <EditUserForm user={userForEdit} />
-    </main>
-  );
+    if (!Number.isSafeInteger(publicationId) || publicationId <= 0) {
+      console.error(`ID de publicación inválido: ${params.id}`);
+      notFound();
+    }
+
+    // Obtener la publicación y las mascotas del usuario en paralelo
+    const [publicationResult, petsResult] = await Promise.allSettled([
+      fetchPublicationById(publicationId),
+      fetchUserPets() // Asumo que tienes o crearás esta función
+    ]);
+
+    if (publicationResult.status === 'rejected' || !publicationResult.value) {
+      console.error('Error al obtener publicación:', publicationResult.status === 'rejected' ? publicationResult.reason : 'Datos vacíos');
+      notFound();
+    }
+
+    const publication = publicationResult.value;
+
+    if (!publication || publication.id !== publicationId) {
+      console.error(`Mismatch en ID de publicación: Esperado ${publicationId}, Obtenido ${publication?.id}`);
+      notFound();
+    }
+
+    const pets = petsResult.status === 'fulfilled' ? petsResult.value : [];
+
+    return (
+      <main>
+        <Breadcrumbs
+          breadcrumbs={[
+            { label: 'Publicaciones', href: '/dashboard/publications' },
+            {
+              label: 'Editar publicación',
+              href: `/dashboard/publications/${publicationId}/edit`,
+              active: true,
+            },
+          ]}
+        />
+        <EditPublicationForm 
+          publication={publication} 
+          userId={publication.mascota.usuario_id}
+          pets={pets}
+        />
+      </main>
+    );
+
+  } catch (error) {
+    console.error('Error inesperado en la página:', error);
+    notFound();
+  }
 }
