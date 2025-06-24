@@ -1,4 +1,4 @@
-@startuml AdoptAR
+@startuml Mascota
 
 skinparam Linetype ortho
 
@@ -87,14 +87,6 @@ enum sexo_enum{
   Hembra = 'Hembra',
 }
 
-class AccesoService{
-
-    verificarAcceso(usuarioAuth: JwtPayload, recurso: {{usuario_id: number;}): void    
-    
-    verificarUsuarioDeRutaverificarUsuarioDeRuta(usuario: JwtPayload, usuarioIdRuta: number): void
-
-}
-
 /' Relaciones '/
 MascotasController ..> MascotaService 
 MascotaService ..> CreateMascotaDto 
@@ -110,6 +102,6 @@ UpdateMascotaDto ..> sexo_enum
 CreateMascotaDto ..> tamanio_enum
 CreateMascotaDto ..> sexo_enum
 
-MascotaService ..> AccesoService
+'MascotaService ..> AccesoService
 
 @enduml
