@@ -136,15 +136,14 @@ export class PublicacionesService {
       }
     }
 
-    if (dto.estado) {
-      if (publicacion.estado !== EstadoPublicacion.Abierta) {
-        throw new ForbiddenException(
-          `Solo se pueden cerrar publicaciones abiertas`,
-        );
-      }
-      if (!Object.values(EstadoPublicacion).includes(dto.estado)) {
-        throw new ForbiddenException('Estado inválido');
-      }
+    if (
+      dto.estado !== undefined &&
+      dto.estado === EstadoPublicacion.Cerrada &&
+      publicacion.estado === EstadoPublicacion.Cerrada
+    ) {
+      throw new ForbiddenException(
+        'Solo se pueden editar publicaciones que estén en estado Abierta',
+      );
     }
 
     await publicacion.update(dto);

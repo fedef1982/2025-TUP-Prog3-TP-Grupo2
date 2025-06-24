@@ -72,7 +72,7 @@ export class UsersController {
 
   @DocGetIdUsuario()
   @Get(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
