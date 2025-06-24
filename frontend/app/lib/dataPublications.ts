@@ -61,7 +61,6 @@ export async function fetchPublicationById(publicationId: number): Promise<Publi
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        next: { revalidate: 3600 } 
       }
     );
 

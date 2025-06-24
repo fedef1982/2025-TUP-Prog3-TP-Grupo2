@@ -1,6 +1,12 @@
+'use client';
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deletePublication, publishPublication } from '@/app/lib/actionsPublications';
+import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
+import { ConfirmModal } from '../confirmModal';
+import { DeleteButtonWithModal } from '../deleteButtonWithModal';
+
 
 export function CreatePublication() {
   return (
@@ -37,6 +43,20 @@ export function UpdatePublication({ id }: { id: string }) {
 }
 
 export function DeletePublication({ id }: { id: string }) {
+  return (
+    <DeleteButtonWithModal
+      id={id}
+      deleteAction={deletePublication}
+      title="¿Eliminar publicación?"
+      message="¿Estás seguro de eliminar esta publicación?"
+      confirmText="Eliminar"
+      cancelText="Cancelar"
+      icon={<TrashIcon className="w-5" />}
+    />
+  );
+}
+/*
+export function DeletePublication({ id }: { id: string }) {
   const deletePublicationWithId = deletePublication.bind(null, Number(id));
 
   return (
@@ -52,6 +72,8 @@ export function DeletePublication({ id }: { id: string }) {
     </form>
   );
 }
+*/
+
 /*
 export function PublishPublication({ 
   id, 
