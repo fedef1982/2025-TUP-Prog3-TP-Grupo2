@@ -7,7 +7,7 @@ import Search from '../ui/search';
 import { Suspense } from 'react';
 import { PublicationsTableSkeleton } from '../ui/skeletons';
 import Pagination from '../ui/publications/pagination';
-import { fetchPublicationsPages } from '../lib/dataPublications';
+import { fetchPublishedPages } from '../lib/dataPublications';
 import PublicationsTablePublished from '../ui/publications/tablePublished';
 
 export default async function Page(props: {
@@ -21,7 +21,7 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchPublicationsPages(query) || 1;
+  const totalPages = await fetchPublishedPages(query) || 1;
   
   return (
     <main className="flex min-h-screen flex-col p-6">

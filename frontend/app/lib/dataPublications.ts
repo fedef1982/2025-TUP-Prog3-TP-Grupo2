@@ -213,6 +213,7 @@ export async function fetchFilteredPublications({
     }
 
     const data = await response.json();
+    console.log('######### data de la publicacion', JSON.stringify(data));
 
     return data;
 
