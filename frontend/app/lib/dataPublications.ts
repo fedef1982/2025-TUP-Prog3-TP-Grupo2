@@ -100,7 +100,6 @@ export async function fetchPublicPublications(): Promise<PublicationWithPet[]> {
         headers: {
           'Content-Type': 'application/json'
         },
-        next: { revalidate: 3600 }
       }
     );
 
@@ -207,7 +206,6 @@ export async function fetchFilteredPublications({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {

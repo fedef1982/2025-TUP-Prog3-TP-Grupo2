@@ -1,5 +1,4 @@
 'use client';
-
 import { lusitana } from '@/app/ui/fonts';
 import {
   ExclamationCircleIcon,
@@ -63,7 +62,7 @@ export default function EditPublicationForm({
         {state?.success && (
           <div className="mb-4 flex items-center rounded-md bg-green-100 p-4 text-green-700">
             <CheckCircleIcon className="mr-2 h-5 w-5" />
-            <p>{state.message || 'Publication updated successfully!'}</p>
+            <p>{state.message || 'Publicación actualizada exitosamente!'}</p>
           </div>
         )}
 
@@ -121,7 +120,7 @@ export default function EditPublicationForm({
             </p>
           )}
         </div>
-
+        {/* Ubication */}
         <div className="mb-4">
           <label htmlFor="ubicacion" className="mb-2 block text-sm font-medium">
             Ubicación <span className="text-red-500">*</span>
@@ -149,7 +148,7 @@ export default function EditPublicationForm({
             )}
           </div>
         </div>
-
+          {/* Contact */}
         <div className="mb-4">
           <label htmlFor="contacto" className="mb-2 block text-sm font-medium">
             Informacion de contacto <span className="text-red-500">*</span>
@@ -178,7 +177,7 @@ export default function EditPublicationForm({
           </div>
         </div>
 
-        {/* Pet Selection */}
+        {/* Pet Selection 
         <div className="mb-4">
           <label htmlFor="mascota_id" className="mb-2 block text-sm font-medium">
             Mascota <span className="text-red-500">*</span>
@@ -193,8 +192,8 @@ export default function EditPublicationForm({
               {state.errors.estado.join(', ')}
             </p>
           )}
-        </div>
-
+        </div>*/}
+        {/* Estado */}
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium">
             Estado <span className="text-red-500">*</span>
