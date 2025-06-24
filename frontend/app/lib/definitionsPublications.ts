@@ -74,7 +74,9 @@ export interface UpdatePublicationState {
     ubicacion?: string[];
     contacto?: string[];
     estado?: string[];
+    //mascota_id?: string[];
   };
+
   success?: boolean;
 }
 

@@ -224,7 +224,6 @@ export async function fetchFilteredPets({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {

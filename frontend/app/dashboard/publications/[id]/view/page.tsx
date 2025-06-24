@@ -37,9 +37,9 @@ export default async function Page({ params }: { params: { id?: string } }) {
       <main>
         <Breadcrumbs
           breadcrumbs={[
-            { label: 'Publications', href: '/dashboard/publications' },
+            { label: 'Publicaciones', href: '/dashboard/publications' },
             {
-              label: 'View Publication',
+              label: 'Ver Publicación',
               href: `/dashboard/publications/${publicationId}/view`,
               active: true,
             },

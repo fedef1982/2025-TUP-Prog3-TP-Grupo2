@@ -176,7 +176,7 @@ export async function updatePublication(
 
     return { 
       success: true,
-      message: 'Publication updated successfully',
+      message: 'Publicación actualizada exitosamente',
     };
 
   } catch (error) {
@@ -265,7 +265,7 @@ export async function publishPublication(
 
     return { 
       success: true,
-      message: 'Publication published successfully'
+      message: 'Publicación publicada con éxito'
     };
 
   } catch (error) {
