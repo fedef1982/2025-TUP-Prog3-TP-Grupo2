@@ -8,7 +8,6 @@ import {
   ArrowLeftIcon,
   DocumentTextIcon,
   UserIcon,
-  PhotoIcon,
   CakeIcon,
 } from '@heroicons/react/24/outline';
 import {  
@@ -19,7 +18,7 @@ import Link from 'next/link';
 import { PublicationWithPet } from '@/app/lib/definitionsPublications';
 import { Gender, Size } from '@/app/lib/definitionsPets';
 
-export default function ViewPublicationForm({ 
+export default function ViewPublishedForm({ 
   publication 
 }: { 
   publication: PublicationWithPet;
@@ -217,7 +216,7 @@ export default function ViewPublicationForm({
 
       <div className="mt-6">
         <Link 
-          href="/dashboard/publications" 
+          href="/published" 
           className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <ArrowLeftIcon className="mr-2 h-5 w-5" />

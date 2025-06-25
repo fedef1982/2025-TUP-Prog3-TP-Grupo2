@@ -2,25 +2,31 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { lusitana } from '@/app/ui/fonts';
 import AdoptarLogo from '@/app/ui/adoptar-logo';
-import Search from '../ui/search';
-import { Suspense } from 'react';
-import { PublicationsTableSkeleton } from '../ui/skeletons';
-import Pagination from '../ui/publications/pagination';
-import { fetchPublishedPages } from '../lib/dataPublications';
-import PublicationsTablePublished from '../ui/publications/tablePublished';
+import { fetchPublishedById } from '../../../lib/dataPublications';
+import ViewPublishedForm from '@/app/ui/publications/view-form-publica';
+import { notFound } from 'next/navigation';
 
-export default async function Page(props: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) {
-  
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+export default async function Page({ params }: { params: { id?: string } }) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
+    console.error('Publication ID parameter not defined in URL');
+    notFound();
+  }
 
-  const totalPages = await fetchPublishedPages(query) || 1;
+  try {
+    const publicationId = Math.floor(Number(resolvedParams.id));
+
+    if (!Number.isSafeInteger(publicationId) || publicationId <= 0) {
+      console.error(`Invalid publication ID: ${resolvedParams.id}`);
+      notFound();
+    }
+
+    const publication = await fetchPublishedById(publicationId); 
+
+    if (!publication || publication.id !== publicationId) {
+      console.error(`Publication ID mismatch: Expected ${publicationId}, Got ${publication?.id}`);
+      notFound();
+    }
   
   return (
     <main className="flex min-h-screen flex-col p-6">
@@ -47,20 +53,13 @@ export default async function Page(props: {
           </Link>
         </div>
           <div className="w-full">
-            <div className="flex w-full items-center justify-between">
-              <h1 className={`${lusitana.className} text-2xl`}>Publicaciones</h1>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-              <Search placeholder="Buscar publicaciones..." />
-            </div>
-            <Suspense key={query + currentPage} fallback={<PublicationsTableSkeleton />}>
-              <PublicationsTablePublished query={query} currentPage={currentPage} />
-            </Suspense>
-            <div className="mt-5 flex w-full justify-center">
-              <Pagination totalPages={totalPages} />
-            </div>
+          <ViewPublishedForm publication={publication}/>
           </div>
       </div>
     </main>
   );
+  } catch (error) {
+    console.error('Unexpected error in publication view page:', error);
+    notFound();
+  }
 }

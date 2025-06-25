@@ -1,10 +1,7 @@
 'use client';
-import { EyeIcon, PencilIcon, PlusIcon, TrashIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deletePublication, publishPublication } from '@/app/lib/actionsPublications';
-import { useRouter } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
-import { ConfirmModal } from '../confirmModal';
+import { deletePublication } from '@/app/lib/actionsPublications';
 import { DeleteButtonWithModal } from '../deleteButtonWithModal';
 
 
@@ -55,49 +52,14 @@ export function DeletePublication({ id }: { id: string }) {
     />
   );
 }
-/*
-export function DeletePublication({ id }: { id: string }) {
-  const deletePublicationWithId = deletePublication.bind(null, Number(id));
 
+export function ViewPublished({ id }: { id: string }) {
   return (
-    <form action={deletePublicationWithId}>
-      <button 
-        type="submit" 
-        className="rounded-md border p-2 hover:bg-gray-100"
-        aria-label="Eliminar publicación"
-      >
-        <span className="sr-only">Eliminar</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
+    <Link
+      href={`/published/${id}/view`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <EyeIcon className="w-5" />
+    </Link>
   );
 }
-*/
-
-/*
-export function PublishPublication({ 
-  id, 
-  userId 
-}: { 
-  id: string, 
-  userId: string 
-}) {
-  const publishPublicationWithId = publishPublication.bind(
-    null, 
-    Number(id), 
-    Number(userId)
-  );
-
-  return (
-    <form action={publishPublicationWithId}>
-      <button 
-        type="submit" 
-        className="rounded-md border p-2 hover:bg-green-100 text-green-600"
-        aria-label="Publish publication"
-      >
-        <span className="sr-only">Publicar</span>
-        <ArrowUpOnSquareIcon className="w-5" />
-      </button>
-    </form>
-  );
-}*/
