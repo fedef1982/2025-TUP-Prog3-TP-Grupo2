@@ -1,7 +1,5 @@
-import { url } from "inspector";
-import { Publication, PublicationsResponse, FilteredPublication, PublicationWithPet, FilteredPublicationsParams, PublicationsTable } from "./definitionsPublications";
-import { getRawToken, getToken, getUserId } from "./server-utils";
-import { Pet } from "./definitionsPets";
+import { Publication, PublicationsResponse, PublicationWithPet, FilteredPublicationsParams } from "./definitionsPublications";
+import { getRawToken, getUserId } from "./server-utils";
 
 export async function fetchAllPublications(): Promise<Publication[]> {
   try {
@@ -81,6 +79,50 @@ export async function fetchPublicationById(publicationId: number): Promise<Publi
     return publicationData;
   } catch (error) {
     console.error(`Error in fetchPublicationById (publicationId: ${publicationId}):`, error);
+    
+    if (error instanceof Error) {
+      throw new Error(`Could not fetch publication: ${error.message}`);
+    }
+    
+    throw new Error('Unknown error fetching publication');
+  }
+}
+
+export async function fetchPublishedById(publicationId: number): Promise<PublicationWithPet> {
+  try {
+    if (!publicationId) {
+      throw new Error('Publication ID is required');
+    }
+
+    if (isNaN(publicationId)) {
+      throw new Error('Publication ID must be numeric');
+    }
+    
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/publicaciones/${publicationId}`,
+      {
+        method: 'GET',
+        headers: {},
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(
+        errorData?.message || 
+        `Error fetching publication: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const publicationData: PublicationWithPet = await response.json();
+
+    if (!publicationData.id || !publicationData.titulo || !publicationData.descripcion) {
+      throw new Error('Incomplete or invalid publication data');
+    }
+
+    return publicationData;
+  } catch (error) {
+    console.error(`Error in fetchPublishedById (publicationId: ${publicationId}):`, error);
     
     if (error instanceof Error) {
       throw new Error(`Could not fetch publication: ${error.message}`);
@@ -213,7 +255,6 @@ export async function fetchFilteredPublications({
     }
 
     const data = await response.json();
-    console.log('######### data de la publicacion', JSON.stringify(data));
 
     return data;
 
@@ -223,24 +264,10 @@ export async function fetchFilteredPublications({
   }
 }
 
-/*export function formatPublishedForTable(published: FilteredPublication[]): PublicationsTable[] {
-  if (!published) {
-    return [];
-  }
-  return published.map(publi => ({
-    id: publi.id.toString(),
-    titulo: publi.titulo,
-    descripcion: publi.descripcion,
-    ubicacion: publi.ubicacion, 
-    status: publi.estado,
-    createdAt: publi.createdAt|| new Date().toISOString()
-  }));
-}*/
-
 export async function fetchPublishedPages(query: string): Promise<number> {
   try {
     const page = 1;
-    const limit = 5;
+    const limit = 2;
     const sortBy = 'titulo';
     const sortOrder = 'asc';
 
@@ -278,7 +305,7 @@ export async function fetchPublishedPages(query: string): Promise<number> {
 export async function fetchFilteredPublished({
   query = '', 
   page = 1, 
-  limit = 5, 
+  limit = 2, 
   estado,
   sortBy = 'titulo',
   sortOrder = 'asc',
@@ -306,7 +333,6 @@ export async function fetchFilteredPublished({
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {},
-      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {
