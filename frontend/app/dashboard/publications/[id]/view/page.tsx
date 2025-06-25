@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-  if (!params?.id) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
     console.error('Publication ID parameter not defined in URL');
     notFound();
   }
@@ -19,10 +20,10 @@ export default async function Page({ params }: { params: { id?: string } }) {
   const rolId = tokenPl?.rol_id ?? 2;
 
   try {
-    const publicationId = Math.floor(Number(params.id));
+    const publicationId = Math.floor(Number(resolvedParams.id));
 
     if (!Number.isSafeInteger(publicationId) || publicationId <= 0) {
-      console.error(`Invalid publication ID: ${params.id}`);
+      console.error(`Invalid publication ID: ${resolvedParams.id}`);
       notFound();
     }
 
