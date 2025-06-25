@@ -60,3 +60,13 @@ export function DocGetPublicacionFiltros() {
     ApiQuery({ type: QueryOpcionesDto }),
   );
 }
+
+export function DocGetPublicacionAbiertaConFiltro() {
+  return applyDecorators(
+    ApiOperation({
+      summary:
+        'Devuelve un listado de publicaciones abiertas y publicadas que cumplan con el criterio de la Query utilizada',
+    }),
+    ApiQuery({ type: QueryOpcionesDto }),
+  );
+}
