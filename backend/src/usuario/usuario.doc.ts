@@ -67,11 +67,8 @@ export function DocGetIdPerfilUsuario() {
     ApiParam({ name: 'id', type: Number, description: 'Perfil del usuario' }),
     ApiResponse({
       status: 403,
-      description: 'No tiene permisos para acceder a recursos de otro usuario',
-    }),
-    ApiResponse({
-      status: 403,
-      description: 'No tiene permisos para acceder a este recurso',
+      description:
+        'No tiene permisos para acceder a recursos de otro usuario / No tiene permisos para acceder a este recurso',
     }),
     ApiResponse({
       status: 404,
