@@ -2,6 +2,23 @@
 
 skinparam Linetype ortho
 
+package Jwt {
+
+    class AllControllers{
+
+    }
+
+    interface JwtPayload {
+        sub: number
+        username: string;
+        rol_id: number;
+    }
+
+    interface AuthenticatedRequest {
+        user: JwtPayload;
+    }
+}
+
 package Acceso_Service{
 
     class AllServices {
@@ -54,23 +71,6 @@ package Auth {
     }
 }
 
-package Jwt {
-
-    class AllControllers{
-
-    }
-
-    interface JwtPayload {
-        sub: number
-        username: string;
-        rol_id: number;
-    }
-
-    interface AuthenticatedRequest {
-        user: JwtPayload;
-    }
-}
-
 
 
 
@@ -78,10 +78,13 @@ package Jwt {
 /' Relaciones '/
 AuthController ..> AuthService 
 AuthService ..> LoginDto
+AuthService ..> UsersService
 
 AuthenticatedRequest ..> JwtPayload
 
 AllServices ..> AccesoService
 AllControllers ..> AuthenticatedRequest
+AccesoService ..> JwtPayload
 
+RolesGuard ..> AuthGuard
 @enduml
