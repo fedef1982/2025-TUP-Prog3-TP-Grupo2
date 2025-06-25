@@ -78,7 +78,7 @@ export async function createPublication(
 
     return { 
       success: true,
-      message: 'Publicacion createda exitosamente'
+      message: 'Publicación createda exitosamente'
     };
 
   } catch (error) {

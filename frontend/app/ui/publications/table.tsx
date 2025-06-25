@@ -101,7 +101,7 @@ export default async function PublicationsTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {pub.mascota.nombre}
+                    {pub.mascota.nombre || 'Mascota eliminada'}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {pub.ubicacion}
