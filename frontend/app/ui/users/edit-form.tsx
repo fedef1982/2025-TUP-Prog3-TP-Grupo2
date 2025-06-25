@@ -28,8 +28,8 @@ export default function EditUserForm({ user }: EditUserFormProps) {
 
   useEffect(() => {
     if (state?.success) {
-      router.push('/dashboard'); 
-        router.refresh(); 
+      router.push('/dashboard/users'); 
+      router.refresh(); 
     }
   }, [state, router]);
 

@@ -14,10 +14,10 @@ import { UsersService } from './usuario.service';
 import { User } from './usuario.model';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
-import { AuthenticatedRequest } from 'src/auth/jwt-playload.interface';
+import { Public } from '../../src/auth/decorators/public.decorator';
+import { Roles } from '../../src/auth/decorators/roles.decorator';
+import { Role } from '../../src/auth/roles.enum';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
@@ -72,7 +72,7 @@ export class UsersController {
 
   @DocGetIdUsuario()
   @Get(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
@@ -92,6 +92,7 @@ export class UsersController {
 
   @DocPatchUsuario()
   @Patch(':id')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateUsuarioDto: UpdateUsuarioDto,
@@ -102,6 +103,7 @@ export class UsersController {
 
   @DocDeleteIdUsuario()
   @Delete(':id')
+  @Roles(Role.ADMIN)
   remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,

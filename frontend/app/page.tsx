@@ -18,7 +18,7 @@ export default function Page() {
             <strong>Bienvenido a AdoptAR</strong> el sitio para encontrar tu próxima mascotas{' '}
           </p>
           <Link
-            href="/publicaciones"
+            href="/published"
             className="flex items-center gap-5 self-start rounded-lg bg-violet-500 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-violet-400 md:text-base"
           >
             <span>Ver Publicaciones</span> <ArrowRightIcon className="w-5 md:w-6" />

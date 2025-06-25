@@ -61,6 +61,7 @@ export default function EditPetForm({
     if (state?.success && !isRedirecting) {
       setIsRedirecting(true);
       router.push('/dashboard/pets');
+      router.refresh(); 
     }
   }, [state, router, isRedirecting]);
 
@@ -288,20 +289,6 @@ export default function EditPetForm({
           {state?.errors?.condicion_id && (
             <p className="mt-2 text-sm text-red-500">{state.errors.condicion_id.join(', ')}</p>
           )}
-        </div>
-
-        {/* Descripción */}
-        <div className="mb-4">
-          <label htmlFor="descripcion" className="mb-2 block text-sm font-medium">
-            Descripción (opcional)
-          </label>
-          <textarea
-            id="descripcion"
-            name="descripcion"
-            rows={3}
-            className="peer block w-full rounded-md border border-gray-200 py-2 px-3 text-sm outline-2 placeholder:text-gray-500"
-            defaultValue={pet.descripcion || ''}
-          />
         </div>
 
         <UpdatePetButton />

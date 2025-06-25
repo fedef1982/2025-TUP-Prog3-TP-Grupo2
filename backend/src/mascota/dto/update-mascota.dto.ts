@@ -27,7 +27,7 @@ export class UpdateMascotaDto {
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  nombre: string;
+  nombre?: string;
 
   @ApiProperty({ example: 'Siberiano' })
   @IsString()
@@ -37,7 +37,7 @@ export class UpdateMascotaDto {
   @ApiProperty({ example: 'Hembra' })
   @IsEnum(Sexo)
   @IsOptional()
-  sexo: Sexo;
+  sexo?: Sexo;
 
   @ApiProperty({ example: 2 })
   @IsInt()
@@ -48,12 +48,12 @@ export class UpdateMascotaDto {
   @ApiProperty({ example: false })
   @IsBoolean()
   @IsOptional()
-  vacunado: boolean;
+  vacunado?: boolean;
 
   @ApiProperty({ example: Tamanio.Grande })
   @IsEnum(Tamanio)
   @IsOptional()
-  tamanio: Tamanio;
+  tamanio?: Tamanio;
 
   @ApiProperty({
     example: [
@@ -67,7 +67,7 @@ export class UpdateMascotaDto {
   @ArrayMaxSize(4)
   @IsString({ each: true })
   @IsOptional()
-  fotos_url: string[];
+  fotos_url?: string[];
 
   @ApiProperty({ example: 1 })
   @IsInt()

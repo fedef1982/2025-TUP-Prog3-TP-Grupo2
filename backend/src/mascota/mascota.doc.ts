@@ -2,7 +2,7 @@ import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiBody, ApiParam,ApiQuery } from '@nestjs/swagger';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
 import { UpdateMascotaDto } from './dto/update-mascota.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 export function DocPostMascota() {
   return applyDecorators(

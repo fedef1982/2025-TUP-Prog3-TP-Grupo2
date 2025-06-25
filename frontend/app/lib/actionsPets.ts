@@ -2,7 +2,6 @@
 
 import { getRawToken, getToken, getUserId } from "./server-utils";
 import { CreatePetDto, CreatePetState, UpdatePetDto, UpdatePetState, PetStatus, Size, Gender } from './definitionsPets';
-import { redirect } from "next/navigation";
 
 export async function createPet(
   prevState: CreatePetState | null, 
@@ -185,7 +184,6 @@ export async function updatePet(
   }
 }
    
-
 export async function deletePet(id: number): Promise<void> {
   try {
     const token = await getRawToken();

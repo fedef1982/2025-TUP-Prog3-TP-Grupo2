@@ -1,6 +1,11 @@
+'use client';
 import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deletePet } from '@/app/lib/actionsPets';
+import { useState, useRef, useEffect } from 'react';
+import { ConfirmModal } from '../confirmModal';
+import { useRouter } from 'next/navigation';
+import { DeleteButtonWithModal } from '../deleteButtonWithModal';
 
 export function CreatePet() {
   return (
@@ -25,6 +30,7 @@ export function ViewPet({ id }: { id: string }) {
   );
 }
 
+
 export function UpdatePet({ id }: { id: string }) {
   return (
     <Link
@@ -36,6 +42,7 @@ export function UpdatePet({ id }: { id: string }) {
   );
 }
 
+/*
 export function DeletePet({ id }: { id: string }) {
   const deletePetWithId = deletePet.bind(null, Number(id));
 
@@ -46,5 +53,19 @@ export function DeletePet({ id }: { id: string }) {
         <TrashIcon className="w-5" />
       </button>
     </form>
+  );
+}*/
+
+export function DeletePet({ id }: { id: string }) {
+  return (
+    <DeleteButtonWithModal
+      id={id}
+      deleteAction={deletePet}
+      title="¿Eliminar mascota?"
+      message="¿Estás seguro de eliminar esta mascota?"
+      confirmText="Eliminar"
+      cancelText="Cancelar"
+      icon={<TrashIcon className="w-5" />}
+    />
   );
 }

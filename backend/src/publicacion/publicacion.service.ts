@@ -6,26 +6,26 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { EstadoPublicacion, Publicacion } from './publicacion.model';
 import { Mascota } from '../mascota/mascota.model';
-import { MascotaService } from 'src/mascota/mascota.service';
+import { MascotaService } from '../../src/mascota/mascota.service';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { JwtPayload } from 'src/auth/jwt-playload.interface';
-import { Role } from 'src/auth/roles.enum';
-import { AccesoService } from 'src/acceso/acceso.service';
-import { Especie } from 'src/mascota/especie/especie.model';
-import { Condicion } from 'src/mascota/condicion/condicion.model';
-import { User } from 'src/usuario/usuario.model';
+import { JwtPayload } from '../../src/auth/jwt-playload.interface';
+import { Role } from '../../src/auth/roles.enum';
+import { AccesoService } from '../../src/acceso/acceso.service';
+import { Especie } from '../../src/mascota/especie/especie.model';
+import { Condicion } from '../../src/mascota/condicion/condicion.model';
+import { User } from '../../src/usuario/usuario.model';
 import { Op } from 'sequelize';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 @Injectable()
 export class PublicacionesService {
   constructor(
     @InjectModel(Publicacion)
     private publicacionModel: typeof Publicacion,
-
     @InjectModel(Mascota)
     private mascotaModel: typeof Mascota,
+
     private readonly mascotaService: MascotaService,
     private readonly accesoService: AccesoService,
   ) {}
@@ -136,15 +136,14 @@ export class PublicacionesService {
       }
     }
 
-    if (dto.estado) {
-      if (publicacion.estado !== EstadoPublicacion.Abierta) {
-        throw new ForbiddenException(
-          `Solo se pueden cerrar publicaciones abiertas`,
-        );
-      }
-      if (!Object.values(EstadoPublicacion).includes(dto.estado)) {
-        throw new ForbiddenException('Estado inválido');
-      }
+    if (
+      dto.estado !== undefined &&
+      dto.estado === EstadoPublicacion.Cerrada &&
+      publicacion.estado === EstadoPublicacion.Cerrada
+    ) {
+      throw new ForbiddenException(
+        'Solo se pueden editar publicaciones que estén en estado Abierta',
+      );
     }
 
     await publicacion.update(dto);
@@ -199,6 +198,58 @@ export class PublicacionesService {
     }
 
     return publicacion;
+  }
+
+  async findPublicadasYAbiertasConFiltros(params: QueryOpcionesDto): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'titulo',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const wherePublicacion = q
+      ? {
+          estado: EstadoPublicacion.Abierta,
+          publicado: {
+            [Op.not]: null,
+          },
+          [Op.or]: [
+            { titulo: { [Op.iLike]: `%${q}%` } },
+            { descripcion: { [Op.iLike]: `%${q}%` } },
+            { ubicacion: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {
+          estado: EstadoPublicacion.Abierta,
+          publicado: {
+            [Op.not]: null,
+          },
+        };
+    const { count, rows } = await this.publicacionModel.findAndCountAll({
+      where: wherePublicacion,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, User],
+        },
+      ],
+    });
+
+    return {
+      publicaciones: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 
   async findPublicacionesConFiltros(

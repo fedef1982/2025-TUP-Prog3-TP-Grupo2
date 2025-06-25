@@ -32,7 +32,7 @@ export class CreateVisitaDto {
   @IsNotEmpty()
   apellido: string;
 
-  @ApiProperty({ example: '+54 11 12345678' })  
+  @ApiProperty({ example: '+54 11 12345678' })
   @IsString()
   @IsNotEmpty()
   telefono: string;
@@ -42,7 +42,7 @@ export class CreateVisitaDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: '2025-07-01' })  
+  @ApiProperty({ example: '2025-07-01' })
   @IsNotEmpty()
   @IsDate()
   @Type(() => Date)

@@ -1,8 +1,14 @@
 import { applyDecorators } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiBody, ApiParam,ApiQuery } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
 import { UpdatePublicacionDto } from './dto/update-publicacion.dto';
-import { QueryOpcionesDto } from 'src/common/dto/query-opciones.dto';
+import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
 export function DocPostPublicacion() {
   return applyDecorators(
@@ -45,10 +51,12 @@ export function DocDeleteIdPublicacion() {
   );
 }
 
-export function DocGetPublicacionFiltros(){
+export function DocGetPublicacionFiltros() {
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve un listado de publicaciones que cumplan con el criterio de la Query utilizada' }),
+    ApiOperation({
+      summary:
+        'Devuelve un listado de publicaciones que cumplan con el criterio de la Query utilizada',
+    }),
     ApiQuery({ type: QueryOpcionesDto }),
   );
-
 }
