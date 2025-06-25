@@ -4,8 +4,8 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | AdoptAR Visitas',
-    default: 'AdoptAR Visitas',
+    template: '%s | AdoptAR Publicaciones',
+    default: 'AdoptAR Publicaciones',
   },
   description: 'La pagina para encotrar tu proxima mascota',
   metadataBase: new URL('http://localhost:3000/'),
