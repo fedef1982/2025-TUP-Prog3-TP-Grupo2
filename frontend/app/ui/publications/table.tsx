@@ -56,7 +56,6 @@ export default async function PublicationsTable({
                   <div className="flex justify-end gap-2">
                     <ViewPublication id={pub.id.toString()} />
                     <UpdatePublication id={pub.id.toString()} />
-            {/*        <PublishPublication id={pub.id} userId={userId} />*/}
                     <DeletePublication id={pub.id.toString()} />
                   </div>
                 </div>
@@ -128,7 +127,6 @@ export default async function PublicationsTable({
                     <div className="flex justify-end gap-3">
                       <ViewPublication id={pub.id.toString()} />
                       <UpdatePublication id={pub.id.toString()} />
-             {/*          <PublishPublication id={pub.id} userId={userId} /> */}
                       <DeletePublication id={pub.id.toString()} />
                     </div>
                   </td>

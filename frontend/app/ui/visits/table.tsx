@@ -116,12 +116,6 @@ export default async function VisitsTable({
                       <p className="text-gray-500">{formatTime(visit.disponibilidad_horario)}</p>
                     </div>
                   </td>
-                {/*  <td className="whitespace-nowrap px-3 py-3">
-                    <div>
-                      <p>{visit.email}</p>
-                      <p className="text-gray-500">{visit.telefono}</p>
-                    </div>
-                  </td> * */}
                   <td className="whitespace-nowrap px-3 py-3">
                     <p className="truncate max-w-xs">{visit.tracking}</p>
                   </td>

@@ -32,7 +32,7 @@ export default async function Page(props: {
           <p
             className={`${lusitana.className} text-xl text-gray-800 md:text-1xl md:leading-normal`}
           >
-            Encontrá tu mascota y solicita una visita.{' '}
+            Encontrá tu mascota y solicitá una visita.{' '}
           </p>
           <p
             className={`${lusitana.className} text-l text-gray-800 md:text-1xl md:leading-normal`}>

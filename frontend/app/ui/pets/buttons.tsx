@@ -42,20 +42,6 @@ export function UpdatePet({ id }: { id: string }) {
   );
 }
 
-/*
-export function DeletePet({ id }: { id: string }) {
-  const deletePetWithId = deletePet.bind(null, Number(id));
-
-  return (
-    <form action={deletePetWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
-  );
-}*/
-
 export function DeletePet({ id }: { id: string }) {
   return (
     <DeleteButtonWithModal

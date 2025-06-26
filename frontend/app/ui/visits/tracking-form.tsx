@@ -20,7 +20,6 @@ export default function SearchTrackingForm() {
     tracking: undefined,
   };
 
-  // Adaptador para useActionState
   const [state, formAction] = useActionState<SearchTrackingState, FormData>(
     async (_prevState, formData) => {
       const tracking = formData.get('tracking') as string;
