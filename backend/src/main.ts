@@ -16,16 +16,22 @@ async function bootstrap() {
       status: 200,
       description: 'Ok',
     })
-    /*.addGlobalResponse({
+    .addGlobalResponse({
+      status: 404,
+      description: 'Not Found',
+    }) 
+    .addGlobalResponse({
       status: 500,
       description: 'Internal server error',
     })
-    /*
     .addGlobalResponse({
       status: 401,
       description: 'Unauthorized',
     })
-      */
+    .addGlobalResponse({
+      status: 403,
+      description: 'No tiene permisos para acceder a este recurso',
+    })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

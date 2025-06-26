@@ -4,7 +4,7 @@ skinparam componentStyle rectangle
 ' Frontend
 package "Frontend (NextJS)" {
   [UI (Tailwind)] as UI
-  [API Client (axios)] as APIClient
+  [API Client (Fetch)] as APIClient
 }
 
 ' Backend
