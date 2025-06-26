@@ -162,12 +162,12 @@ export default function ReadOnlyPetForm({
         </div>
       </div>
 
-      <Link
+{/*       <Link
         href={`/dashboard/pets/${pet.id}/publications/create`}
         className="mt-4 w-full flex justify-center items-center px-4 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 transition-colors"
       >
         Crear Publicación para esta Mascota
-      </Link>
+      </Link> */}
 
       <div className="mt-4 flex justify-center">
         <Link 
