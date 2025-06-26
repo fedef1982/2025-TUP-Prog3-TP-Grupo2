@@ -2,82 +2,110 @@
 
 import { lusitana } from '@/app/ui/fonts';
 import {
-  MapPinIcon,
   PhoneIcon,
   InformationCircleIcon,
-  ArrowLeftIcon,
-  DocumentTextIcon,
+  ArrowLeftIcon,  
   UserIcon,
+  EnvelopeIcon,
   CalendarIcon,
   ClockIcon,
-  EnvelopeIcon,
 } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
-import { VisitaWithPublication } from '@/app/lib/definitionsVisits';
-import { Button } from '@/app/ui/button';
+import { VisitaEstado, VisitaWithPublication } from '@/app/lib/definitionsVisits';
 import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import { approveVisit, rejectVisit } from '@/app/lib/actionsVisits';
+import ViewPublishedForm from '../publications/view-form-publica';
 
-function ApproveButton() {
-  const { pending } = useFormStatus();
+function formatDate(dateString: string | Date) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+function formatTimeSlot(timeSlot: string) {
+  const timeSlots: Record<string, string> = {
+    'MORNING': 'Mañana (9:00 - 12:00)',
+    'AFTERNOON': 'Tarde (14:00 - 18:00)',
+    'EVENING': 'Noche (19:00 - 21:00)',
+    'FULL_DAY': 'Todo el día'
+  };
+  return timeSlots[timeSlot] || timeSlot;
+}
+
+function ActionButtons({
+  visitId,
+  userId,
+  currentState
+}: {
+  visitId: number;
+  userId: number;
+  currentState: VisitaEstado;
+}) {
+  const [approveState, approveAction] = useActionState(
+    approveVisit.bind(null, visitId, userId),
+    { success: false, message: '', errors: {} }
+  );
+
+  const [rejectState, rejectAction] = useActionState(
+    rejectVisit.bind(null, visitId, userId),
+    { success: false, message: '', errors: {} }
+  );
+
+  if (currentState !== VisitaEstado.Pendiente) {
+    return (
+      <div className="mb-4 p-4 bg-blue-100 text-blue-800 rounded-md">
+        Esta visita ya ha sido {currentState.toLowerCase()}
+      </div>
+    );
+  }
 
   return (
-    <Button
-      type="submit"
-      className="mt-4 w-full bg-green-600 hover:bg-green-500"
-      aria-disabled={pending}
-      disabled={pending}
-    >
-      {pending ? 'Procesando...' : 'Aprobar Visita'}
-    </Button>
+    <div className="mt-6 flex gap-4">
+      <form action={approveAction}>
+        <button
+          type="submit"
+          className="flex h-10 items-center rounded-lg bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+        >
+          Aprobar Visita
+        </button>
+      </form>
+
+      <form action={rejectAction}>
+        <button
+          type="submit"
+          className="flex h-10 items-center rounded-lg bg-red-600 px-4 text-sm font-medium text-white transition-colors hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+        >
+          Rechazar Visita
+        </button>
+      </form>
+
+      {approveState.message && (
+        <div className={`mt-2 text-sm ${approveState.success ? 'text-green-600' : 'text-red-600'}`}>
+          {approveState.message}
+        </div>
+      )}
+
+      {rejectState.message && (
+        <div className={`mt-2 text-sm ${rejectState.success ? 'text-green-600' : 'text-red-600'}`}>
+          {rejectState.message}
+        </div>
+      )}
+    </div>
   );
 }
 
-function RejectButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      className="mt-4 w-full bg-red-600 hover:bg-red-500"
-      aria-disabled={pending}
-      disabled={pending}
-    >
-      {pending ? 'Procesando...' : 'Rechazar Visita'}
-    </Button>
-  );
-}
-
-export default function ViewVisitForm({ 
+export default function ViewVisitForm({
   visit,
   userId,
-  rol_id
-}: { 
+}: {
   visit: VisitaWithPublication;
   userId: number;
-  rol_id: number;
 }) {
-  const isAdmin = rol_id === 1;
-  const isPending = visit.estado === 'Pendiente';
-
-  const formatDate = (dateString: string | Date) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const formatTimeSlot = (timeSlot: string) => {
-    switch(timeSlot) {
-      case 'Maniana': return 'Mañana (9:00-12:00)';
-      case 'Tarde': return 'Tarde (14:00-18:00)';
-      case 'Noche': return 'Noche (19:00-21:00)';
-      default: return timeSlot;
-    }
-  };
-
   return (
     <div className="rounded-md bg-gray-200 p-4 md:p-6">
       <div className="mb-6">
@@ -150,57 +178,20 @@ export default function ViewVisitForm({
         <h2 className={`${lusitana.className} mb-4 text-xl`}>
           Información de la Publicación
         </h2>
-        
-        <div className="mb-4">
-          <label className="mb-1 block text-sm font-medium text-gray-600">
-            Título
-          </label>
-          <div className="flex items-center rounded-md bg-gray-100 p-3">
-            <DocumentTextIcon className="mr-2 h-5 w-5 text-gray-500" />
-            <span>{visit.publicacion?.titulo || 'Publicación no disponible'}</span>
-          </div>
-        </div>
-
-        {visit.publicacion?.descripcion && (
-          <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium text-gray-600">
-              Descripción
-            </label>
-            <div className="flex rounded-md bg-gray-100 p-3">
-              <InformationCircleIcon className="mr-2 h-5 w-5 text-gray-500" />
-              <p className="whitespace-pre-line">{visit.publicacion.descripcion}</p>
-            </div>
-          </div>
-        )}
-
-        {visit.publicacion?.ubicacion && (
-          <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium text-gray-600">
-              Ubicación
-            </label>
-            <div className="flex items-center rounded-md bg-gray-100 p-3">
-              <MapPinIcon className="mr-2 h-5 w-5 text-gray-500" />
-              <span>{visit.publicacion.ubicacion}</span>
-            </div>
-          </div>
-        )}
+        <ViewPublishedForm publication={visit.publicacion} />
       </div>
 
-      <div className="mt-6 flex flex-col gap-4">
-        {isAdmin && isPending && (
-          <div className="grid grid-cols-2 gap-4">
-            <form action={() => approveVisit(visit.id, userId)}>
-              <ApproveButton />
-            </form>
-            <form action={() => rejectVisit(visit.id, userId)}>
-              <RejectButton />
-            </form>
-          </div>
-        )}
-        
+        <ActionButtons 
+          visitId={visit.id} 
+          userId={userId} 
+          currentState={visit.estado} 
+        />
+  
+
+      <div className="mt-6">
         <Link 
           href="/dashboard/visits" 
-          className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-violet-600 hover:text-blue-800"
         >
           <ArrowLeftIcon className="mr-2 h-5 w-5" />
           Volver a visitas

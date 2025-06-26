@@ -46,7 +46,6 @@ export async function createVisit(
       disponibilidad_fecha: new Date(disponibilidad_fecha),
       disponibilidad_horario: disponibilidad_horario as any,
       descripcion: descripcion || undefined,
-      publicacion_id: 0
     };
 
     const response = await fetch(

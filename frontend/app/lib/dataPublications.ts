@@ -284,7 +284,6 @@ export async function fetchPublishedPages(query: string): Promise<number> {
     const response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {},
-      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
