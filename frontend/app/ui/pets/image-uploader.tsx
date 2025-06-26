@@ -41,12 +41,11 @@ export function ImageUploader({ initialImages = [], userId }: ImageUploaderProps
 
       const { savedPaths } = await response.json();
       const updatedImages = [...images, ...savedPaths.map((path: string) => 
-        `/images/${path}` // Prepend /images/ to the path
+        `/images/${path}` 
       )].slice(0, 4);
       
       setImages(updatedImages);
       
-      // Actualizar el campo hidden
       const fotosInput = document.getElementById('fotos_url') as HTMLInputElement;
       if (fotosInput) {
         fotosInput.value = JSON.stringify(updatedImages.map(img => 
@@ -54,7 +53,7 @@ export function ImageUploader({ initialImages = [], userId }: ImageUploaderProps
         ));
       }
     } catch (error) {
-      console.error('Error uploading images:', error);
+      console.error('Error subiendo images:', error);
       alert('Error al subir imágenes: ' + (error instanceof Error ? error.message : 'Error desconocido'));
     } finally {
       setUploading(false);
