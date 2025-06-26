@@ -86,34 +86,31 @@ export async function fetchVisitById(visitId: number, userId: number): Promise<V
 }
 
 export async function fetchTrackingVisit(tracking: string): Promise<TrackingVisita> {
-  try {
-    if (!tracking) {
-      throw new Error('Tracking ID is required');
-    }
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${tracking}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(
-        errorData?.message || 
-        `Error fetching visit tracking: ${response.status} ${response.statusText}`
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error in fetchTrackingVisit:', error);
-    throw new Error('Could not fetch visit tracking information');
+  if (!tracking) {
+    throw new Error('Debes ingresar un tracking.');
   }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${tracking}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    let errorMessage = `Error desconocido al buscar la visita (${response.status})`;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData?.message || errorMessage;
+    } catch {
+    }
+    throw new Error(errorMessage);
+  }
+
+  return await response.json();
 }
 
 export async function fetchVisitsPages(query: string): Promise<number> {
@@ -207,7 +204,6 @@ export async function fetchFilteredVisits({
     }
 
     const data = await response.json();
-    console.log('######### visit data', JSON.stringify(data));
 
     return data;
 
