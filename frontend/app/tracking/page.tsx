@@ -1,14 +1,9 @@
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { lusitana } from '@/app/ui/fonts';
 import AdoptarLogo from '@/app/ui/adoptar-logo';
-import { CreatePublication } from '../ui/publications/buttons';
-import Search from '../ui/search';
-import { Suspense } from 'react';
-import { PublicationsTableSkeleton } from '../ui/skeletons';
-import Pagination from '../ui/publications/pagination';
 import { fetchPublishedPages } from '../lib/dataPublications';
-import PublicationsTablePublished from '../ui/publications/tablePublished';
+import { ArrowLeftIcon } from 'lucide-react';
+import SearchTrackingForm from '../ui/visits/tracking-form';
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -33,33 +28,22 @@ export default async function Page(props: {
           <p
             className={`${lusitana.className} text-xl text-gray-800 md:text-1xl md:leading-normal`}
           >
-            Encontrá tu mascota y coordiná una visita.{' '}
+            Verifica el estado de tu visita.{' '}
           </p>
           <p
             className={`${lusitana.className} text-l text-gray-800 md:text-1xl md:leading-normal`}
           >
-            Si queres publicar mascotas en adopción:
+            Si queres volver a las publicaciones:
           </p>
           <Link
-            href="/login"
+            href="/published"
             className="flex items-center gap-5 self-start rounded-lg bg-violet-500  px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-violet-400 md:text-base"
           >
-            <span>Ingresar</span> <ArrowRightIcon className="w-5 md:w-6" />
+            <ArrowLeftIcon className="w-5 md:w-6" /> <span>Volver</span> 
           </Link>
         </div>
           <div className="w-full">
-            <div className="flex w-full items-center justify-between">
-              <h1 className={`${lusitana.className} text-2xl`}>Publicaciones</h1>
-            </div>
-            <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-              <Search placeholder="Buscar publicaciones..." />
-            </div>
-            <Suspense key={query + currentPage} fallback={<PublicationsTableSkeleton />}>
-              <PublicationsTablePublished query={query} currentPage={currentPage} />
-            </Suspense>
-            <div className="mt-5 flex w-full justify-center">
-              <Pagination totalPages={totalPages} />
-            </div>
+              <SearchTrackingForm/>
           </div>
       </div>
     </main>

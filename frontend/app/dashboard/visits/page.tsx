@@ -22,11 +22,11 @@ export default async function Page({
   };
   params: { userId: string };
 }) {
-  const query = searchParams?.query || '';
+  const query = await searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   const userId = Number(params.userId);
 
-  const totalPages = await fetchVisitsPages(query, userId) || 1;
+  const totalPages = await fetchVisitsPages(query) || 1;
   
   return (
     <div className="w-full">

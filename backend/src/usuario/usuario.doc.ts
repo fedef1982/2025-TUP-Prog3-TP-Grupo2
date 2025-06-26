@@ -50,16 +50,6 @@ export function DocGetIdUsuario() {
   );
 }
 
-export function DocGetIdPerfilUsuario() {
-  return applyDecorators(
-    ApiOperation({
-      summary:
-        'Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)',
-    }),
-    ApiParam({ name: 'id', type: Number, description: 'Perfil del usuario' }),
-  );
-}
-
 export function DocDeleteIdUsuario() {
   return applyDecorators(
     ApiOperation({ summary: 'Eliminar usuario por ID' }),
@@ -73,7 +63,10 @@ export function DocDeleteIdUsuario() {
 
 export function DocGetUsuarioEstadisticas() {
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve la cantidad total de usuarios, mascotas, publicaciones y visitas que le pertenecen a un usuario. Si el usuario es un publicador, la cantidad de usuarios siempre es 1.' }),
+    ApiOperation({
+      summary:
+        'Devuelve la cantidad total de usuarios, mascotas, publicaciones y visitas que le pertenecen a un usuario. Si el usuario es un publicador, la cantidad de usuarios siempre es 1.',
+    }),
     ApiParam({
       name: 'id',
       type: Number,
@@ -81,10 +74,13 @@ export function DocGetUsuarioEstadisticas() {
     }),
   );
 }
+
 export function DocGetUsuarioFiltros(){
   return applyDecorators(
-    ApiOperation({ summary: 'Devuelve un listado de usuarios que cumplan con el criterio de la Query utilizada' }),
+    ApiOperation({
+      summary:
+        'Devuelve un listado de usuarios que cumplan con el criterio de la Query utilizada',
+    }),
     ApiQuery({ type: QueryOpcionesDto }),
   );
-
 }

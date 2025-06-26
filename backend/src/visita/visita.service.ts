@@ -183,42 +183,40 @@ export class VisitaService {
     } = params;
     const offset = (page - 1) * limit;
 
-    const whereVisita = q
-      ? {
-          [Op.or]: [
-            { nombre: { [Op.iLike]: `%${q}%` } },
-            { apellido: { [Op.iLike]: `%${q}%` } },
-            { email: { [Op.iLike]: `%${q}%` } },
-            { tracking: { [Op.iLike]: `%${q}%` } },
-          ],
-        }
-      : {};
-    const includePublicacion =
-      usuario.rol_id === Number(Role.ADMIN)
-        ? [
-            {
-              model: Publicacion,
-              include: [Mascota],
-            },
-          ]
-        : [
-            {
-              model: Publicacion,
-              include: [
-                {
-                  model: Mascota,
-                  include: [Especie, Condicion, User],
-                  where: { usuario_id: usuarioId },
-                },
-              ],
-            },
-          ];
+    const whereVisita = {
+      ...(q
+        ? {
+            [Op.or]: [
+              { nombre: { [Op.iLike]: `%${q}%` } },
+              { apellido: { [Op.iLike]: `%${q}%` } },
+              { email: { [Op.iLike]: `%${q}%` } },
+              { tracking: { [Op.iLike]: `%${q}%` } },
+            ],
+          }
+        : {}),
+      ...(usuario.rol_id !== Number(Role.ADMIN)
+        ? {
+            '$publicacion.mascota.usuario_id$': usuario.sub,
+          }
+        : {}),
+    };
+
     const { count, rows } = await this.visitaModel.findAndCountAll({
       where: whereVisita,
       limit,
       offset,
       order: [[sortBy, sortOrder]],
-      include: includePublicacion,
+      include: [
+        {
+          model: Publicacion,
+          include: [
+            {
+              model: Mascota,
+              include: [Especie, Condicion, User],
+            },
+          ],
+        },
+      ],
     });
 
     return {

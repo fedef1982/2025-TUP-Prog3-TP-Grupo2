@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { JwtPayload } from '../../src/auth/auth.guard';
+import { JwtPayload } from '../auth/jwt-playload.interface';
 import { Role } from '../../src/auth/roles.enum';
 
 @Injectable()

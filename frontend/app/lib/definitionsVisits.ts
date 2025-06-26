@@ -1,5 +1,3 @@
-// definitions/visitas.ts
-
 import { Publication } from "./definitionsPublications";
 import { User } from "./definitions";
 
@@ -205,4 +203,13 @@ export interface TrackingVisita {
   estado: VisitaEstado;
   fecha: Date;
   horario: DisponibilidadHoraria;
+}
+
+export interface SearchTrackingState {
+  message?: string;
+  errors?: {
+    tracking?: string[];
+  };
+  success?: boolean;
+  tracking?: TrackingVisita;
 }

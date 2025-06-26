@@ -21,7 +21,6 @@ import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
-  DocGetIdPerfilUsuario,
   DocGetUsuario,
   DocPatchUsuario,
   DocPostUsuario,
@@ -51,16 +50,6 @@ export class UsersController {
     @Query() params: QueryOpcionesDto,
   ): Promise<{ users: User[]; total: number; totalPages: number }> {
     return this.usersService.findUsuariosConFiltros(id, req.user, params);
-  }
-
-  @DocGetIdPerfilUsuario()
-  @Get(':id/perfil')
-  @Roles(Role.ADMIN, Role.PUBLICADOR)
-  getPerfil(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: AuthenticatedRequest,
-  ): Promise<User> {
-    return this.usersService.findOne(id, req.user);
   }
 
   @DocPostUsuario()

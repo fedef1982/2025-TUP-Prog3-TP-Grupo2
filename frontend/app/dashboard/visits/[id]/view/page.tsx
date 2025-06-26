@@ -10,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-  if (!params?.id) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
     console.error('Parametro ID de Visit no definido en la URL');
     notFound();
   }
@@ -20,10 +21,10 @@ export default async function Page({ params }: { params: { id?: string } }) {
   const userId = token?.sub || 0;
 
   try {
-    const visitId = Math.floor(Number(params.id));
+    const visitId = Math.floor(Number(resolvedParams.id));
 
     if (!Number.isSafeInteger(visitId) || visitId <= 0) {
-      console.error(`ID de Vista invalido: ${params.id}`);
+      console.error(`ID de Vista invalido: ${resolvedParams.id}`);
       notFound();
     }
 
