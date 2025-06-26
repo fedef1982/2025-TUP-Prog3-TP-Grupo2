@@ -48,7 +48,6 @@ export async function fetchVisitById(visitId: number, userId: number): Promise<V
     if (!token) {
       throw new Error('Authentication required');
     }
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/visitas/${visitId}`,
       {
@@ -86,14 +85,14 @@ export async function fetchVisitById(visitId: number, userId: number): Promise<V
   }
 }
 
-export async function fetchTrackingVisit(trackingId: string): Promise<TrackingVisita> {
+export async function fetchTrackingVisit(tracking: string): Promise<TrackingVisita> {
   try {
-    if (!trackingId) {
+    if (!tracking) {
       throw new Error('Tracking ID is required');
     }
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${trackingId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${tracking}`,
       {
         method: 'GET',
         headers: {
@@ -117,9 +116,10 @@ export async function fetchTrackingVisit(trackingId: string): Promise<TrackingVi
   }
 }
 
-export async function fetchVisitsPages(query: string, userId: number): Promise<number> {
+export async function fetchVisitsPages(query: string): Promise<number> {
   try {
     const token = await getRawToken();
+    const userId = await getUserId();
     
     if (!token || !userId) {
       throw new Error('Authentication required');
@@ -146,7 +146,6 @@ export async function fetchVisitsPages(query: string, userId: number): Promise<n
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -217,7 +216,6 @@ export async function fetchFilteredVisits({
     throw new Error('Error loading visit data. Please try again.');
   }
 }
-
 
 export function formatVisitsForTable(visits: FilteredVisita[]): VisitasTable[] {
   if (!visits) {

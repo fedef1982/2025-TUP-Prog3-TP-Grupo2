@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     template: '%s | Adoptar',
     default: 'Adoptar',
   },
-  description: 'La pagina para encotrar tu proxima mascota',
+  description: 'La pagina para encontrar tu proxima mascota',
   metadataBase: new URL('http://localhost:3000'),
 };
 export default function RootLayout({
