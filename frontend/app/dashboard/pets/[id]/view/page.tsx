@@ -9,16 +9,17 @@ export const metadata: Metadata = {
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-  if (!params?.id) {
+  const resolvedParams = await params;
+  if (!resolvedParams?.id) {
     console.error('Parámetro petId no definido en la URL');
     notFound();
   }
 
   try {
-    const petId = Math.floor(Number(params.id));
+    const petId = Math.floor(Number(resolvedParams.id));
 
     if (!Number.isSafeInteger(petId) || petId <= 0) {
-      console.error(`ID de mascota inválido: ${params.id}`);
+      console.error(`ID de mascota inválido: ${resolvedParams.id}`);
       notFound();
     }
 
