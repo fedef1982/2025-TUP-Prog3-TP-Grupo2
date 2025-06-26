@@ -32,8 +32,18 @@ export default async function Page(props: {
           <p
             className={`${lusitana.className} text-xl text-gray-800 md:text-1xl md:leading-normal`}
           >
-            Encontrá tu mascota y coordiná una visita.{' '}
+            Encontrá tu mascota y solicitá una visita.{' '}
           </p>
+          <p
+            className={`${lusitana.className} text-l text-gray-800 md:text-1xl md:leading-normal`}>
+            Si queres ver el estado de tu visita, hace click en Buscar:
+          </p>
+          <Link
+            href="/tracking"
+            className="flex items-center gap-5 self-start rounded-lg bg-violet-500  px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-violet-400 md:text-base"
+          >
+            <span>Buscar</span> <ArrowRightIcon className="w-5 md:w-6" />
+          </Link>
           <p
             className={`${lusitana.className} text-l text-gray-800 md:text-1xl md:leading-normal`}
           >

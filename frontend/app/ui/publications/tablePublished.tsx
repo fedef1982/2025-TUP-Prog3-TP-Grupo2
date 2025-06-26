@@ -46,7 +46,7 @@ export default async function PublicationsTablePublished({
                 <th className="px-4 py-5 font-medium sm:pl-6">Fotos</th>
                 <th className="px-3 py-5 font-medium">Publicación</th>
                 <th className="px-3 py-5 font-medium">Mascota</th>
-                <th className="py-3 pl-6 pr-3 font-medium"> {/* Acción */}
+                <th className="py-3 pl-6 pr-3 font-medium">
                   <span className="sr-only">Ver</span>
                 </th>
               </tr>

@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
 
   const cleanPath = pathname.replace(/\/$/, '');
 
-  const publicPaths = ['/', '/login', '/register', '/publicados', '/about', '/contact'];
+  const publicPaths = ['/', '/login', '/register', '/published', '/about', '/contact', '/tracking'];
   
   const privatePaths = ['/dashboard', '/private', '/profile'];
 

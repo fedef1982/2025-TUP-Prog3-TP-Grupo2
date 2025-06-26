@@ -204,7 +204,7 @@ export default function EditPublicationForm({
                 type="radio"
                 name="estado"
                 value="Abierta"
-                className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-blue-500"
                 defaultChecked={publication.estado === 'Abierta'}
                 aria-describedby="estado-error"
               />
@@ -215,7 +215,7 @@ export default function EditPublicationForm({
                 type="radio"
                 name="estado"
                 value="Cerrada"
-                className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 border-gray-300 text-violet-600 focus:ring-blue-500"
                 defaultChecked={publication.estado === 'Cerrada'}
                 aria-describedby="estado-error"
               />

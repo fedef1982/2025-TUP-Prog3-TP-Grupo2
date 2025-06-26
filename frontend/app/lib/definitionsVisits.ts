@@ -1,5 +1,3 @@
-// definitions/visitas.ts
-
 import { Publication } from "./definitionsPublications";
 import { User } from "./definitions";
 
@@ -41,7 +39,6 @@ export interface CreateVisitaDto {
   disponibilidad_fecha: Date;
   disponibilidad_horario: DisponibilidadHoraria;
   descripcion?: string;
-  publicacion_id: number;
 }
 
 export interface UpdateVisitaDto {
@@ -206,3 +203,14 @@ export interface TrackingVisita {
   fecha: Date;
   horario: DisponibilidadHoraria;
 }
+
+export interface SearchTrackingState {
+  message?: string;
+  errors?: {
+    tracking?: string[];
+  };
+  success?: boolean;
+  tracking?: TrackingVisita;
+}
+
+

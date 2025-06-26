@@ -20,13 +20,19 @@ import { useFormStatus } from 'react-dom';
 import { CreateVisitaState } from '@/app/lib/definitionsVisits';
 import { useRouter } from 'next/navigation';
 
-export default function CreateVisitForm({ publicationId }: { publicationId: number }) {
+interface CreateVisitFormProps {
+  publicationId: number;
+}
+
+export default function CreateVisitForm({ publicationId }: CreateVisitFormProps) {
+
+
+  const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
+  
   const [state, formAction] = useActionState<CreateVisitaState, FormData>(
     async (prevState, formData) => {
-      // Extraer publicationId del formData
-      const pubId = formData.get('publicationId');
-      return createVisit(prevState, formData, Number(pubId));
+      return createVisit(prevState, formData, publicationId);
     }, 
     {
       success: false,
@@ -36,20 +42,16 @@ export default function CreateVisitForm({ publicationId }: { publicationId: numb
     }
   );
 
-
-  const router = useRouter();
-
   useEffect(() => {
     if (state?.success && state.trackingId && !isRedirecting) {
       setIsRedirecting(true);
-      router.push(`/visits/tracking/${state.trackingId}`);
+      router.push(`/tracking/${state.trackingId}`);
       router.refresh();
     }
   }, [state, router, isRedirecting]);
 
   return (
     <form action={formAction} key={String(state?.success)}>
-      <input type="hidden" name="publicationId" value={publicationId} />
       <div className="rounded-md bg-gray-200 p-4 md:p-6">
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
           Solicitar Visita
@@ -217,8 +219,8 @@ export default function CreateVisitForm({ publicationId }: { publicationId: numb
 
         <div className="mt-4 flex justify-center">
           <Link 
-            href={`/publications/${publicationId}`} 
-            className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+            href={`/published/${publicationId}/view`} 
+            className="flex items-center text-sm font-medium text-violet-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
             Volver a la publicación

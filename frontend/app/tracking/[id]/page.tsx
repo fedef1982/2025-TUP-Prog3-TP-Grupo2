@@ -1,11 +1,19 @@
 import Link from 'next/link';
 import { lusitana } from '@/app/ui/fonts';
 import AdoptarLogo from '@/app/ui/adoptar-logo';
-import { fetchPublishedPages } from '../lib/dataPublications';
+import { fetchPublishedPages } from '../../lib/dataPublications';
 import { ArrowLeftIcon } from 'lucide-react';
-import SearchTrackingForm from '../ui/visits/tracking-form';
+import SearchTrackingForm from '../../ui/visits/tracking-form';
+import { notFound } from 'next/navigation';
 
-export default async function Page() {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const trackingId = params.id;
+
+  if (!trackingId) {
+    notFound();
+  }
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-violet-500  p-2 md:h-26">
@@ -30,9 +38,19 @@ export default async function Page() {
             <ArrowLeftIcon className="w-5 md:w-6" /> <span>Volver</span> 
           </Link>
         </div>
+        <div className="flex flex-col w-full items-center">
+          <h1 className={`${lusitana.className} mb-3 text-2xl w-full text-center`}>
+            Conserve el siguiente ID de tracking para seguimiento:
+          </h1>
+
+          <h1 className={`${lusitana.className} mb-6 text-3xl w-full text-center font-bold`}>
+            {trackingId}
+          </h1>
+          
           <div className="w-full">
-              <SearchTrackingForm/>
+            <SearchTrackingForm/> 
           </div>
+        </div>
       </div>
     </main>
   );

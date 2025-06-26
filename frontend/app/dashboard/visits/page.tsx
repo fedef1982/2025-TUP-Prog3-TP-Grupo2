@@ -1,7 +1,6 @@
 import Pagination from '@/app/ui/visits/pagination';
 import Search from '@/app/ui/search';
 import VisitsTable from '@/app/ui/visits/table';
-import { CreateVisit } from '@/app/ui/visits/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { fetchVisitsPages } from '@/app/lib/dataVisits';
@@ -19,14 +18,16 @@ export default async function Page({
   searchParams?: {
     query?: string;
     page?: string;
-  };
+  } | Promise<{ query?: string; page?: string }>;
   params: { userId: string };
 }) {
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+  const resolvedSearchParams = await searchParams;
+
+  const query = resolvedSearchParams?.query || '';
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
   const userId = Number(params.userId);
 
-  const totalPages = await fetchVisitsPages(query, userId) || 1;
+  const totalPages = await fetchVisitsPages(query) || 1;
   
   return (
     <div className="w-full">

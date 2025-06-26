@@ -57,25 +57,6 @@ export function DocGetIdUsuario() {
     }),
   );
 }
-// + de 1 posible mensaje de error 403...
-export function DocGetIdPerfilUsuario() {
-  return applyDecorators(
-    ApiOperation({
-      summary:
-        'Devuelve el perfil del usuario autenticado, cualquier usuario autenticado puede acceder a esta ruta (para que el ADMIN o un publicador pueda ver su propio perfil)',
-    }),
-    ApiParam({ name: 'id', type: Number, description: 'Perfil del usuario' }),
-    ApiResponse({
-      status: 403,
-      description:
-        'No tiene permisos para acceder a recursos de otro usuario / No tiene permisos para acceder a este recurso',
-    }),
-    ApiResponse({
-      status: 404,
-      description: `El usuario con id {id} no existe`,
-    }),
-  );
-}
 
 export function DocDeleteIdUsuario() {
   return applyDecorators(
@@ -109,6 +90,7 @@ export function DocGetUsuarioEstadisticas() {
     })
   );
 }
+
 export function DocGetUsuarioFiltros(){
   return applyDecorators(
     ApiOperation({
@@ -117,5 +99,4 @@ export function DocGetUsuarioFiltros(){
     }),
     ApiQuery({ type: QueryOpcionesDto }),
   );
-
-} 
+}

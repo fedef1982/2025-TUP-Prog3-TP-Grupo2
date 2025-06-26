@@ -99,18 +99,6 @@ describe('UsersController', () => {
     });
   });
 
-  describe('getPerfil', () => {
-    it('debería devolver el perfil del usuario', async () => {
-      mockUsersService.findOne.mockResolvedValue(mockUserData);
-      const result = await controller.getPerfil(1, reqPublicador);
-      expect(result).toEqual(mockUserData);
-      expect(mockUsersService.findOne).toHaveBeenCalledWith(
-        1,
-        reqPublicador.user,
-      );
-    });
-  });
-
   describe('getEstadisticas', () => {
     it('debería devolver las estadísticas del usuario', async () => {
       const estadisticas: EstadisticasUsuarioDto = {

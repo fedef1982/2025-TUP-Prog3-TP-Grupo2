@@ -159,7 +159,7 @@ export async function fetchPublicPublications(): Promise<PublicationWithPet[]> {
   }
 }
 
-export async function fetchPublicationsPages(query: string): Promise<number> {
+export async function fetchPublicationsPages(query: string): Promise<number> { 
   try {
     const token = await getRawToken();
     const userId = await getUserId();
@@ -284,7 +284,6 @@ export async function fetchPublishedPages(query: string): Promise<number> {
     const response = await fetch(apiUrl.toString(), {
       method: 'GET',
       headers: {},
-      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {

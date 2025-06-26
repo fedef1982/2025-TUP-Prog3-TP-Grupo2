@@ -52,6 +52,7 @@ function getVisitaExtendida(overrides: Partial<Visita> = {}): Visita {
     publicacion_id: 100,
     update: jest.fn(),
     destroy: jest.fn(),
+    findAndCountAll: jest.fn(),
     publicacion: {
       id: 100,
       mascota: {
@@ -273,30 +274,6 @@ describe('VisitaService', () => {
     });
   });
 
-  describe('getTracking', () => {
-    it('debería devolver el estado, la fecha y la disponibilidad horaria de la visita si el tracking existe', async () => {
-      visitaModel.findOne.mockResolvedValue(getVisitaExtendida());
-
-      const result = await service.getTracking('TRACK123');
-
-      expect(visitaModel.findOne).toHaveBeenCalledWith({
-        where: { tracking: 'TRACK123' },
-      });
-      expect(result).toEqual({
-        estado: getVisitaExtendida().estado,
-        fecha: getVisitaExtendida().disponibilidad_fecha,
-        horario: getVisitaExtendida().disponibilidad_horario,
-      });
-    });
-
-    it('lanza NotFoundException si no existe el tracking', async () => {
-      visitaModel.findOne.mockResolvedValue(null);
-      await expect(service.getTracking('NOEXISTE')).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-  });
-
   describe('findVisitasConFiltros', () => {
     it('debería devolver visitas con filtros para admin', async () => {
       const params: QueryOpcionesDto = {
@@ -333,7 +310,12 @@ describe('VisitaService', () => {
         include: [
           {
             model: Publicacion,
-            include: [Mascota],
+            include: [
+              {
+                model: Mascota,
+                include: [Especie, Condicion, User],
+              },
+            ],
           },
         ],
       });
@@ -354,6 +336,7 @@ describe('VisitaService', () => {
         sortOrder: 'asc',
       };
       const mockRows = [getVisitaExtendida()];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       visitaModel.findAndCountAll.mockResolvedValue({
         rows: mockRows,
         count: 1,
@@ -366,7 +349,9 @@ describe('VisitaService', () => {
       );
 
       expect(visitaModel.findAndCountAll).toHaveBeenCalledWith({
-        where: {},
+        where: {
+          '$publicacion.mascota.usuario_id$': usuarioPublicador.sub,
+        },
         limit: 10,
         offset: 0,
         order: [['nombre', 'asc']],
@@ -377,7 +362,6 @@ describe('VisitaService', () => {
               {
                 model: Mascota,
                 include: [Especie, Condicion, User],
-                where: { usuario_id: 2 },
               },
             ],
           },
@@ -389,6 +373,30 @@ describe('VisitaService', () => {
         total: 1,
         totalPages: 1,
       });
+    });
+  });
+
+  describe('getTracking', () => {
+    it('debería devolver el estado, la fecha y la disponibilidad horaria de la visita si el tracking existe', async () => {
+      visitaModel.findOne.mockResolvedValue(getVisitaExtendida());
+
+      const result = await service.getTracking('TRACK123');
+
+      expect(visitaModel.findOne).toHaveBeenCalledWith({
+        where: { tracking: 'TRACK123' },
+      });
+      expect(result).toEqual({
+        estado: getVisitaExtendida().estado,
+        fecha: getVisitaExtendida().disponibilidad_fecha,
+        horario: getVisitaExtendida().disponibilidad_horario,
+      });
+    });
+
+    it('lanza NotFoundException si no existe el tracking', async () => {
+      visitaModel.findOne.mockResolvedValue(null);
+      await expect(service.getTracking('NOEXISTE')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

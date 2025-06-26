@@ -48,7 +48,6 @@ export async function fetchVisitById(visitId: number, userId: number): Promise<V
     if (!token) {
       throw new Error('Authentication required');
     }
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/visitas/${visitId}`,
       {
@@ -86,40 +85,38 @@ export async function fetchVisitById(visitId: number, userId: number): Promise<V
   }
 }
 
-export async function fetchTrackingVisit(trackingId: string): Promise<TrackingVisita> {
-  try {
-    if (!trackingId) {
-      throw new Error('Tracking ID is required');
-    }
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${trackingId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(
-        errorData?.message || 
-        `Error fetching visit tracking: ${response.status} ${response.statusText}`
-      );
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error in fetchTrackingVisit:', error);
-    throw new Error('Could not fetch visit tracking information');
+export async function fetchTrackingVisit(tracking: string): Promise<TrackingVisita> {
+  if (!tracking) {
+    throw new Error('Debes ingresar un tracking.');
   }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/visitas/seguimiento/${tracking}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    let errorMessage = `Error desconocido al buscar la visita (${response.status})`;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData?.message || errorMessage;
+    } catch {
+    }
+    throw new Error(errorMessage);
+  }
+
+  return await response.json();
 }
 
-export async function fetchVisitsPages(query: string, userId: number): Promise<number> {
+export async function fetchVisitsPages(query: string): Promise<number> {
   try {
     const token = await getRawToken();
+    const userId = await getUserId();
     
     if (!token || !userId) {
       throw new Error('Authentication required');
@@ -146,7 +143,6 @@ export async function fetchVisitsPages(query: string, userId: number): Promise<n
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -208,7 +204,7 @@ export async function fetchFilteredVisits({
     }
 
     const data = await response.json();
-    console.log('######### visit data', JSON.stringify(data));
+ 
 
     return data;
 
@@ -217,7 +213,6 @@ export async function fetchFilteredVisits({
     throw new Error('Error loading visit data. Please try again.');
   }
 }
-
 
 export function formatVisitsForTable(visits: FilteredVisita[]): VisitasTable[] {
   if (!visits) {
