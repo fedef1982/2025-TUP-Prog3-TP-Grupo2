@@ -1,43 +1,53 @@
-import Pagination from '@/app/ui/users/pagination';
+import Pagination from '@/app/ui/visits/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/users/table';
-import { CreateUser } from '@/app/ui/users/buttons';
+import VisitsTable from '@/app/ui/visits/table';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { fetchUsersPages } from '@/app/lib/data';
+import { fetchVisitsPages } from '@/app/lib/dataVisits';
 import { Metadata } from 'next';
-import { UsersTableSkeleton } from '@/app/ui/skeletons';
+import { VisitsTableSkeleton } from '@/app/ui/skeletons';
 
 export const metadata: Metadata = {
-  title: 'users',
+  title: 'Visitas',
 };
 
-export default async function Page(props: {
-  searchParams?: Promise<{
+export default async function Page({
+  searchParams,
+  params
+}: {
+  searchParams?: {
     query?: string;
     page?: string;
-  }>;
+  } | Promise<{ query?: string; page?: string }>;
+  params: { userId: string };
 }) {
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
+  const resolvedSearchParams = await searchParams;
 
-  const totalPages = await fetchUsersPages(query) || 1;
+  const query = resolvedSearchParams?.query || '';
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+  const userId = Number(params.userId);
+
+  const totalPages = await fetchVisitsPages(query) || 1;
   
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Visitas</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Gestión de Visitas</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Buscar visitas..." />
-        <CreateUser />
+        <Search placeholder="Buscar por nombre, email o tracking..." />
       </div>
-      <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense> 
+      <Suspense key={query + currentPage} fallback={<VisitsTableSkeleton />}>
+        <VisitsTable 
+          query={query} 
+          currentPage={currentPage} 
+          userId={userId} 
+        />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {totalPages > 1 && (
+          <Pagination totalPages={totalPages} />
+        )}
       </div>
     </div>
   );

@@ -60,7 +60,6 @@ export async function fetchPetById(petId: number): Promise<Pet> {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        next: { revalidate: 3600 } 
       }
     );
 
@@ -224,7 +223,6 @@ export async function fetchFilteredPets({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {
@@ -308,4 +306,18 @@ export async function fetchAllConditions(): Promise<Condition[]> {
     console.error('Error en fetchAllConditions:', error);
     throw error;
   }
+}
+
+export async function fetchUserPets(): Promise<Pet[]> {
+  const response = await fetch(`${process.env.API_URL}/usuario/mascotas`, {
+    headers: {
+      'Authorization': `Bearer ${await getToken()}`
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch user pets');
+  }
+  
+  return response.json();
 }

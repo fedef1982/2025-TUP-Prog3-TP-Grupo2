@@ -162,18 +162,6 @@ export default function ReadOnlyPetForm({
         </div>
       </div>
 
-      {/* Descripción */}
-      {pet.descripcion && (
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium">
-            Descripción
-          </label>
-          <div className="relative mt-2 rounded-md bg-gray-100 p-3">
-            <p className="whitespace-pre-line">{pet.descripcion}</p>
-          </div>
-        </div>
-      )}
-
       <Link
         href={`/dashboard/pets/${pet.id}/publications/create`}
         className="mt-4 w-full flex justify-center items-center px-4 py-2 bg-violet-600 text-white rounded-md hover:bg-violet-700 transition-colors"

@@ -3,7 +3,7 @@
 import { Species } from '@/app/lib/definitionsPets';
 
 interface SpeciesSelectProps {
-  species: Species[];  // Ahora recibimos las especies como prop
+  species: Species[]; 
   defaultValue?: string;
   onChange?: (value: string) => void;
   className?: string;

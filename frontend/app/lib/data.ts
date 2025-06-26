@@ -117,7 +117,6 @@ export async function fetchUserStats(): Promise<UserStats> {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 }
     });
 
     if (!response.ok) {
@@ -205,8 +204,11 @@ export function formatUsersForTable(users: FilteredUser[]): UsersTable[] {
     email: user.email,
     phone: user.phone,
     address: user.address,
-    role: user.role_id === 1 ? Role.ADMIN : Role.PUBLICADOR,
-    createdAt: user.createdAt,
+    role: user.role_id === 1 ? 'Admin' : 
+          user.role_id === 2 ? 'Publicador' : 
+          'Desconocido',
+    createdAt: user.createdAt 
+      ? new Date(user.createdAt).toISOString().split('T')[0] : 'Fecha no disponible',
     status: user.status
   }));
 }
@@ -256,7 +258,6 @@ export async function fetchFilteredUsers({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      next: { revalidate: 3600 } 
     });
 
     if (!response.ok) {
@@ -272,7 +273,8 @@ export async function fetchFilteredUsers({
         name: user.nombre,
         lastname: user.apellido, 
         email: user.email,
-        role: Number(user.role_id),
+        role_id: user.rol_id,
+        rol: user.rol,
         phone: user.telefono,
         address: user.direccion,
         createdAt: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',

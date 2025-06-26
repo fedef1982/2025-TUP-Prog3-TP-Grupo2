@@ -136,15 +136,14 @@ export class PublicacionesService {
       }
     }
 
-    if (dto.estado) {
-      if (publicacion.estado !== EstadoPublicacion.Abierta) {
-        throw new ForbiddenException(
-          `Solo se pueden cerrar publicaciones abiertas`,
-        );
-      }
-      if (!Object.values(EstadoPublicacion).includes(dto.estado)) {
-        throw new ForbiddenException('Estado inválido');
-      }
+    if (
+      dto.estado !== undefined &&
+      dto.estado === EstadoPublicacion.Cerrada &&
+      publicacion.estado === EstadoPublicacion.Cerrada
+    ) {
+      throw new ForbiddenException(
+        'Solo se pueden editar publicaciones que estén en estado Abierta',
+      );
     }
 
     await publicacion.update(dto);
@@ -199,6 +198,58 @@ export class PublicacionesService {
     }
 
     return publicacion;
+  }
+
+  async findPublicadasYAbiertasConFiltros(params: QueryOpcionesDto): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      sortBy = 'titulo',
+      sortOrder = 'asc',
+    } = params;
+    const offset = (page - 1) * limit;
+
+    const wherePublicacion = q
+      ? {
+          estado: EstadoPublicacion.Abierta,
+          publicado: {
+            [Op.not]: null,
+          },
+          [Op.or]: [
+            { titulo: { [Op.iLike]: `%${q}%` } },
+            { descripcion: { [Op.iLike]: `%${q}%` } },
+            { ubicacion: { [Op.iLike]: `%${q}%` } },
+          ],
+        }
+      : {
+          estado: EstadoPublicacion.Abierta,
+          publicado: {
+            [Op.not]: null,
+          },
+        };
+    const { count, rows } = await this.publicacionModel.findAndCountAll({
+      where: wherePublicacion,
+      limit,
+      offset,
+      order: [[sortBy, sortOrder]],
+      include: [
+        {
+          model: Mascota,
+          include: [Especie, Condicion, User],
+        },
+      ],
+    });
+
+    return {
+      publicaciones: rows,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+    };
   }
 
   async findPublicacionesConFiltros(

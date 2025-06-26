@@ -1,4 +1,5 @@
-import { AuthenticatedRequest, AuthGuard } from '../../src/auth/auth.guard';
+import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
+import { AuthGuard } from '../../src/auth/auth.guard';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';

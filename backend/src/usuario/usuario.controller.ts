@@ -21,7 +21,6 @@ import { AuthenticatedRequest } from '../../src/auth/jwt-playload.interface';
 import {
   DocDeleteIdUsuario,
   DocGetIdUsuario,
-  DocGetIdPerfilUsuario,
   DocGetUsuario,
   DocPatchUsuario,
   DocPostUsuario,
@@ -53,16 +52,6 @@ export class UsersController {
     return this.usersService.findUsuariosConFiltros(id, req.user, params);
   }
 
-  @DocGetIdPerfilUsuario()
-  @Get(':id/perfil')
-  @Roles(Role.ADMIN, Role.PUBLICADOR)
-  getPerfil(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: AuthenticatedRequest,
-  ): Promise<User> {
-    return this.usersService.findOne(id, req.user);
-  }
-
   @DocPostUsuario()
   @Public()
   @Post()
@@ -72,7 +61,7 @@ export class UsersController {
 
   @DocGetIdUsuario()
   @Get(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,
@@ -92,6 +81,7 @@ export class UsersController {
 
   @DocPatchUsuario()
   @Patch(':id')
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() UpdateUsuarioDto: UpdateUsuarioDto,
@@ -102,6 +92,7 @@ export class UsersController {
 
   @DocDeleteIdUsuario()
   @Delete(':id')
+  @Roles(Role.ADMIN)
   remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,

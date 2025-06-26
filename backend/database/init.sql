@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- Insertar algunos datos de ejemplo en la tabla de usuarios
 INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol_id, telefono, direccion)
 VALUES 
-    ('paolarladera@gmail.com', 'paola1', 'rodriguez', 'paola', 2, '123456789', 'Calle falsa');
+    ('paola@adoptar.com', 'paola1', 'rodriguez', 'paola', 2, '123456789', 'Calle falsa');
 
 -- Insertar unico usuario con el rol ADMIN de la pagina
 INSERT INTO usuarios (email, nombre, apellido, contrasenia, rol_id) 
@@ -104,7 +104,7 @@ VALUES (
   'Rocky', 'Labrador', 'Macho', 1, true, 'Mediano', '["https://ejemplo.com/foto1.jpg", "https://ejemplo.com/foto2.jpg"]', 1, 1, 1);
 
 -- Crear enum de estado de Publicacion
-CREATE TYPE estado_publi_enum AS ENUM ('Abierto', 'Cerrado');
+CREATE TYPE estado_publi_enum AS ENUM ('Abierta', 'Cerrada');
 
 -- Crear tabla publicaciones
 CREATE TABLE IF NOT EXISTS publicaciones (
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS publicaciones (
 
 INSERT INTO publicaciones (titulo, descripcion, ubicacion, contacto, estado, mascota_id)
 VALUES 
-    ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Abierto', '1');
+    ('Perro 1', 'Perro lindo', 'Zona norte', '11-1234-5678', 'Abierta', '1');
 
 /*   ('Gato 1', 'Gato bueno', 'Zona sur', 'email@nombre.com', 'Abierto', '2'),
     ('Perro 2', 'Perro bueno', 'Zona este', '11-5678-1234', 'Abierto', '3'),

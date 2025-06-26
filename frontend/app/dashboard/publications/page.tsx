@@ -1,15 +1,15 @@
-import Pagination from '@/app/ui/users/pagination';
+import Pagination from '@/app/ui/publications/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/users/table';
-import { CreateUser } from '@/app/ui/users/buttons';
+import PublicationsTable from '@/app/ui/publications/table';
+import { CreatePublication } from '@/app/ui/publications/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { fetchUsersPages } from '@/app/lib/data';
+import { fetchPublicationsPages } from '@/app/lib/dataPublications';
 import { Metadata } from 'next';
-import { UsersTableSkeleton } from '@/app/ui/skeletons';
+import { PublicationsTableSkeleton } from '@/app/ui/skeletons';
 
 export const metadata: Metadata = {
-  title: 'users',
+  title: 'Publicaciones',
 };
 
 export default async function Page(props: {
@@ -18,11 +18,12 @@ export default async function Page(props: {
     page?: string;
   }>;
 }) {
+  
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchUsersPages(query) || 1;
+  const totalPages = await fetchPublicationsPages(query) || 1;
   
   return (
     <div className="w-full">
@@ -31,11 +32,11 @@ export default async function Page(props: {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Buscar publicaciones..." />
-        <CreateUser />
+        <CreatePublication />
       </div>
-      <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
-        <Table query={query} currentPage={currentPage} />
-      </Suspense> 
+      <Suspense key={query + currentPage} fallback={<PublicationsTableSkeleton />}>
+        <PublicationsTable query={query} currentPage={currentPage} />
+      </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

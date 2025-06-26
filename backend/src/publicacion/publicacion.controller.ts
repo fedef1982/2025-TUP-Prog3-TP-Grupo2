@@ -26,6 +26,7 @@ import {
   DocPatchPublicacion,
   DocPostPublicacion,
   DocGetPublicacionFiltros,
+  DocGetPublicacionAbiertaConFiltro,
 } from './publicacion.doc';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 
@@ -126,6 +127,19 @@ export class PublicacionesController {
   @Get('publicaciones')
   findAllPublicadas(): Promise<Publicacion[]> {
     return this.publicacionesService.findPublicadasYAbiertas();
+  }
+
+  @DocGetPublicacionAbiertaConFiltro()
+  @Public()
+  @Get('publicaciones/filtros')
+  findPublicadasYAbiertasConFiltros(
+    @Query() params: QueryOpcionesDto,
+  ): Promise<{
+    publicaciones: Publicacion[];
+    total: number;
+    totalPages: number;
+  }> {
+    return this.publicacionesService.findPublicadasYAbiertasConFiltros(params);
   }
 
   @DocGetIdPublicacion()

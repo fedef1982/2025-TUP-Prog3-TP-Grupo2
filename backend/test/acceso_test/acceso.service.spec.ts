@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccesoService } from '../../src/acceso/acceso.service';
 import { Role } from '../../src/auth/roles.enum';
 
-// Definimos un tipo para JwtPayload simplificado para los tests
 interface JwtPayload {
   sub: number; 
   username: string;   

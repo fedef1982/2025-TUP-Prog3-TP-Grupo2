@@ -1,5 +1,8 @@
 import { Test } from '@nestjs/testing';
-import { Publicacion, EstadoPublicacion } from '../../src/publicacion/publicacion.model';
+import {
+  Publicacion,
+  EstadoPublicacion,
+} from '../../src/publicacion/publicacion.model';
 import { PublicacionesController } from '../../src/publicacion/publicacion.controller';
 import { PublicacionesService } from '../../src/publicacion/publicacion.service';
 import { CreatePublicacionDto } from '../../src/publicacion/dto/create-publicacion.dto';
@@ -10,6 +13,7 @@ import { Mascota } from '../../src/mascota/mascota.model';
 import { Visita } from '../../src/visita/visita.model';
 import { DisponibilidadHoraria } from '../../src/visita/dto/create-visita.dto';
 import { EstadoVisita } from '../../src/visita/dto/create-visita.dto';
+import { NotFoundException } from '@nestjs/common';
 
 const mockPublicacionesService = {
   findAll: jest.fn(),
@@ -20,6 +24,7 @@ const mockPublicacionesService = {
   remove: jest.fn(),
   findPublicadasYAbiertas: jest.fn(),
   findOnePublicada: jest.fn(),
+  findPublicadasYAbiertasConFiltros: jest.fn(),
 };
 
 const mockRequest = {
@@ -39,7 +44,7 @@ const mockMascota: Mascota = {
   tamanio: 'Mediano',
   fotos_url: [
     'https://sitioWeb.com/foto1.jpg',
-    'https://sitioWeb.com/foto2.jpg'
+    'https://sitioWeb.com/foto2.jpg',
   ],
   especie_id: 1,
   condicion_id: 1,
@@ -66,7 +71,6 @@ const mockVisita: Visita = {
   deletedAt: new Date('2025-06-20T12:00:00Z'),
 } as Visita;
 
-
 const mockPublicacion: Publicacion = {
   id: 1,
   titulo: 'Publicación de prueba',
@@ -77,7 +81,7 @@ const mockPublicacion: Publicacion = {
   estado: EstadoPublicacion.Abierta,
   mascota_id: 1,
   mascota: mockMascota as Mascota,
-  visita: [mockVisita as Visita],    
+  visita: [mockVisita as Visita],
   createdAt: new Date('2025-06-19T10:00:00Z'),
   updatedAt: new Date('2025-06-20T10:00:00Z'),
   deletedAt: new Date('2025-06-20T10:00:00Z'),
@@ -98,9 +102,11 @@ describe('PublicacionesController', () => {
       ],
     }).compile();
 
-    controller = moduleRef.get<PublicacionesController>(PublicacionesController);
+    controller = moduleRef.get<PublicacionesController>(
+      PublicacionesController,
+    );
     service = moduleRef.get<PublicacionesService>(PublicacionesService);
-    
+
     jest.clearAllMocks();
   });
 
@@ -116,21 +122,27 @@ describe('PublicacionesController', () => {
 
   describe('findPublicacionesConFiltros', () => {
     it('Deberían devolverse las publicaciones filtradas.', async () => {
-      const mockResult = { publicaciones: [ mockPublicacion ], total: 10, totalPages: 2 };
+      const mockResult = {
+        publicaciones: [mockPublicacion],
+        total: 10,
+        totalPages: 2,
+      };
       const queryParams = new QueryOpcionesDto();
-      jest.spyOn(service, 'findPublicacionesConFiltros').mockResolvedValue(mockResult);
+      jest
+        .spyOn(service, 'findPublicacionesConFiltros')
+        .mockResolvedValue(mockResult);
 
       const response = await controller.findPublicacionesConFiltros(
         1,
         mockRequest as any,
-        queryParams
+        queryParams,
       );
-      
+
       expect(response).toEqual(mockResult);
       expect(service.findPublicacionesConFiltros).toHaveBeenCalledWith(
         1,
         mockRequest.user,
-        queryParams
+        queryParams,
       );
     });
   });
@@ -141,7 +153,9 @@ describe('PublicacionesController', () => {
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'create').mockResolvedValue(result);
 
-      expect(await controller.create(dto, 1, mockRequest as any)).toEqual(result);
+      expect(await controller.create(dto, 1, mockRequest as any)).toEqual(
+        result,
+      );
       expect(service.create).toHaveBeenCalledWith(dto, 1, mockRequest.user);
     });
   });
@@ -151,7 +165,9 @@ describe('PublicacionesController', () => {
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'findOne').mockResolvedValue(result);
 
-      expect(await controller.findOne(1, 2, mockRequest as any)).toEqual(result);
+      expect(await controller.findOne(1, 2, mockRequest as any)).toEqual(
+        result,
+      );
       expect(service.findOne).toHaveBeenCalledWith(2, 1, mockRequest.user);
     });
   });
@@ -162,7 +178,9 @@ describe('PublicacionesController', () => {
       const result = { id: 1 } as Publicacion;
       jest.spyOn(service, 'update').mockResolvedValue(result);
 
-      expect(await controller.update(1, 2, dto, mockRequest as any)).toEqual(result);
+      expect(await controller.update(1, 2, dto, mockRequest as any)).toEqual(
+        result,
+      );
       expect(service.update).toHaveBeenCalledWith(2, dto, 1, mockRequest.user);
     });
   });
@@ -191,6 +209,45 @@ describe('PublicacionesController', () => {
       jest.spyOn(service, 'findOnePublicada').mockResolvedValue(result);
 
       expect(await controller.findOnePublicada(1)).toEqual(result);
+    });
+  });
+
+  describe('findPublicadasYAbiertasConFiltros', () => {
+    it('debería devolver publicaciones abiertas y publicadas con paginación', async () => {
+      const params = {
+        q: 'Test',
+        page: 1,
+        limit: 2,
+        sortBy: 'titulo',
+        sortOrder: 'asc',
+      };
+      const mockResult = {
+        publicaciones: [mockPublicacion],
+        total: 1,
+        totalPages: 1,
+      };
+      mockPublicacionesService.findPublicadasYAbiertasConFiltros.mockResolvedValue(
+        mockResult,
+      );
+
+      const result = await controller.findPublicadasYAbiertasConFiltros(
+        params as any,
+      );
+
+      expect(
+        mockPublicacionesService.findPublicadasYAbiertasConFiltros,
+      ).toHaveBeenCalledWith(params);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('debería lanzar error si el service lanza error', async () => {
+      mockPublicacionesService.findPublicadasYAbiertasConFiltros.mockRejectedValue(
+        new NotFoundException(),
+      );
+
+      await expect(
+        controller.findPublicadasYAbiertasConFiltros({} as any),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

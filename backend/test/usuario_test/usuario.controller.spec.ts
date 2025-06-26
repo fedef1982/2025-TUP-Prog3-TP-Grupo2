@@ -38,6 +38,10 @@ describe('UsersController', () => {
     controller = module.get<UsersController>(UsersController);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('findAll', () => {
     it('debería devolver todos los usuarios', async () => {
       mockUsersService.findAll.mockResolvedValue([mockUserData]);
@@ -92,18 +96,6 @@ describe('UsersController', () => {
       mockUsersService.remove.mockResolvedValue(undefined);
       await controller.remove(1, reqAdmin);
       expect(mockUsersService.remove).toHaveBeenCalledWith(1, reqAdmin.user);
-    });
-  });
-
-  describe('getPerfil', () => {
-    it('debería devolver el perfil del usuario', async () => {
-      mockUsersService.findOne.mockResolvedValue(mockUserData);
-      const result = await controller.getPerfil(1, reqPublicador);
-      expect(result).toEqual(mockUserData);
-      expect(mockUsersService.findOne).toHaveBeenCalledWith(
-        1,
-        reqPublicador.user,
-      );
     });
   });
 

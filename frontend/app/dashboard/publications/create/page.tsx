@@ -1,26 +1,28 @@
-import Breadcrumbs from '@/app/ui/users/breadcrumbs';
+import Breadcrumbs from '@/app/ui/publications/breadcrumbs';
 import { Metadata } from 'next';
-import CreateUserForm from '@/app/ui/users/create-form';
+import { fetchCurrentUserId } from '@/app/lib/data';
+import CreatePublicationForm from '@/app/ui/publications/create-form';
 
 export const metadata: Metadata = {
-  title: 'Crear usuario',
+  title: 'Crear publicación',
 };
 
 export default async function Page() {
+  const userId = await fetchCurrentUserId()|| 2;
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Usuarios', href: '/dashboard/users' },
+          { label: 'Publicaciones', href: '/dashboard/publications' },
           {
-            label: 'Crear usuario',
-            href: '/dashboard/users/create',
+            label: 'Crear publicación',
+            href: '/dashboard/publications/create',
             active: true,
           },
         ]}
       />
-      <CreateUserForm />
+      <CreatePublicationForm userId={userId} />
     </main>
   );
 }

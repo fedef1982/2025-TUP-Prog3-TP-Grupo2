@@ -1,6 +1,11 @@
+'use client';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteUser } from '@/app/lib/actions';
+import { useRouter } from 'next/navigation';
+import { useState, useRef, useEffect } from 'react';
+import { ConfirmModal } from '../confirmModal';
+import { DeleteButtonWithModal } from '../deleteButtonWithModal';
 
 export function CreateUser() {
   return (
@@ -26,14 +31,15 @@ export function UpdateUser({ id }: { id: string }) {
 }
 
 export function DeleteUser({ id }: { id: string }) {
-  const deleteUserWithId = deleteUser.bind(null, Number(id));
-
   return (
-    <form action={deleteUserWithId}>
-      <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
+    <DeleteButtonWithModal
+      id={id}
+      deleteAction={deleteUser}
+      title="¿Eliminar usuario?"
+      message="¿Estás seguro de eliminar este usuario?"
+      confirmText="Eliminar"
+      cancelText="Cancelar"
+      icon={<TrashIcon className="w-5" />}
+    />
   );
 }
