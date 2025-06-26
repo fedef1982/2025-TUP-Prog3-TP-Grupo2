@@ -5,19 +5,7 @@ import { fetchPublishedPages } from '../lib/dataPublications';
 import { ArrowLeftIcon } from 'lucide-react';
 import SearchTrackingForm from '../ui/visits/tracking-form';
 
-export default async function Page(props: {
-  searchParams?: Promise<{
-    query?: string;
-    page?: string;
-  }>;
-}) {
-  
-  const searchParams = await props.searchParams;
-  const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
-
-  const totalPages = await fetchPublishedPages(query) || 1;
-  
+export default async function Page() {
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-violet-500  p-2 md:h-26">
