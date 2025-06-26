@@ -39,7 +39,6 @@ export interface CreateVisitaDto {
   disponibilidad_fecha: Date;
   disponibilidad_horario: DisponibilidadHoraria;
   descripcion?: string;
-  publicacion_id: number;
 }
 
 export interface UpdateVisitaDto {
@@ -213,3 +212,5 @@ export interface SearchTrackingState {
   success?: boolean;
   tracking?: TrackingVisita;
 }
+
+

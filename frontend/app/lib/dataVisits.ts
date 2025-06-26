@@ -207,7 +207,7 @@ export async function fetchFilteredVisits({
     }
 
     const data = await response.json();
-    console.log('######### visit data', JSON.stringify(data));
+ 
 
     return data;
 

@@ -79,19 +79,16 @@ export default async function VisitsTable({
                   Visitante
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Publicación
+                  Mascota
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Fecha/Horario
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Contacto
+                  Tracking
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Estado
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Tracking
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Actions</span>
@@ -105,12 +102,13 @@ export default async function VisitsTable({
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <p>{visit.nombre} {visit.apellido}</p>
+                    <div className="flex flex-col gap-1">
+                      <p>{visit.nombre}</p>
+                      <p>{visit.apellido}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {visit.publicacion?.titulo || 'N/A'}
+                    {visit.publicacion?.mascota.nombre || 'N/A'}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <div>
@@ -118,17 +116,17 @@ export default async function VisitsTable({
                       <p className="text-gray-500">{formatTime(visit.disponibilidad_horario)}</p>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                {/*  <td className="whitespace-nowrap px-3 py-3">
                     <div>
                       <p>{visit.email}</p>
                       <p className="text-gray-500">{visit.telefono}</p>
                     </div>
+                  </td> * */}
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p className="truncate max-w-xs">{visit.tracking}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <VisitStatus status={visit.estado} />
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <p className="truncate max-w-xs">{visit.tracking}</p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

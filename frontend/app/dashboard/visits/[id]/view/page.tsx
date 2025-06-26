@@ -48,9 +48,8 @@ export default async function Page({ params }: { params: { id?: string } }) {
           ]}
         />
         <ViewVisitForm 
-          visit={visit} 
+          visit={visit}
           userId={userId}
-          rol_id={rolId} 
         />
       </main>
     );

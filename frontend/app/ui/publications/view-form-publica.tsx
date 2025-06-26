@@ -11,6 +11,7 @@ import {
   CakeIcon,
 } from '@heroicons/react/24/outline';
 import {  
+  ArrowRightIcon,
   MarsIcon,
   VenusIcon, 
 } from 'lucide-react';
@@ -213,11 +214,18 @@ export default function ViewPublishedForm({
           </div>
         )}
       </div>
+      
+      <Link
+        href={`/published/${publication.id}/createvisit`}
+        className="flex h-10 items-center rounded-lg bg-violet-500 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 active:bg-violet-600 aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+      >
+        <span>Solicitar visita</span> <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      </Link>
 
       <div className="mt-6">
         <Link 
           href="/published" 
-          className="flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-violet-600 hover:text-blue-800"
         >
           <ArrowLeftIcon className="mr-2 h-5 w-5" />
           Volver a publicaciones
