@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Mascota } from './mascota.model';
 import { CreateMascotaDto } from './dto/create-mascota.dto';
@@ -13,6 +17,7 @@ import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { Op } from 'sequelize';
 import { EspecieService } from './especie/especie.service';
 import { CondicionService } from './condicion/condicion.service';
+import { Publicacion } from '../publicacion/publicacion.model';
 
 @Injectable()
 export class MascotaService {
@@ -28,6 +33,9 @@ export class MascotaService {
 
     @InjectModel(User)
     private userModel: typeof User,
+
+    @InjectModel(Publicacion)
+    private publicacionModel: typeof Publicacion,
 
     private readonly condicionService: CondicionService,
     private readonly especieService: EspecieService,
@@ -113,6 +121,17 @@ export class MascotaService {
     usuario: JwtPayload,
   ): Promise<void> {
     const mascota = await this.findOne(id, usuarioId, usuario);
+
+    const publicacionesCount = await this.publicacionModel.count({
+      where: { mascota_id: id },
+    });
+
+    if (publicacionesCount > 0) {
+      throw new ConflictException(
+        'No se puede eliminar la mascota porque tiene publicaciones asociadas.',
+      );
+    }
+
     await mascota.destroy();
   }
 

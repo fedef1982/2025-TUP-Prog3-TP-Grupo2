@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from './confirmModal';
+import { toast } from 'sonner';
 
 interface DeleteButtonWithModalProps {
   id: string | number;
@@ -15,7 +16,7 @@ interface DeleteButtonWithModalProps {
   className?: string;
 }
 
-export function DeleteButtonWithModal({
+/* export function DeleteButtonWithModal({
   id,
   deleteAction,
   title = '¿Eliminar?',
@@ -67,6 +68,65 @@ export function DeleteButtonWithModal({
       <form ref={formRef} action={deleteWithId} style={{ display: 'none' }}>
         <button type="submit"></button>
       </form>
+    </>
+  );
+} */
+
+export function DeleteButtonWithModal({
+  id,
+  deleteAction,
+  title = '¿Eliminar?',
+  message,
+  confirmText = 'Eliminar',
+  cancelText = 'Cancelar',
+  icon,
+  className = '',
+}: DeleteButtonWithModalProps) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleDelete = async () => {
+    setLoading(true);
+    
+    const result = await deleteAction(Number(id));
+
+    if (result && result.ok === false) {
+      // 2. Mostrar toast de error con el mensaje del backend
+      toast.error(result.message); 
+      setLoading(false);
+      setModalOpen(false);
+    } else {
+      // 3. Opcional: Mostrar toast de éxito
+      toast.success('Mascota eliminada correctamente');
+      setModalOpen(false);
+      router.refresh();
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className={`rounded-md border p-2 hover:bg-gray-100 ${className}`}
+        onClick={() => setModalOpen(true)}
+      >
+        <span className="sr-only">{confirmText}</span>
+        {icon}
+      </button>
+
+      {}
+
+      <ConfirmModal
+        open={modalOpen}
+        title={title}
+        message={message}
+        confirmText={loading ? "Eliminando..." : confirmText}
+        cancelText={cancelText}
+        onConfirm={handleDelete}
+        onCancel={() => !loading && setModalOpen(false)}
+      />
     </>
   );
 }

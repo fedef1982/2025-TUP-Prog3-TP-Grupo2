@@ -183,8 +183,9 @@ export async function updatePet(
     };
   }
 }
-   
-export async function deletePet(id: number): Promise<void> {
+
+/* esta funcion no maneja el error 409 como una regla de negocio, sino como una excepcion*/
+/* export async function deletePet(id: number): Promise<void> {
   try {
     const token = await getRawToken();
     const userId = await getUserId();
@@ -213,4 +214,38 @@ export async function deletePet(id: number): Promise<void> {
     console.error('Error al eliminar mascota:', error);
     throw error;
   }
+}
+ */
+
+export async function deletePet(id: number): Promise<{ ok: true } | { ok: false; message: string }> {
+  const token = await getRawToken();
+  const userId = await getUserId();
+
+  if (!token || !userId) {
+    return { ok: false, message: 'Authentication required' };
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/mascotas/${id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (response.ok) {
+    return { ok: true };
+  }
+
+  const errorData = await response.json().catch(() => ({}));
+
+  return {
+    ok: false,
+    message:
+      errorData.message ??
+      `No se pudo eliminar la mascota (estado ${response.status})`,
+  };
 }
