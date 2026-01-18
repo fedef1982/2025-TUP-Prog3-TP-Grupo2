@@ -104,7 +104,7 @@ export class DonacionController {
 
   //---------------Endpoints para los usuarios no autenticados
   @Public()
-  @Get('publicaciones/:publicacionId/donacion/:id')
+  @Get('publicaciones/:publicacionId/donaciones/:id')
   findOnePublica(@Param('id', ParseIntPipe) id: number): Promise<Donacion> {
     return this.donacionService.findOnePublica(id);
   }
