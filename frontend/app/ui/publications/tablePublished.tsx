@@ -1,4 +1,4 @@
-import { ViewPublished } from '@/app/ui/publications/buttons';
+import { DonatePublished, ViewPublished } from '@/app/ui/publications/buttons';
 import { fetchFilteredPublished } from '@/app/lib/dataPublications';
 
 export default async function PublicationsTablePublished({
@@ -37,6 +37,11 @@ export default async function PublicationsTablePublished({
                     <ViewPublished id={pub.id.toString()} />
                   </div>
                 </div>
+                <div className="flex w-full items-center justify-between pt-4">
+                  <div className="flex justify-end gap-2">
+                    <DonatePublished id={pub.mascota.usuario_id.toString()} />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -48,6 +53,9 @@ export default async function PublicationsTablePublished({
                 <th className="px-3 py-5 font-medium">Mascota</th>
                 <th className="py-3 pl-6 pr-3 font-medium">
                   <span className="sr-only">Ver</span>
+                </th>
+                <th className="py-3 pl-6 pr-3 font-medium">
+                  <span className="sr-only">Donar</span>
                 </th>
               </tr>
             </thead>
@@ -108,6 +116,12 @@ export default async function PublicationsTablePublished({
                       <ViewPublished id={pub.id.toString()} />
                     </div>
                   </td>
+                  {/* REALIZAR DONACION */}
+                  <td className="whitespace-nowrap py-3 pl-6 pr-3 align-top">
+                    <div className="flex justify-end gap-3">
+                      <DonatePublished id={pub.mascota.usuario_id.toString()} />
+                    </div>
+                  </td> 
                 </tr>
               ))}
             </tbody>
