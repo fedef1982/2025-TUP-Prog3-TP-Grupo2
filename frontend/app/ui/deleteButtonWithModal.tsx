@@ -98,7 +98,7 @@ export function DeleteButtonWithModal({
       setModalOpen(false);
     } else {
       // 3. Opcional: Mostrar toast de éxito
-      toast.success('Mascota eliminada correctamente');
+      toast.success('Eliminado correctamente');
       setModalOpen(false);
       router.refresh();
       setLoading(false);
