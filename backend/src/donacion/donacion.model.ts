@@ -47,21 +47,21 @@ export class Donacion extends Model<Donacion, Partial<Donacion>> {
   @ApiProperty()
   @Column({
     type: DataType.STRING,
-    allowNull: true,
+    allowNull: false,
   })
-  declare nombre_banco: string;
+  declare entidad_financiera: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
-    allowNull: false,
+    allowNull: true,
   })
   declare tipo_cuenta: string;
 
   @ApiProperty()
   @Column({
     type: DataType.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   declare alias: string;
 
@@ -84,6 +84,7 @@ export class Donacion extends Model<Donacion, Partial<Donacion>> {
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    unique: true,
   })
   declare usuario_id: number;
 
