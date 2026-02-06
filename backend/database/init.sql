@@ -112,11 +112,11 @@ CREATE TABLE IF NOT EXISTS donaciones (
     destinatario VARCHAR(100),
     cbu VARCHAR(100),
     cuit VARCHAR(100),
-    nombre_banco VARCHAR(100),
+    entidad_financiera VARCHAR(100) NOT NULL,
     tipo_cuenta VARCHAR(100),
-    alias VARCHAR(100),
+    alias VARCHAR(100) NOT NULL,
     link_pago VARCHAR(100),
-    motivo_donacion VARCHAR(100)
+    motivo_donacion VARCHAR(100),
     usuario_id INTEGER,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -127,9 +127,9 @@ CREATE TABLE IF NOT EXISTS donaciones (
 );
 
 -- Insertar algunos datos de ejemplos en la tabla de donaciones
-INSERT INTO donaciones (destinatario, cbu, cuit, nombre_banco, tipo_cuenta, alias, link_pago, motivo_donacion, usuario_id)
+INSERT INTO donaciones (destinatario, cbu, cuit, entidad_financiera, tipo_cuenta, alias, link_pago, motivo_donacion, usuario_id)
 VALUES (
-  'Carlos Perez', '012345678910110001234567', '30-12345678910-0', 'Banco Galicia', 'Cuenta Corriente', 'carlos.perez.galicia', 'https://link.billetera.com.ar/donaciones', 'Cada donación que recibimos se destina a alimentación, medicación y limpieza', 1);
+  'Carlos Perez', '012345678910110001234567', '30-12345678910-0', 'Banco Galicia', 'Cuenta Corriente', 'carlos.perez.galicia', 'https://link.billetera.com.ar/donaciones', 'Cada donacion que recibimos se destina a alimentación, medicación y limpieza', 1);
 
 
 -- Crear tabla publicaciones

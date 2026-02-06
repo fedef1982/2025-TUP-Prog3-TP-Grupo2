@@ -20,7 +20,7 @@ export class UpdateDonacionDto {
   @ApiProperty({ example: 'Banco Galicia' })
   @IsString()
   @IsOptional()
-  nombre_banco: string;
+  entidad_financiera: string;
 
   @ApiProperty({ example: 'Adoptar123' })
   @IsString()

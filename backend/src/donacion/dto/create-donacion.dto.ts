@@ -20,22 +20,22 @@ export class CreateDonacionDto {
 
   @ApiProperty({ example: '30-12345678910-0' })
   @IsString()
+  @Length(11, 11)
   @IsOptional()
   cuit: string;
 
   @ApiProperty({ example: 'Banco Galicia' })
   @IsString()
-  @IsOptional()
-  nombre_banco: string;
+  @IsNotEmpty()
+  entidad_financiera: string;
 
   @ApiProperty({ example: 'Cuenta Corriente' })
   @IsString()
-  @Length(6, 20)
   tipo_cuenta: string;
 
   @ApiProperty({ example: 'mi.alias.example' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   alias: string;
 
   @ApiProperty({ example: 'https://link.billetera.com.ar/donaciones' })
