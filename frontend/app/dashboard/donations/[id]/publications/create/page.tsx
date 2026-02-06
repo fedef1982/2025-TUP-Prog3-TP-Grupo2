@@ -1,10 +1,10 @@
 import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
 import { Metadata } from 'next';
-import CreateDonatioForm from '@/app/ui/donations/create-form';
+import CreatePetForm from '@/app/ui/pets/create-form';
 import { fetchCurrentUserId } from '@/app/lib/data';
 
 export const metadata: Metadata = {
-  title: 'Crear datos de donacion',
+  title: 'Crear mascota',
 };
 
 export default async function Page() {
@@ -14,15 +14,15 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Datos de donacion', href: '/dashboard/donations' },
+          { label: 'Mascotas', href: '/dashboard/pets' },
           {
-            label: 'Crear datos de donacion',
-            href: '/dashboard/conations/create',
+            label: 'Crear mascota',
+            href: '/dashboard/pets/create',
             active: true,
           },
         ]}
       />
-      <CreateDonatioForm userId={userId} />
+      <CreatePetForm userId={userId} />
     </main>
   );
 }

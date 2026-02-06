@@ -1,77 +1,63 @@
 'use server';
 
-import { getRawToken, getToken } from "./server-utils";
-import { CreateDonationDto, UpdateDonationDto, Donation, UpdateDonationState, CreateDonationState } from './definitionsDonations'
-import { cookies } from 'next/headers';
+import { getRawToken, getToken, getUserId } from "./server-utils";
+import { CreateDonationDto, CreateDonationState, UpdateDonationDto, UpdateDonationState } from './definitionsDonations';
 
-// Create donation
 export async function createDonation(
-  prevState: CreateDonationState | undefined,
-  formData: FormData) {
-  try {
-    const email = formData.get('email') as string;
-    const nombre = formData.get('nombre') as string;
-    const apellido = formData.get('apellido') as string;
-    const contrasenia = formData.get('contrasenia') as string;
-    const telefono = formData.get('telefono') as string || '';
-    const direccion = formData.get('direccion') as string || '';
-    const donationData: CreateDonationDto ={
-        email: email,
-        nombre: nombre,
-        apellido: apellido,
-        contrasenia: contrasenia,
-        telefono: telefono,
-        direccion: direccion,
-    }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/donaciones`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(donationData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Registration failed');
-    }
-
-    return { success: true };
-  } catch (error) {
-    console.error('Registration error:', error);
-    return { 
-      success: false,
-      error: error instanceof Error ? error.message : 'Error en datos donaciones. Por favor intente nuevamente.'
-    };
-  }
-}
-
-// Update donation
-export async function updateDonation(
-  id: number,
-  prevState: UpdateDonationState | undefined,
+  prevState: CreateDonationState | null, 
   formData: FormData
-) {
+): Promise<CreateDonationState> {
   try {
-    const email = formData.get('email') as string;
-    const nombre = formData.get('nombre') as string;
-    const apellido = formData.get('apellido') as string;
-    const contrasenia = formData.get('contrasenia') as string;
-    const telefono = formData.get('telefono') as string || '';
-    const direccion = formData.get('direccion') as string || '';
-
-    const donationData: Record<string, any> = {};
+    const token = await getRawToken(); 
+    const userId = await getUserId(); 
     
-    if (email) donationData.email = email;
-    if (nombre) donationData.nombre = nombre;
-    if (apellido) donationData.apellido = apellido;
-    if (contrasenia) donationData.contrasenia = contrasenia;
-    if (telefono) donationData.telefono = telefono;
-    if (direccion) donationData.direccion = direccion;
-    
-    const token = await getRawToken();
+    if (!token ) {
+      return { 
+        success: false,
+        message: 'Autenticación requerida',
+        errors: {}
+      };
+    }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/donaciones/${id}`, {
-      method: 'PATCH',
+    if (!userId) {
+      return {
+        success: false,
+        message: 'ID de usuario inválido',
+        errors: {}
+      };
+    }
+
+    const destinatario = formData.get('destinatario') as string;
+    const entidad_financiera = formData.get('entidad_financieta') as string;
+    const alias = formData.get('alias') as string;
+
+    const errors: Record<string, string[]> = {};
+    if (!destinatario) errors.nombre = ['El nombre del destinatario es requerido'];
+    if (!entidad_financiera) errors.sexo = ['La entidad financiera es requerida'];
+    if (!alias) errors.tamanio = ['El alias es requerido'];
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Faltan campos requeridos',
+        errors
+      };
+    }
+
+    const donationData = {
+      destinatario,
+      cbu: formData.get('cbu') as string || undefined,
+      cuit: formData.get('cuit') as string || undefined,
+      entidad_financiera,
+      tipo_cuenta: formData.get('tipo_cuenta') as string || undefined,
+      alias,
+      link_pago: formData.get('link_pago') as string || undefined,
+      motivo_donacion: formData.get('motivo doancion') as string || undefined,
+      usuario_id: userId.toString,
+    };
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones`, {
+      method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -80,46 +66,149 @@ export async function updateDonation(
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Update fallida');
+      const errorData = await response.json().catch(() => ({}));
+      return {
+        success: false,
+        message: errorData.message || 'Error al crear datos de donacion',
+        errors: errorData.errors || {}
+      };
     }
 
-    return { success: true };
-  } catch (error) {
-    console.error('Update error:', error);
+    const data = await response.json();
+
     return { 
+      success: true,
+      message: 'Datos de donacion creada exitosamente'
+    };
+
+  } catch (error) {
+    console.error('Error en createDonation:', error);
+    return {
       success: false,
-      error: error instanceof Error ? error.message : 'Error al actualizar el data donacionees. Por favor intente nuevamente.'
+      message: error instanceof Error ? error.message : 'Error desconocido al procesar la solicitud',
+      errors: {}
     };
   }
 }
 
-// Delete donation
-export async function deleteDonation(id: number): Promise<void> {
+export async function updateDonation(
+  id: number,
+  userId: number,
+  prevState: UpdateDonationState | null,
+  formData: FormData
+): Promise<UpdateDonationState> {
   try {
     const token = await getRawToken();
+    
     if (!token) {
-      throw new Error('No authentication token found');
+      return { 
+        success: false,
+        message: 'Autenticación requerida',
+        errors: {}
+      };
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/donaciones/${id}`, {
-      method: 'DELETE',
-      headers: {
+    if (!userId) {
+      return {
+        success: false,
+        message: 'ID de usuario inválido',
+        errors: {}
+      };
+    }
+
+    const destinatario = formData.get('destinatario') as string;
+    const entidad_financiera = formData.get('entidad_financieta') as string;
+    const alias = formData.get('alias') as string;
+
+    const errors: Record<string, string[]> = {};
+    if (!destinatario) errors.nombre = ['El nombre del destinatario es requerido'];
+    if (!entidad_financiera) errors.sexo = ['La entidad financiera es requerida'];
+    if (!alias) errors.tamanio = ['El alias es requerido'];
+
+    if (Object.keys(errors).length > 0) {
+      return {
+        success: false,
+        message: 'Faltan campos requeridos',
+        errors
+      };
+    }
+
+    const donationData = {
+      destinatario,
+      cbu: formData.get('cbu') as string || undefined,
+      cuit: formData.get('cuit') as string || undefined,
+      entidad_financiera,
+      tipo_cuenta: formData.get('tipo_cuenta') as string || undefined,
+      alias,
+      link_pago: formData.get('link_pago') as string || undefined,
+      motivo_donacion: formData.get('motivo doancion') as string || undefined,
+      usuario_id: userId.toString,
+    };
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`, {
+      method: 'PATCH', 
+      headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
-      }
+      },
+      body: JSON.stringify(donationData),
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || 
-        `Failed to delete user with status ${response.status}`
-      );
+      return {
+        success: false,
+        message: errorData.message || 'Error al actualizar datos de donacion',
+        errors: errorData.errors || {}
+      };
     }
 
+    const data = await response.json();
+
+    return { 
+      success: true,
+      message: 'Datos de donacion actualizados exitosamente'
+    };
+
   } catch (error) {
-    console.error('Error in deleteDonacion:', error);
-    throw error;
+    console.error('Error en updateDonation:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Error desconocido al procesar la solicitud',
+      errors: {}
+    };
   }
+}
+
+export async function deleteDonation(id: number): Promise<{ ok: true } | { ok: false; message: string }> {
+  const token = await getRawToken();
+  const userId = await getUserId();
+
+  if (!token || !userId) {
+    return { ok: false, message: 'Authentication required' };
+  }
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (response.ok) {
+    return { ok: true };
+  }
+
+  const errorData = await response.json().catch(() => ({}));
+
+  return {
+    ok: false,
+    message:
+      errorData.message ??
+      `No se pudo eliminar la mascota (estado ${response.status})`,
+  };
 }

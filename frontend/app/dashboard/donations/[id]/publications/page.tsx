@@ -1,15 +1,15 @@
-import Pagination from '@/app/ui/donations/pagination';
+import Pagination from '@/app/ui/pets/pagination';
 import Search from '@/app/ui/search';
-import Table from '@/app/ui/donations/table';
-import { CreateDonation } from '@/app/ui/donations/buttons';
+import Table from '@/app/ui/pets/table';
+import { CreatePet } from '@/app/ui/pets/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
-import { fetchDonationPages } from '@/app/lib/dataDonations';
+import { fetchUsersPages } from '@/app/lib/data';
 import { Metadata } from 'next';
-import { DonationsTableSkeleton } from '@/app/ui/skeletons';
+import { UsersTableSkeleton } from '@/app/ui/skeletons';
 
 export const metadata: Metadata = {
-  title: 'donations',
+  title: 'pets',
 };
 
 export default async function Page(props: {
@@ -22,7 +22,7 @@ export default async function Page(props: {
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchDonationPages(query) || 1;
+  const totalPages = await fetchUsersPages(query) || 1;
   
   return (
     <div className="w-full">
@@ -30,10 +30,10 @@ export default async function Page(props: {
         <h1 className={`${lusitana.className} text-2xl`}>Mascotas</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Buscar datos donacion..." />
-        <CreateDonation />
+        <Search placeholder="Buscar mascotas..." />
+        <CreatePet />
       </div>
-      <Suspense key={query + currentPage} fallback={<DonationsTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<UsersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense> 
       <div className="mt-5 flex w-full justify-center">
