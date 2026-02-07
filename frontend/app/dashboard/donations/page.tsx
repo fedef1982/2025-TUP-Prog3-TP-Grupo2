@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import { DonationsTableSkeleton } from '@/app/ui/skeletons';
 
 export const metadata: Metadata = {
-  title: 'donations',
+  title: 'Datos para donaciones',
 };
 
 export default async function Page(props: {
@@ -27,7 +27,7 @@ export default async function Page(props: {
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Mascotas</h1>
+        <h1 className={`${lusitana.className} text-2xl`}>Datos para donaciones</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Buscar datos donacion..." />

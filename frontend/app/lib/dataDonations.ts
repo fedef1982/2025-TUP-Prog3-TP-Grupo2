@@ -79,7 +79,55 @@ export async function fetchDonationById(donationId: number): Promise<Donation> {
 
     return donationData;
   } catch (error) {
-    console.error(`Error en fetchDonationById (petId: ${donationId}):`, error);
+    console.error(`Error en fetchDonationById (donationId: ${donationId}):`, error);
+    
+    if (error instanceof Error) {
+      throw new Error(`No se pudo obtener la datos de donacion: ${error.message}`);
+    }
+    
+    throw new Error('Error desconocido al obtener datos de donacion');
+  }
+}
+
+export async function fetchDonationByUserId(userId: number): Promise<Donation> {
+  try {
+    if (!userId) {
+      throw new Error('Se requiere userId');
+    }
+
+    if (isNaN(userId)) {
+      throw new Error('El ID de dato de donacion debe ser numérico');
+    }
+
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/mascota/${userId}/donaciones`);
+    
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/mascota/${userId}/donaciones`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(
+        errorData?.message || 
+        `Error al obtener datos de donacion: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const donationData: Donation = await response.json();
+
+    if (!donationData.id || !donationData.destinatario || !donationData.entidad_financiera || !donationData.alias ) {
+      throw new Error('Datos de donacion incompletos o inválidos');
+    }
+
+    return donationData;
+  } catch (error) {
+    console.error(`Error en fetchDonationByUserId (userId: ${userId}):`, error);
     
     if (error instanceof Error) {
       throw new Error(`No se pudo obtener la datos de donacion: ${error.message}`);
@@ -235,3 +283,4 @@ export async function fetchUserDonations(): Promise<Donation[]> {
   
   return response.json();
 }
+

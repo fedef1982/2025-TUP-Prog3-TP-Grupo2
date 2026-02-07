@@ -68,7 +68,7 @@ export function ViewPublished({ id }: { id: string }) {
 export function DonatePublished({ id }: { id: string }) {
   return (
     <Link
-      href={`/users/${id}/viewdonate`}
+      href={`/published/donations/${id}/view`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <HeartIcon className="w-5" />
