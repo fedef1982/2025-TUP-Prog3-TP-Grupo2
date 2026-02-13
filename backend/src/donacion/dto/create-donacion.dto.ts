@@ -31,6 +31,7 @@ export class CreateDonacionDto {
 
   @ApiProperty({ example: 'Cuenta Corriente' })
   @IsString()
+  @IsOptional()
   tipo_cuenta: string;
 
   @ApiProperty({ example: 'mi.alias.example' })
