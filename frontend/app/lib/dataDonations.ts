@@ -10,7 +10,8 @@ export async function fetchAllDonations(): Promise<Donation[]> {
     if (!token || !userId) {
       throw new Error('Authentication required');
     }
-
+    console.log(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones`);
+    console.log(token);
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuario/${userId}/donaciones`, {
       method: 'GET',
       headers: {
@@ -35,83 +36,66 @@ export async function fetchAllDonations(): Promise<Donation[]> {
   }
 }
 
-export async function fetchDonationById(donationId: number): Promise<Donation> {
+export async function fetchDonationById(id: number) {
   try {
-    if (!donationId) {
-      throw new Error('Se requiere donationId');
-    }
-
-    if (isNaN(donationId)) {
-      throw new Error('El ID de dato de donacion debe ser numérico');
-    }
-
     const token = await getRawToken();
     const userId = await getUserId();
     
     if (!token || !userId) {
-      throw new Error('Authentication required');
+      throw new Error('Autenticación requerida');
     }
 
+    console.log(`GET /usuarios/${userId}/donaciones/${id}`);
+    
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/usuario/${userId}/donaciones/${donationId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
+        cache: 'no-store' // Importante para datos que cambian
       }
     );
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(
-        errorData?.message || 
-        `Error al obtener datos de donacion: ${response.status} ${response.statusText}`
-      );
+      if (response.status === 404) {
+        return null; 
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Error al obtener donación: ${response.status}`);
     }
 
-    const donationData: Donation = await response.json();
+    const donation = await response.json();
+    return donation;
 
-    if (!donationData.id || !donationData.destinatario || !donationData.entidad_financiera || !donationData.alias ) {
-      throw new Error('Datos de donacion incompletos o inválidos');
-    }
-
-    return donationData;
   } catch (error) {
-    console.error(`Error en fetchDonationById (donationId: ${donationId}):`, error);
-    
-    if (error instanceof Error) {
-      throw new Error(`No se pudo obtener la datos de donacion: ${error.message}`);
-    }
-    
-    throw new Error('Error desconocido al obtener datos de donacion');
+    console.error('Error en fetchDonationById:', error);
+    throw error; 
   }
 }
 
-export async function fetchDonationByUserId(userId: number): Promise<Donation> {
+export async function fetchDonationByUserId(userId: number) {
   try {
-    if (!userId) {
-      throw new Error('Se requiere userId');
-    }
 
-    if (isNaN(userId)) {
-      throw new Error('El ID de dato de donacion debe ser numérico');
-    }
-
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}/mascota/${userId}/donaciones`);
+    console.log(`GET ${process.env.NEXT_PUBLIC_API_URL}/mascotas/${userId}/donaciones`);
     
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/mascota/${userId}/donaciones`,
+      `${process.env.NEXT_PUBLIC_API_URL}/mascotas/${userId}/donaciones`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
+        cache: 'no-store'
       }
     );
 
     if (!response.ok) {
+      if (response.status === 404) {
+        return null; 
+      }
       const errorData = await response.json().catch(() => null);
       throw new Error(
         errorData?.message || 
@@ -119,20 +103,15 @@ export async function fetchDonationByUserId(userId: number): Promise<Donation> {
       );
     }
 
-    const donationData: Donation = await response.json();
+    const donations = await response.json();
+    
+    return donations;
 
-    if (!donationData.id || !donationData.destinatario || !donationData.entidad_financiera || !donationData.alias ) {
-      throw new Error('Datos de donacion incompletos o inválidos');
-    }
-
-    return donationData;
   } catch (error) {
-    console.error(`Error en fetchDonationByUserId (userId: ${userId}):`, error);
-    
+    console.error('Error en fetchDonationByUserId:', error);
     if (error instanceof Error) {
-      throw new Error(`No se pudo obtener la datos de donacion: ${error.message}`);
+      throw new Error(`No se pudo obtener los datos de donacion: ${error.message}`);
     }
-    
     throw new Error('Error desconocido al obtener datos de donacion');
   }
 }
@@ -186,9 +165,11 @@ export async function fetchDonationPages(query: string): Promise<number> {
 }
 
 export function formatDonationsForTable(donations: FilteredDonations[]): DonationsTable[] {
+  console.log ("format Donations for table:",donations);
   if (!donations) {
     return [];
   }
+  
   return donations.map(donation => ({
     id: donation.id.toString(),
     destinatario: donation.destinatario,
@@ -235,7 +216,8 @@ export async function fetchFilteredDonations({
     }
 
     const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/filtros?${params.toString()}`;
-
+    console.log(apiUrl);
+    console.log(token);
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -250,9 +232,11 @@ export async function fetchFilteredDonations({
     }
 
     const data = await response.json();
-
+    
+    console.log("feth filtered donations data",data);
+    console.log("feth filtered donations data.donations",data.donaciones);
     return {
-      donations: data.donations,
+      donations: data.donaciones,
       total: data.total,
       totalPages: data.totalPages
     };
@@ -271,7 +255,7 @@ export async function fetchUserDonations(): Promise<Donation[]> {
       throw new Error('Authentication required');
     }
 
-  const response = await fetch(`${process.env.API_URL}/usuario/${userId}/donationes`, {
+  const response = await fetch(`${process.env.API_URL}/usuarios/${userId}/donationes`, {
     headers: {
       'Authorization': `Bearer ${await getToken()}`
     }
@@ -280,7 +264,7 @@ export async function fetchUserDonations(): Promise<Donation[]> {
   if (!response.ok) {
     throw new Error('Failed to fetch user pets');
   }
-  
+   
   return response.json();
 }
 

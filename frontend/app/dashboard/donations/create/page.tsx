@@ -1,6 +1,6 @@
 import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
 import { Metadata } from 'next';
-import CreateDonatioForm from '@/app/ui/donations/create-form';
+import CreateDonationForm from '@/app/ui/donations/create-form';
 import { fetchCurrentUserId } from '@/app/lib/data';
 
 export const metadata: Metadata = {
@@ -17,12 +17,12 @@ export default async function Page() {
           { label: 'Datos de donacion', href: '/dashboard/donations' },
           {
             label: 'Crear datos de donacion',
-            href: '/dashboard/conations/create',
+            href: '/dashboard/donations/create',
             active: true,
           },
         ]}
       />
-      <CreateDonatioForm userId={userId} />
+      <CreateDonationForm userId={userId} />
     </main>
   );
 }

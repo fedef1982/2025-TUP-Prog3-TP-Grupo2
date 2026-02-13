@@ -10,8 +10,14 @@ import {
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import {  
+  BuildingIcon,
+  CoinsIcon,
+  HeartIcon,
+  KeyIcon,
+  LinkIcon,
   MarsIcon,
-  VenusIcon, 
+  VenusIcon,
+  WorkflowIcon, 
 } from 'lucide-react';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '@/app/ui/button';
@@ -40,14 +46,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
       router.refresh(); 
     }
   }, [state, router, isRedirecting]);
-
-  if (loading) {
-    return (
-      <div className="rounded-md bg-gray-200 p-4 md:p-6 flex justify-center items-center h-64">
-        <p>Cargando formulario...</p>
-      </div>
-    );
-  } 
+  
   
   return (
     <form action={formAction} key={String(state?.success)}>
@@ -56,7 +55,6 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
         <h1 className={`${lusitana.className} mb-4 text-2xl`}>
           Registrar nuevos datos de donacion
         </h1>
-
         {/* Destinatario */}
         <div className="mb-4">
           <label htmlFor="destinatario" className="mb-2 block text-sm font-medium">
@@ -94,7 +92,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 placeholder="Numero de CBU (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -113,7 +111,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 placeholder="Numero de cuit (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <WorkflowIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -133,7 +131,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 required
               />
-              <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <BuildingIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             {state?.errors?.entidad_financiera && (
               <p className="mt-2 text-sm text-red-500">{state.errors.entidad_financiera.join(', ')}</p>
@@ -155,7 +153,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 placeholder="Tipo de cuenta CC CA (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CoinsIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -197,7 +195,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 placeholder="Link de Pago (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <LinkIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -216,7 +214,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
                 placeholder="Para que se utilizaria la donacion (opcional)"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
-              <CakeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <HeartIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -229,7 +227,7 @@ export default function CreateDonationForm({ userId }: { userId: number }) {
             className="flex items-center text-sm font-medium text-violet-600 hover:text-violet-800"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
-            Volver a mascotas
+            Volver a donaciones
           </Link>
         </div>
 

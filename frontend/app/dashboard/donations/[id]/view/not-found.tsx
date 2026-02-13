@@ -8,10 +8,10 @@ export default function NotFound() {
       <h2 className="text-xl font-semibold">404 Not Found</h2>
       <p>No puede encontrar el vista requerida</p>
       <Link
-        href="/dashboard/pets"
+        href="/dashboard/donations"
         className="mt-4 rounded-md bg-violet-500  px-4 py-2 text-sm text-white transition-colors hover:bg-violet-400"
       >
-        Volver a mascotas
+        Volver a donaciones
       </Link>
     </main>
   );

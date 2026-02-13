@@ -17,7 +17,7 @@ export default function ViewDonacionesFormPublic({
   return (
     <div className="rounded-md bg-gray-200 p-4 md:p-6">
       <h1 className={`${lusitana.className} mb-4 text-2xl`}>
-        Información los datos de donacion
+        Datos para realizar donaciones
       </h1>
 
       {/* Destinatario */}
@@ -124,7 +124,7 @@ export default function ViewDonacionesFormPublic({
       )}
 
       {/* Motivo de donacion */}
-      {donation.entidad_financiera && (
+      {donation.motivo_donacion && (
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium">
             Motivo de donacion

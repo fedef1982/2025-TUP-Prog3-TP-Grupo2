@@ -1,5 +1,6 @@
 import { UpdateDonation, DeleteDonation, ViewDonation } from '@/app/ui/donations/buttons';
 import { fetchFilteredDonations, formatDonationsForTable } from '@/app/lib/dataDonations';
+import { formatDate } from '@/app/lib/utils';
 
 export default async function DonationsTable({
   query,
@@ -12,6 +13,7 @@ export default async function DonationsTable({
     query,
     page: currentPage
   });
+
   const formattedDonations = formatDonationsForTable(donations.donations);
 
   return (
@@ -31,12 +33,12 @@ export default async function DonationsTable({
                     </div>
                     <p className="text-sm text-gray-500">Entidad Financiera: {donation.entidad_financiera}</p>
                     <p className="text-sm text-gray-500">Alias: {donation.alias}</p>
-                    <p className="text-sm text-gray-500">Usuario: {donation.usuario_id}</p>
+                    <p className="text-sm text-gray-500">Usuario ID: {donation.usuario_id}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                      <p className="text-sm">Fecha creación: {donation.createdAt}</p>
+                      <p className="text-sm">Fecha creación: {formatDate(donation.createdAt)}</p>
                   </div> 
                   <div className="flex justify-end gap-2">
                     <ViewDonation id={donation.id} />
@@ -93,7 +95,12 @@ export default async function DonationsTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <div className="flex items-center gap-3">
-                      <p className="text-sm">{donation.createdAt || '-'}</p>
+                      <p>{donation.usuario_id || '-'}</p>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm">{formatDate(donation.createdAt)}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

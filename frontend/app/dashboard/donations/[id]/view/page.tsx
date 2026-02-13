@@ -1,67 +1,62 @@
 import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
-import { fetchPetById, fetchAllSpecies, fetchAllConditions } from '@/app/lib/dataPets';
+import { fetchDonationById } from '@/app/lib/dataDonations';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import ReadOnlyPetForm from '@/app/ui/pets/view-form';
+import ReadOnlyDonationForm from '@/app/ui/donations/view-form';
 
 export const metadata: Metadata = {
-  title: 'Ver mascota',
+  title: 'Ver donacion',
 };
 
 export default async function Page({ params }: { params: { id?: string } }) {
-  const resolvedParams = await params;
+  const resolvedParams = params;
   if (!resolvedParams?.id) {
-    console.error('Parámetro petId no definido en la URL');
+    console.error('Parámetro donationId no definido en la URL');
     notFound();
   }
 
   try {
-    const petId = Math.floor(Number(resolvedParams.id));
+    const donationId = Math.floor(Number(resolvedParams.id));
 
-    if (!Number.isSafeInteger(petId) || petId <= 0) {
-      console.error(`ID de mascota inválido: ${resolvedParams.id}`);
+    if (!Number.isSafeInteger(donationId) || donationId <= 0) {
+      console.error(`ID de donacion inválido: ${resolvedParams.id}`);
       notFound();
     }
 
     const data = await Promise.allSettled([
-      fetchPetById(petId),
-      fetchAllSpecies(),
-      fetchAllConditions()
+      fetchDonationById(donationId),
     ]);
 
-    const [petResult, speciesResult, conditionsResult] = data;
+    console.log("fetchDonationById respuesta",data);
 
-    if (petResult.status === 'rejected' || !petResult.value) {
-      console.error('Error al obtener mascota:', petResult.status === 'rejected' ? petResult.reason : 'Datos vacíos');
+    const [donationResult] = data;
+
+    if (donationResult.status === 'rejected' || !donationResult.value) {
+      console.error('Error al obtener datos de donacion:', donationResult.status === 'rejected' ? donationResult.reason : 'Datos vacíos');
       notFound();
     }
 
-    const pet = petResult.value;
+    const donation = donationResult.value;
 
-    if (!pet || pet.id !== petId) {
-      console.error(`Mismatch en ID de mascota: Esperado ${petId}, Obtenido ${pet?.id}`);
+    if (!donation || donation.id !== donationId) {
+      console.error(`Mismatch en ID de datos de donacion: Esperado ${donationId}, Obtenido ${donation?.id}`);
       notFound();
     }
-
-    const species = speciesResult.status === 'fulfilled' ? speciesResult.value : [];
-    const conditions = conditionsResult.status === 'fulfilled' ? conditionsResult.value : [];
 
     return (
       <main>
         <Breadcrumbs
           breadcrumbs={[
-            { label: 'Mascotas', href: '/dashboard/pets' },
+            { label: 'Donaciones', href: '/dashboard/donations' },
             {
-              label: 'Ver mascota',
-              href: `/dashboard/pets/${petId}/view`,
+              label: 'Ver datos de donacion',
+              href: `/dashboard/donations/${donationId}/view`,
               active: true,
             },
           ]}
         />
-        <ReadOnlyPetForm 
-          pet={pet}
-          species={species}
-          conditions={conditions}
+        <ReadOnlyDonationForm 
+          donation={donation}
         />
       </main>
     );

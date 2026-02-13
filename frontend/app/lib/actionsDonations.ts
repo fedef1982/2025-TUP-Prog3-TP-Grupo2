@@ -28,13 +28,13 @@ export async function createDonation(
     }
 
     const destinatario = formData.get('destinatario') as string;
-    const entidad_financiera = formData.get('entidad_financieta') as string;
+    const entidad_financiera = formData.get('entidad_financiera') as string;
     const alias = formData.get('alias') as string;
 
     const errors: Record<string, string[]> = {};
-    if (!destinatario) errors.nombre = ['El nombre del destinatario es requerido'];
-    if (!entidad_financiera) errors.sexo = ['La entidad financiera es requerida'];
-    if (!alias) errors.tamanio = ['El alias es requerido'];
+    if (!destinatario) errors.destinatario = ['El nombre del destinatario es requerido'];
+    if (!entidad_financiera) errors.entidad_financiera = ['La entidad financiera es requerida'];
+    if (!alias) errors.alias = ['El alias es requerido'];
 
     if (Object.keys(errors).length > 0) {
       return {
@@ -52,8 +52,7 @@ export async function createDonation(
       tipo_cuenta: formData.get('tipo_cuenta') as string || undefined,
       alias,
       link_pago: formData.get('link_pago') as string || undefined,
-      motivo_donacion: formData.get('motivo doancion') as string || undefined,
-      usuario_id: userId.toString,
+      motivo_donacion: formData.get('motivo_donacion') as string || undefined
     };
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones`, {
@@ -117,13 +116,13 @@ export async function updateDonation(
     }
 
     const destinatario = formData.get('destinatario') as string;
-    const entidad_financiera = formData.get('entidad_financieta') as string;
+    const entidad_financiera = formData.get('entidad_financiera') as string;
     const alias = formData.get('alias') as string;
 
     const errors: Record<string, string[]> = {};
-    if (!destinatario) errors.nombre = ['El nombre del destinatario es requerido'];
-    if (!entidad_financiera) errors.sexo = ['La entidad financiera es requerida'];
-    if (!alias) errors.tamanio = ['El alias es requerido'];
+    if (!destinatario) errors.destinatario = ['El nombre del destinatario es requerido'];
+    if (!entidad_financiera) errors.entidad_financiera = ['La entidad financiera es requerida'];
+    if (!alias) errors.alias = ['El alias es requerido'];
 
     if (Object.keys(errors).length > 0) {
       return {
@@ -141,9 +140,11 @@ export async function updateDonation(
       tipo_cuenta: formData.get('tipo_cuenta') as string || undefined,
       alias,
       link_pago: formData.get('link_pago') as string || undefined,
-      motivo_donacion: formData.get('motivo doancion') as string || undefined,
-      usuario_id: userId.toString,
+      motivo_donacion: formData.get('motivo_donacion') as string || undefined,
     };
+
+    console.log("POST Update Doantion", `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`);
+    console.log(donationData);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`, {
       method: 'PATCH', 

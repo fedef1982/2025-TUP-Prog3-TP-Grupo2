@@ -1,7 +1,8 @@
 import { UpdateUser, DeleteUser } from '@/app/ui/users/buttons';
 import { fetchFilteredUsers, formatUsersForTable } from '@/app/lib/data';
+import { formatDate } from '@/app/lib/utils';
 
-export default async function usersTable({
+export default async function UsersTable({
   query,
   currentPage,
 }: {
@@ -13,14 +14,6 @@ export default async function usersTable({
     page: currentPage
   });
   const formattedUsers = formatUsersForTable(users.users);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
   
   return (
     <div className="mt-6 flow-root">
@@ -35,16 +28,18 @@ export default async function usersTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>{user.name} {user.lastname}</p>
+                      <p className="font-medium">{user.name} {user.lastname}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{user.email}</p>
-                    <p className="text-sm text-gray-500">{user.role}</p>
+                    <p className="text-sm text-gray-500">Email: {user.email}</p>
+                    <p className="text-sm text-gray-500">Rol: {user.role}</p>
+                    <p className="text-sm text-gray-500">Estado: {user.status}</p>
                   </div>
-                  <p className="text-sm text-gray-500">{user.status}</p>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-sm">{user.createdAt}</p>
+                    <p className="text-sm">
+                      Fecha creación: {user.createdAt ? formatDate(user.createdAt) : '-'}
+                    </p>
                   </div> 
                   <div className="flex justify-end gap-2">
                     <UpdateUser id={user.id} />
@@ -70,6 +65,9 @@ export default async function usersTable({
                   Rol
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
+                  Estado
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Fecha Creación
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
@@ -89,16 +87,21 @@ export default async function usersTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {user.lastname}
+                    <p>{user.lastname}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {user.email}
+                    <p>{user.email}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {user.role}
+                    <p>{user.role}</p>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {user.createdAt}
+                    <p>{user.status || '-'}</p>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <p className="text-sm">
+                      {user.createdAt ? formatDate(user.createdAt) : '-'}
+                    </p>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

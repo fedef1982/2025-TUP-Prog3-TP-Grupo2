@@ -129,7 +129,7 @@ export default function ReadOnlyDonationForm({
       )}
 
       {/* Motivo de donacion */}
-      {donation.entidad_financiera && (
+      {donation.motivo_donacion && (
         <div className="mb-4">
           <label className="mb-2 block text-sm font-medium">
             Motivo de donacion

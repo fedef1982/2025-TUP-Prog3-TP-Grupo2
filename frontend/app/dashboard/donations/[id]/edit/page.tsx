@@ -1,4 +1,4 @@
-import Breadcrumbs from '@/app/ui/pets/breadcrumbs';
+import Breadcrumbs from '@/app/ui/donations/breadcrumbs';
 import { fetchDonationById } from '@/app/lib/dataDonations';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -8,37 +8,27 @@ export const metadata: Metadata = {
   title: 'Editar datos de donacion',
 };
 
-export default async function Page({ params }: { params: { id?: string } }) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  
+  const { id } = await params;
 
-  if (!params?.id) {
+  if (!id) {
     console.error('Parámetro donationId no definido en la URL');
     notFound();
   }
 
   try {
-
-    const donationId = Math.floor(Number(params.id));
+    const donationId = Math.floor(Number(id));
 
     if (!Number.isSafeInteger(donationId) || donationId <= 0) {
-      console.error(`ID de datos de donacion inválido: ${params.id}`);
+      console.error(`ID de datos de donacion inválido: ${id}`);
       notFound();
     }
 
-    const data = await Promise.allSettled(
-      [fetchDonationById(donationId)]
-    );
-
-    const [donationResult] = data;
-
-    if (donationResult.status === 'rejected' || !donationResult.value) {
-      console.error('Error al obtener datos de donacion:', donationResult.status === 'rejected' ? donationResult.reason : 'Datos vacíos');
-      notFound();
-    }
-
-    const donation = donationResult.value;
+    const donation = await fetchDonationById(donationId);
 
     if (!donation || donation.id !== donationId) {
-      console.error(`Mismatch en ID de datos de donacion: Esperado ${donationId}, Obtenido ${donation?.id}`);
+      console.error(`No se pudo obtener la donación con ID: ${donationId}`);
       notFound();
     }
 
