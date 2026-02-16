@@ -19,7 +19,7 @@ async function bootstrap() {
     .addGlobalResponse({
       status: 404,
       description: 'Not Found',
-    }) 
+    })
     .addGlobalResponse({
       status: 500,
       description: 'Internal server error',
@@ -31,6 +31,10 @@ async function bootstrap() {
     .addGlobalResponse({
       status: 403,
       description: 'No tiene permisos para acceder a este recurso',
+    })
+    .addGlobalResponse({
+      status: 409,
+      description: 'Conflict',
     })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

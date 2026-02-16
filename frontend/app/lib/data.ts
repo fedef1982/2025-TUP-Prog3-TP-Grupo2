@@ -197,20 +197,32 @@ export async function fetchUsersPages(query: string): Promise<number> {
 }
 
 export function formatUsersForTable(users: FilteredUser[]): UsersTable[] {
-  return users.map(user => ({
-    id: user.id,
-    name: user.name,
-    lastname: user.lastname,
-    email: user.email,
-    phone: user.phone,
-    address: user.address,
-    role: user.role_id === 1 ? 'Admin' : 
-          user.role_id === 2 ? 'Publicador' : 
-          'Desconocido',
-    createdAt: user.createdAt 
-      ? new Date(user.createdAt).toISOString().split('T')[0] : 'Fecha no disponible',
-    status: user.status
-  }));
+  return users.map(user => {
+    let fechaFormateada = 'Fecha no disponible';
+    if (user.createdAt) {
+      let fechaStr = user.createdAt as string;
+      if (fechaStr.includes(' ')) {
+        fechaStr = fechaStr.replace(' ', 'T');
+      }
+      const date = new Date(fechaStr);
+      if (!isNaN(date.getTime())) {
+        fechaFormateada = date.toISOString().split('T')[0];
+      }
+    }
+    return {
+      id: user.id,
+      name: user.name,
+      lastname: user.lastname,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      role: user.role_id === 1 ? 'Admin' : 
+            user.role_id === 2 ? 'Publicador' : 
+            'Desconocido',
+      createdAt: user.createdAt,
+      status: user.status
+    };
+  });
 }
 
 export async function fetchFilteredUsers({

@@ -1,6 +1,7 @@
 import '@/app/ui/global.css';
 import { inter } from '@/app/ui/fonts';
 import { Metadata } from 'next';
+import { Toaster } from 'sonner';
 
 export const metadata: Metadata = {
   title: {
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
   description: 'La pagina para encontrar tu proxima mascota',
   metadataBase: new URL('http://localhost:3000'),
 };
+
 export default function RootLayout({
   children,
 }: {
@@ -17,7 +19,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        {children}
+        
+        {}
+        <Toaster 
+          richColors 
+          position="top-right" 
+          closeButton 
+          expand={false}
+        />
+      </body>
     </html>
   );
 }

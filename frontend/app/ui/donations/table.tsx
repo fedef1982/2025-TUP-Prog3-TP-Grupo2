@@ -1,49 +1,49 @@
-import { UpdateUser, DeleteUser } from '@/app/ui/users/buttons';
-import { fetchFilteredUsers, formatUsersForTable } from '@/app/lib/data';
+import { UpdateDonation, DeleteDonation, ViewDonation } from '@/app/ui/donations/buttons';
+import { fetchFilteredDonations, formatDonationsForTable } from '@/app/lib/dataDonations';
 import { formatDate } from '@/app/lib/utils';
 
-export default async function UsersTable({
+export default async function DonationsTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const users = await fetchFilteredUsers({
+  const donations = await fetchFilteredDonations({
     query,
     page: currentPage
   });
-  const formattedUsers = formatUsersForTable(users.users);
-  
+
+  const formattedDonations = formatDonationsForTable(donations.donations);
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-200 p-2 md:pt-0">
           <div className="md:hidden">
-            {formattedUsers?.map((user) => (
+            {formattedDonations?.map((donation) => (
               <div
-                key={user.id}
+                key={donation.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p className="font-medium">{user.name} {user.lastname}</p>
+                      <p className="font-medium">{donation.destinatario}</p>
                     </div>
-                    <p className="text-sm text-gray-500">Email: {user.email}</p>
-                    <p className="text-sm text-gray-500">Rol: {user.role}</p>
-                    <p className="text-sm text-gray-500">Estado: {user.status}</p>
+                    <p className="text-sm text-gray-500">Entidad Financiera: {donation.entidad_financiera}</p>
+                    <p className="text-sm text-gray-500">Alias: {donation.alias}</p>
+                    <p className="text-sm text-gray-500">Usuario ID: {donation.usuario_id}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
-                    <p className="text-sm">
-                      Fecha creación: {user.createdAt ? formatDate(user.createdAt) : '-'}
-                    </p>
+                      <p className="text-sm">Fecha creación: {formatDate(donation.createdAt)}</p>
                   </div> 
                   <div className="flex justify-end gap-2">
-                    <UpdateUser id={user.id} />
-                    <DeleteUser id={user.id} />
+                    <ViewDonation id={donation.id} />
+                    <UpdateDonation id={donation.id} />
+                    <DeleteDonation id={donation.id} />
                   </div>
                 </div>
               </div>
@@ -53,19 +53,16 @@ export default async function UsersTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Nombre
+                  Destinatario
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Apellido
+                  Entidad Financiera
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Alias
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Rol
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Estado
+                  Usuario ID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Fecha Creación
@@ -76,37 +73,41 @@ export default async function UsersTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {formattedUsers?.map((user) => (
+              {formattedDonations?.map((donation) => (
                 <tr
-                  key={user.id}
+                  key={donation.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{user.name}</p>
+                      <p>{donation.destinatario}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{user.lastname}</p>
+                    <div className="flex items-center gap-3">
+                      <p>{donation.entidad_financiera}</p>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{user.email}</p>
+                    <div className="flex items-center gap-3">
+                      <p>{donation.alias || '-'}</p>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{user.role}</p>
+                    <div className="flex items-center gap-3">
+                      <p>{donation.usuario_id || '-'}</p>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p>{user.status || '-'}</p>
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm">{formatDate(donation.createdAt)}</p>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <p className="text-sm">
-                      {user.createdAt ? formatDate(user.createdAt) : '-'}
-                    </p>
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex justify-end gap-3">
-                      <UpdateUser id={user.id} />
-                      <DeleteUser id={user.id} />
+                    <div className="flex justify-end gap-2">
+                      <ViewDonation id={donation.id} />
+                      <UpdateDonation id={donation.id} />
+                      <DeleteDonation id={donation.id} />
                     </div>
                   </td>
                 </tr>

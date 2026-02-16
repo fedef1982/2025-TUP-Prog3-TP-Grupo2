@@ -9,7 +9,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { PawPrintIcon } from 'lucide-react';
+import { HeartIcon, PawPrintIcon } from 'lucide-react';
 
 const links = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
@@ -17,6 +17,7 @@ const links = [
   { name: 'Mascotas', href: '/dashboard/pets', icon: PawPrintIcon },
   { name: 'Publicaciones', href: '/dashboard/publications', icon: CameraIcon },
   { name: 'Visitas', href: '/dashboard/visits', icon: EyeIcon },
+  { name: 'Donaciones', href: '/dashboard/donations', icon: HeartIcon },
 ];
 
 export default function NavLinks() {

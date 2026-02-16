@@ -9,10 +9,18 @@ import { User } from '../../src/usuario/usuario.model';
 import { AccesoModule } from '../../src/acceso/acceso.module';
 import { EspecieModule } from './especie/especie.module';
 import { CondicionModule } from './condicion/condicion.module';
+import { Publicacion } from '../publicacion/publicacion.model';
+/* import { PublicacionModule } from '../publicacion/publicacion.module'; */
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([Mascota, User, Especie, Condicion]),
+    SequelizeModule.forFeature([
+      Mascota,
+      User,
+      Especie,
+      Condicion,
+      Publicacion,
+    ]),
     AccesoModule,
     EspecieModule,
     CondicionModule,
