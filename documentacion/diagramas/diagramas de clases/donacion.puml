@@ -1,0 +1,85 @@
+@startuml Donacion
+
+skinparam Linetype ortho
+
+class Donacion <<Model>> {
+    id: number 
+    destinatario: string
+    cbu: string
+    cuit: string
+    entidad_financiera: string
+    tipo_cuenta: string
+    alias: string
+    link_pago: string
+    motivo_donacion: string
+    usuario_id: number <<FK>>
+    created_at: timestamp
+    updated_at: timestamp
+    deleted_at: timestamp
+}
+
+class CreateDonacionDto <<DTO>> {
+    destinatario: string
+    cbu: string
+    cuit: string
+    entidad_financiera: string
+    tipo_cuenta: string
+    alias: string
+    link_pago: string
+    motivo_donacion: string
+}
+
+class UpdateDonacionDto <<DTO>>{
+    destinatario: string
+    cbu: string
+    cuit: string
+    entidad_financiera: string
+    tipo_cuenta: string
+    alias: string
+    link_pago: string
+    motivo_donacion: string
+}
+
+class DonacionController <<Controller>> {
+    findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Donacion[]>
+
+    findDonacionesConFiltros(usuarioId: number, req: AuthenticatedRequest, params: QueryOpcionesDto): Promise<{donaciones: Donacion[]; total: number; totalPages: number;}>
+
+    create(createDonacionDto: CreateDonacionDto, usuarioId: number, req: AuthenticatedRequest): Promise<Donacion>
+
+    findOne(usuarioId: number, donacionId: number, req: AuthenticatedRequest): Promise<Donacion>
+
+    update(usuarioId: number, donacionId: number, updateDonacionDto: UpdateDonacionDto, req: AuthenticatedRequest): Promise<Donacion>
+
+    remove(usuarioId: number, donacionId: number, req: AuthenticatedRequest): Promise<void>
+
+    findOneByUser(usuarioId: number): Promise<Donacion>
+}
+
+class DonacionService <<Service>> {
+
+    validarDonacion(id: number): Promise<Donacion>
+
+    findAll(usuarioId: number, usuario: JwtPayload): Promise<Donacion[]>
+
+    findOneByUser(usuarioId: number): Promise<Donacion> 
+
+    findOne(id: number,usuarioId: number,usuario: JwtPayload): Promise<Donacion> 
+
+    create(dto: CreateDonacionDto, usuarioId: number, usuario: JwtPayload): Promise<Donacion> 
+
+    update(id: number, dto: UpdateDonacionDto, usuarioId: number, usuario: JwtPayload): Promise<Donacion> 
+
+    remove(id: number, usuarioId: number, usuario: JwtPayload): Promise<void>
+
+    findDonacionesConFiltros(usuarioId: number, usuario: JwtPayload, params: QueryOpcionesDto): Promise<{donaciones: Donacion[]; total: number; totalPages: number;}>
+}
+
+
+/' Relaciones '/
+DonacionController ..> DonacionService 
+DonacionService ..> CreateDonacionDto 
+DonacionService ..> UpdateDonacionDto 
+DonacionService ..> Donacion 
+
+@enduml

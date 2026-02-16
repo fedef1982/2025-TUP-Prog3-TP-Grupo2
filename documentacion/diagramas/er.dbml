@@ -1,0 +1,162 @@
+Enum tamanio_num {
+  Chico
+  Mediano
+  Grande
+}
+
+Enum sexo_enum {
+  Macho
+  Hembra
+}
+
+Enum estado_publi_enum {
+  Abierta
+  Cerrada
+}
+
+Enum estado_visita_enum {
+  Pendiente
+  Aprobado
+  Rechazado
+}
+
+Enum horario_enum {
+  Maniana
+  Tarde
+  Noche
+}
+
+// --------------------
+// TABLAS
+// --------------------
+
+Table roles {
+  id int [pk, increment]
+  nombre varchar(20) [not null, unique]
+}
+
+Table usuarios {
+  id int [pk, increment]
+  email varchar(100) [not null, unique]
+  nombre varchar(100) [not null]
+  apellido varchar(100) [not null]
+  contrasenia varchar(100) [not null]
+  rol_id int [not null]
+  telefono varchar(100)
+  direccion varchar(100)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  deleted_at timestamptz
+
+  Indexes {
+    rol_id
+  }
+}
+
+Table especies {
+  id int [pk, increment]
+  nombre varchar
+}
+
+Table condiciones {
+  id int [pk, increment]
+  nombre varchar
+  descripcion varchar
+}
+
+Table mascotas {
+  id int [pk, increment]
+  nombre varchar(100) [not null]
+  raza varchar(100)
+  sexo sexo_enum
+  edad int
+  vacunado boolean
+  tamanio tamanio_num
+  fotos_url json [not null]
+  especie_id int
+  condicion_id int
+  usuario_id int
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  deleted_at timestamptz
+
+  Indexes {
+    especie_id
+    condicion_id
+    usuario_id
+  }
+}
+
+Table donaciones {
+  id int [pk, increment]
+  destinatario varchar(100)
+  cbu varchar(100)
+  cuit varchar(100)
+  entidad_financiera varchar(100) [not null]
+  tipo_cuenta varchar(100)
+  alias varchar(100) [not null]
+  link_pago varchar(100)
+  motivo_donacion varchar(100)
+  usuario_id int
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  deleted_at timestamptz
+
+  Indexes {
+    usuario_id
+  }
+}
+
+Table publicaciones {
+  id int [pk, increment]
+  titulo varchar(100) [not null]
+  descripcion text [not null]
+  ubicacion varchar(100) [not null]
+  contacto varchar(100) [not null]
+  publicado timestamp
+  estado estado_publi_enum
+  mascota_id int
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  deleted_at timestamptz
+
+  Indexes {
+    mascota_id
+  }
+}
+
+Table visitas {
+  id int [pk, increment]
+  estado estado_visita_enum
+  nombre varchar
+  apellido varchar
+  telefono varchar
+  email varchar
+  disponibilidad_fecha date
+  disponibilidad_horario horario_enum
+  descripcion text
+  tracking varchar
+  publicacion_id int
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  deleted_at timestamptz
+
+  Indexes {
+    publicacion_id
+  }
+}
+
+// --------------------
+// RELACIONES (FK)
+// --------------------
+Ref: usuarios.rol_id > roles.id
+
+Ref: mascotas.especie_id > especies.id
+Ref: mascotas.condicion_id > condiciones.id
+Ref: mascotas.usuario_id > usuarios.id
+
+Ref: donaciones.usuario_id > usuarios.id
+
+Ref: publicaciones.mascota_id > mascotas.id
+
+Ref: visitas.publicacion_id > publicaciones.id

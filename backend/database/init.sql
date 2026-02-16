@@ -187,4 +187,3 @@ CREATE TABLE IF NOT EXISTS visitas (
 
 INSERT INTO visitas(estado,nombre,apellido,telefono,email,disponibilidad_fecha,disponibilidad_horario,descripcion,tracking,publicacion_id)
 VALUES ('Pendiente','Adriel','Reina','11-2233-4455','elPublicador@gmail.com','2025-06-01','Tarde','la descripcion','VISIT-20250614-ABC123',1)
-

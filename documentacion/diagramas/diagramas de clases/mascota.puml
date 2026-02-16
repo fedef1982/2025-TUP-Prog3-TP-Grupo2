@@ -29,7 +29,7 @@ class CreateMascotaDto <<DTO>> {
   fotos_url : json
   especie_id : number <<FK>>
   condicion_id : number <<FK>>
-  }
+}
 
 class UpdateMascotaDto <<DTO>>{
   nombre: string
@@ -41,11 +41,9 @@ class UpdateMascotaDto <<DTO>>{
   fotos_url : json
   especie_id : number <<FK>>
   condicion_id : number <<FK>>
-  }
+}
 
 class MascotasController <<Controller>> {
-
-  '
   findAll(usuarioId: number, req: AuthenticatedRequest): Promise<Mascota[]>
 
   create(createMascotaDto: CreateMascotaDto, usuarioId: number, req: AuthenticatedRequest): Promise<Mascota>
@@ -55,26 +53,24 @@ class MascotasController <<Controller>> {
   update(usuarioId: number, mascotaId: number, updateMascotaDto: UpdateMascotaDto, req: AuthenticatedRequest): Promise<Mascota>
 
   remove(usuarioId: number, mascotaId: number, req: AuthenticatedRequest): Promise<void>
-  }
+}
 
 class MascotaService <<Service>> {
+  validarMascota(id: number): Promise<Mascota>
 
-validarMascota(id: number): Promise<Mascota>
+  validarEspecie(id: number): Promise<void>
 
-validarEspecie(id: number): Promise<void>
+  validarCondicion(id: number): Promise<void> 
 
-validarCondicion(id: number): Promise<void> 
+  findAll(usuarioId: number, usuario: JwtPayload): Promise<Mascota[]>
 
-findAll(usuarioId: number, usuario: JwtPayload): Promise<Mascota[]>
+  findOne(id: number,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
 
-findOne(id: number,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+  create(dto: CreateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
 
-create(dto: CreateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
+  update(id: number,dto: UpdateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
 
-update(id: number,dto: UpdateMascotaDto,usuarioId: number,usuario: JwtPayload): Promise<Mascota> 
-
-remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
-
+  remove(id: number,usuarioId: number,usuario: JwtPayload): Promise<void> 
 }
 
 enum tamanio_enum{

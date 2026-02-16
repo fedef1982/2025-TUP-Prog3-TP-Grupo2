@@ -33,7 +33,6 @@ export class Donacion extends Model<Donacion, Partial<Donacion>> {
   @Column({
     type: DataType.STRING,
     allowNull: true,
-    unique: true,
   })
   declare cbu: string;
 
