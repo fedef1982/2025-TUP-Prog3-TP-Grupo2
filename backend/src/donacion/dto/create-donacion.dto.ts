@@ -10,7 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateDonacionDto {
   @ApiProperty({ example: 'Carlos Perez' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   destinatario: string;
 
   @ApiProperty({ example: '012345678910110001234567' })
