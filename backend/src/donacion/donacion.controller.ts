@@ -20,6 +20,13 @@ import { Role } from '../../src/auth/roles.enum';
 import { AccesoService } from '../../src/acceso/acceso.service';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { Public } from '../auth/decorators/public.decorator';
+import {
+  DocDeleteIdDonacion,
+  DocGetDonacionPublica,
+  DocGetIdDonacion,
+  DocPatchDonacion,
+  DocPostDonacion,
+} from './donacion.doc';
 
 @Controller()
 export class DonacionController {
@@ -29,6 +36,7 @@ export class DonacionController {
   ) {}
 
   //---------------Endpoints para los usuarios autenticados
+  @DocPostDonacion()
   @Get('usuarios/:usuarioId/donaciones')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(
@@ -38,6 +46,7 @@ export class DonacionController {
     return this.donacionService.findAll(usuarioId, req.user);
   }
 
+  @DocGetIdDonacion()
   @Get('usuarios/:usuarioId/donaciones/filtros')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findDonacionesConFiltros(
@@ -56,6 +65,7 @@ export class DonacionController {
     );
   }
 
+  @DocPostDonacion()
   @Post('usuarios/:usuarioId/donaciones')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   create(
@@ -66,6 +76,7 @@ export class DonacionController {
     return this.donacionService.create(createDonacionDto, usuarioId, req.user);
   }
 
+  @DocGetIdDonacion()
   @Get('usuarios/:usuarioId/donaciones/:donacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findOne(
@@ -76,6 +87,7 @@ export class DonacionController {
     return this.donacionService.findOne(donacionId, usuarioId, req.user);
   }
 
+  @DocPatchDonacion()
   @Patch('usuarios/:usuarioId/donaciones/:donacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   update(
@@ -92,6 +104,7 @@ export class DonacionController {
     );
   }
 
+  @DocDeleteIdDonacion()
   @Delete('usuarios/:usuarioId/donaciones/:donacionId')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(
@@ -103,6 +116,7 @@ export class DonacionController {
   }
 
   //---------------Endpoints para los usuarios no autenticados
+  @DocGetDonacionPublica()
   @Public()
   @Get('mascotas/:usuarioId/donaciones')
   findOneByUser(

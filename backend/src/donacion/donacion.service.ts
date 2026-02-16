@@ -60,11 +60,6 @@ export class DonacionService {
     return donacion;
   }
 
-  async findOnePublica(id: number): Promise<Donacion> {
-    const donacion = await this.validarDonacion(id);
-    return donacion;
-  }
-
   async create(
     dto: CreateDonacionDto,
     usuarioId: number,

@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "darkMode": true,
+  "gridEnabling": false,
+  "detailLevel": "All",
+  "tablePositions": [
+    {
+      "name": "roles",
+      "schemaName": "public",
+      "x": 12,
+      "y": 12
+    },
+    {
+      "name": "usuarios",
+      "schemaName": "public",
+      "x": 498.66845703125,
+      "y": 12
+    },
+    {
+      "name": "especies",
+      "schemaName": "public",
+      "x": 8.183685159906393,
+      "y": 638.6719846918879
+    },
+    {
+      "name": "condiciones",
+      "schemaName": "public",
+      "x": 12,
+      "y": 803.5698737324494
+    },
+    {
+      "name": "mascotas",
+      "schemaName": "public",
+      "x": 1037.849609375,
+      "y": 506
+    },
+    {
+      "name": "donaciones",
+      "schemaName": "public",
+      "x": 1037.849609375,
+      "y": 12
+    },
+    {
+      "name": "publicaciones",
+      "schemaName": "public",
+      "x": 1581.3564453125,
+      "y": 12
+    },
+    {
+      "name": "visitas",
+      "schemaName": "public",
+      "x": 2083.26953125,
+      "y": 12
+    }
+  ],
+  "tableGroupCollapseStates": [],
+  "stickyNoteLayouts": [],
+  "referencePaths": []
+}
