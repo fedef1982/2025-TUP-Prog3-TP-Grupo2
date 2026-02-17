@@ -36,10 +36,8 @@ export default async function UsersTable({
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-sm">
-                      Fecha creación: {user.createdAt ? formatDate(user.createdAt) : '-'}
-                    </p>
+                    <div>
+                      <p className="text-sm">Fecha creación: {formatDate(user.createdAt)}</p>
                   </div> 
                   <div className="flex justify-end gap-2">
                     <UpdateUser id={user.id} />

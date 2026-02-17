@@ -13,12 +13,12 @@ export class CreateDonacionDto {
   @IsOptional()
   destinatario: string;
 
-  @ApiProperty({ example: '012345678910110001234567' })
+  @ApiProperty({ example: '2345678910110001234567' })
   @IsOptional()
   @Length(22, 22)
   cbu: string;
 
-  @ApiProperty({ example: '30-12345678910-0' })
+  @ApiProperty({ example: '301234567891' })
   @IsString()
   @Length(11, 11)
   @IsOptional()
