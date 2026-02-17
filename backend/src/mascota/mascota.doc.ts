@@ -82,7 +82,7 @@ export function DocDeleteIdMascota() {
   );
 }
 
-export function DocGetMascotaFiltros(){
+export function DocGetMascotaFiltros() {
   return applyDecorators(
     ApiOperation({
       summary:

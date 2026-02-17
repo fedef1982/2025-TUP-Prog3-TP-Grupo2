@@ -1,17 +1,17 @@
 <a name="readme-top"></a>
-# 2025-TUP-Prog3-TP-Grupo2
+# PPS UTN – Tecnicatura Universitaria en Programación 2026
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://docs.google.com/document/d/1Tp3NS1_4iSdxhbV2G0Gn1zKr3-Gh8gFu/edit?usp=sharing&ouid=109882683574158321015&rtpof=true&sd=true">
+  <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link">
     <img src="./frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
   </a>
 
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://docs.google.com/document/d/1Tp3NS1_4iSdxhbV2G0Gn1zKr3-Gh8gFu/edit?usp=sharing&ouid=109882683574158321015&rtpof=true&sd=true"><strong>Accede a la documentación »</strong></a>
+    <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link"><strong>Accede a la documentación »</strong></a>
   </p>
 </div>
 
@@ -22,11 +22,13 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 ## Alcance del sistema
 
 <ul>
-  <li>Registro de usuarios.</li>
-  <li>Sistema de autenticación y control de acceso por rol (admin, publicador).</li>
-  <li>Publicación de mascotas en adopción (con fotos e información relevante).</li>
-  <li>Gestión de formularios de visita creados por los usuarios interesados en la adopción.</li>
-  <li>Seguimiento del estado de formularios de visita.</li>
+  <li>Permitir el registro e inicio de sesión de usuarios.</li>
+  <li>Permitir a los usuarios registrados la creación, actualización y borrado de perfiles de mascotas en adopción.</li>
+  <li>Permitir la publicación de mascotas con la información necesaria para facilitar la búsqueda a los usuarios interesados en adoptar.</li>
+  <li>Permitir a los publicadores la opción de cargar sus datos bancarios para recibir donaciones para las mascotas en adopción.</li>
+  <li>Permitir a los administradores de la web controlar la publicación de todas las mascotas de los usuarios registrados, para velar por su correcto uso y también obtener métricas relevantes, sobre la cantidad total de usuarios registrados, cantidad total de mascotas, publicaciones y visitas creadas.</li>
+  <li>Permitir a los visitantes de la página, cargar formularios para coordinar una visita con la mascota de interés.</li>
+  <li>Permitir a los publicadores gestionar sus publicaciones  y aceptar o rechazar las visitas dependiendo de su disponibilidad.</li>
 
 </ul>
 
@@ -46,30 +48,23 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 
 <ul>
   <li>Fresco, Federico. - fedef1982@gmail.com</li>
-  <li>Reina, Adriel - adriel.a.reina@gmail.com</li>
-  <li>Velardez, Marcos - marcosvelardez40@gmail.com</li>
   <li>Rodríguez, Paola - paolarladera@gmail.com</li>
 </ul>
 
 
-
 ## Project setup
 
-```bash
-$ npm install
-```
+<p>Acceda al <a href="instalacion.md">manual de instalación</p>
 
 ## Compilar y levantar el proyecto
 
 ```bash
-# levantar Frontend y backend
-$ npm run dev
 
 # levantar solo Backend
-$ npm run dev:back
+$ cd backend && npm run start:dev
 
 # levantar solo Frontend
-$ npm run dev:front
+$ cd frontend && pnpm run dev
 
 ```
 
@@ -77,10 +72,7 @@ $ npm run dev:front
 
 ```bash
 # unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
+$ cd backend && npm run test
 
 # test coverage
 $ npm run test:cov

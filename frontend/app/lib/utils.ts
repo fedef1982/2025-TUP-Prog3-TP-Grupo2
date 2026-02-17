@@ -1,17 +1,22 @@
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = 'en-US',
-) => {
-  const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'short',
+  /* export function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-AR', {
     year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+} */
+
+  export function formatDate(dateString: string | null | undefined): string {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
-};
 
 export const generatePagination = (currentPage: number, totalPages: number) => {
 

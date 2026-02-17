@@ -66,7 +66,7 @@ export class PublicacionesController {
 
   @DocPostPublicacion()
   @Post('usuarios/:usuarioId/publicaciones')
-  @Roles(Role.PUBLICADOR)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   create(
     @Body() createPublicacionDto: CreatePublicacionDto,
     @Param('usuarioId', ParseIntPipe) usuarioId: number,

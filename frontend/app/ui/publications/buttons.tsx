@@ -3,6 +3,7 @@ import { EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/ou
 import Link from 'next/link';
 import { deletePublication } from '@/app/lib/actionsPublications';
 import { DeleteButtonWithModal } from '../deleteButtonWithModal';
+import { HeartIcon } from 'lucide-react';
 
 
 export function CreatePublication() {
@@ -60,6 +61,17 @@ export function ViewPublished({ id }: { id: string }) {
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <EyeIcon className="w-5" />
+    </Link>
+  );
+}
+
+export function DonatePublished({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/published/donations/${id}/view`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      <HeartIcon className="w-5" />
     </Link>
   );
 }

@@ -17,7 +17,9 @@ import { Visita } from './visita/visita.model';
 import { VisitaModule } from './visita/visita.module';
 import { AuthModule } from './auth/auth.module';
 import { AccesoModule } from './acceso/acceso.module';
+import { DonacionModule } from './donacion/donacion.module';
 import { Rol } from './usuario/rol.model';
+import { Donacion } from './donacion/donacion.model';
 
 @Module({
   imports: [
@@ -34,7 +36,16 @@ import { Rol } from './usuario/rol.model';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        models: [User, Rol, Mascota, Especie, Condicion, Publicacion, Visita],
+        models: [
+          User,
+          Rol,
+          Mascota,
+          Especie,
+          Condicion,
+          Publicacion,
+          Visita,
+          Donacion,
+        ],
         autoLoadModels: true,
         synchronize: true,
       }),
@@ -45,6 +56,7 @@ import { Rol } from './usuario/rol.model';
     CondicionModule,
     PublicacionModule,
     VisitaModule,
+    DonacionModule,
     AuthModule,
     AccesoModule,
   ],
