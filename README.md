@@ -4,14 +4,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://docs.google.com/document/d/1bSjdPkBGWb_AchuJqS1HMv1cX4-Kutyq/edit?usp=sharing&ouid=114714133938892105695&rtpof=true&sd=true">
+  <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link">
     <img src="./frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
   </a>
 
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://docs.google.com/document/d/1bSjdPkBGWb_AchuJqS1HMv1cX4-Kutyq/edit?usp=sharing&ouid=114714133938892105695&rtpof=true&sd=true"><strong>Accede a la documentación »</strong></a>
+    <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link"><strong>Accede a la documentación »</strong></a>
   </p>
 </div>
 
