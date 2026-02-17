@@ -1,4 +1,4 @@
-/* import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { MascotaService } from '../../src/mascota/mascota.service';
 import { getModelToken } from '@nestjs/sequelize';
 import { Mascota } from '../../src/mascota/mascota.model';
@@ -19,6 +19,7 @@ import { Sexo, Tamanio } from '../../src/mascota/dto/create-mascota.dto';
 import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { EspecieService } from '../../src/mascota/especie/especie.service';
 import { CondicionService } from '../../src/mascota/condicion/condicion.service';
+import { Publicacion } from '../../src/publicacion/publicacion.model';
 
 const usuarioMock = { sub: 1, rol_id: Number(Role.ADMIN), username: 'admin' };
 
@@ -26,6 +27,10 @@ const mockAccesoService = {
   verificarUsuarioDeRuta: jest.fn(),
   verificarAcceso: jest.fn(),
 };
+
+const mockPublicacionModel = () => ({
+  count: jest.fn(),
+});
 
 const mockEspecieService = { validarEspecie: jest.fn() };
 const mockCondicionService = { validarCondicion: jest.fn() };
@@ -46,6 +51,7 @@ describe('MascotaService', () => {
         { provide: getModelToken(Especie), useValue: mockEspecieModel() },
         { provide: getModelToken(Condicion), useValue: mockCondicionModel() },
         { provide: getModelToken(User), useValue: {} },
+        { provide: getModelToken(Publicacion), useValue: mockPublicacionModel() },
         { provide: EspecieService, useValue: mockEspecieService },
         { provide: CondicionService, useValue: mockCondicionService },
         { provide: AccesoService, useValue: mockAccesoService },
@@ -254,4 +260,3 @@ describe('MascotaService', () => {
     });
   });
 });
- */

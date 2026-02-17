@@ -22,6 +22,7 @@ import { QueryOpcionesDto } from '../../src/common/dto/query-opciones.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import {
   DocDeleteIdDonacion,
+  DocGetDonacion,
   DocGetDonacionPublica,
   DocGetIdDonacion,
   DocPatchDonacion,
@@ -36,7 +37,7 @@ export class DonacionController {
   ) {}
 
   //---------------Endpoints para los usuarios autenticados
-  @DocPostDonacion()
+  @DocGetDonacion()
   @Get('usuarios/:usuarioId/donaciones')
   @Roles(Role.ADMIN, Role.PUBLICADOR)
   findAll(
