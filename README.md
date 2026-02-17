@@ -1,5 +1,5 @@
 <a name="readme-top"></a>
-# Práctica Profesional Supervisada – 2026
+# PPS UTN – Tecnicatura Universitaria en Programación 2026
 
 <!-- PROJECT LOGO -->
 <br />
