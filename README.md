@@ -4,14 +4,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://docs.google.com/document/d/1bSjdPkBGWb_AchuJqS1HMv1cX4-Kutyq/edit?usp=sharing&ouid=114714133938892105695&rtpof=true&sd=true">
+  <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link">
     <img src="./frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
   </a>
 
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://docs.google.com/document/d/1bSjdPkBGWb_AchuJqS1HMv1cX4-Kutyq/edit?usp=sharing&ouid=114714133938892105695&rtpof=true&sd=true"><strong>Accede a la documentación »</strong></a>
+    <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link"><strong>Accede a la documentación »</strong></a>
   </p>
 </div>
 
@@ -52,24 +52,19 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 </ul>
 
 
-
 ## Project setup
 
-```bash
-$ npm install
-```
+<p>Para acceder al manual de instalación haga click en el siguiente enlace:</p>
 
 ## Compilar y levantar el proyecto
 
 ```bash
-# levantar Frontend y backend
-$ npm run dev
 
 # levantar solo Backend
-$ npm run dev:back
+$ cd backend && npm run start:dev
 
 # levantar solo Frontend
-$ npm run dev:front
+$ cd frontend && pnpm run dev
 
 ```
 
@@ -77,10 +72,7 @@ $ npm run dev:front
 
 ```bash
 # unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
+$ cd backend && npm run test
 
 # test coverage
 $ npm run test:cov
