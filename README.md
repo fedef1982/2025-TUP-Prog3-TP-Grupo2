@@ -52,24 +52,19 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 </ul>
 
 
-
 ## Project setup
 
-```bash
-$ npm install
-```
+<p>Para acceder al manual de instalación haga click en el siguiente enlace:</p>
 
 ## Compilar y levantar el proyecto
 
 ```bash
-# levantar Frontend y backend
-$ npm run dev
 
 # levantar solo Backend
-$ npm run dev:back
+$ cd backend && npm run start:dev
 
 # levantar solo Frontend
-$ npm run dev:front
+$ cd frontend && pnpm run dev
 
 ```
 
@@ -77,10 +72,7 @@ $ npm run dev:front
 
 ```bash
 # unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
+$ cd backend && npm run test
 
 # test coverage
 $ npm run test:cov
