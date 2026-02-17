@@ -54,7 +54,7 @@ AdoptAR es una aplicación web que facilita la publicación de mascotas en adopc
 
 ## Project setup
 
-<p>Para acceder al manual de instalación haga click en el siguiente enlace:</p>
+<p>Acceda al <a href="instalacion.md">manual de instalación</p>
 
 ## Compilar y levantar el proyecto
 
