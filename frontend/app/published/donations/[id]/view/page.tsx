@@ -6,7 +6,7 @@ import ViewDonacionesFormPublic from '@/app/ui/donations/view-form-public';
 import { notFound } from 'next/navigation';
 import { fetchDonationByUserId } from '@/app/lib/dataDonations';
 
-export default async function Page({ params }: { params: { id?: string } }) {
+export default async function Page({ params }: { params: Promise<{ id?: string }> }) {
   const resolvedParams = await params;
   if (!resolvedParams?.id) {
     console.error('Donaciones ID parameter not defined in URL');
