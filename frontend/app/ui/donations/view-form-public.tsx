@@ -5,9 +5,12 @@ import {
   UserIcon,
   InformationCircleIcon,
   ArrowLeftIcon,
+  KeyIcon,
+  LinkIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';  
 import { Donation } from '@/app/lib/definitionsDonations';
+import { BuildingIcon, CoinsIcon, WorkflowIcon } from 'lucide-react';
 
 export default function ViewDonacionesFormPublic({ 
   donation, 
@@ -41,7 +44,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <KeyIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.cbu}</span>
             </div>
           </div>
@@ -56,7 +59,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <WorkflowIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.cuit}</span>
             </div>
           </div>
@@ -71,7 +74,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <BuildingIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.entidad_financiera}</span>
             </div>
           </div>
@@ -86,7 +89,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <CoinsIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.tipo_cuenta}</span>
             </div>
           </div>
@@ -101,7 +104,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <UserIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.alias}</span>
             </div>
           </div>
@@ -116,7 +119,7 @@ export default function ViewDonacionesFormPublic({
           </label>
           <div className="relative mt-2 rounded-md bg-gray-100 p-2">
             <div className="flex items-center">
-              <InformationCircleIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
+              <LinkIcon className="mr-2 h-[18px] w-[18px] text-gray-500" />
               <span>{donation.link_pago}</span>
             </div>
           </div>

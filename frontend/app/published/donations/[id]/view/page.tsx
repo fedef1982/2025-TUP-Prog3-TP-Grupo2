@@ -6,7 +6,7 @@ import ViewDonacionesFormPublic from '@/app/ui/donations/view-form-public';
 import { notFound } from 'next/navigation';
 import { fetchDonationByUserId } from '@/app/lib/dataDonations';
 
-export default async function Page({ params }: { params: { id?: string } }) {
+export default async function Page({ params }: { params: Promise<{ id?: string }> }) {
   const resolvedParams = await params;
   if (!resolvedParams?.id) {
     console.error('Donaciones ID parameter not defined in URL');
@@ -23,8 +23,8 @@ export default async function Page({ params }: { params: { id?: string } }) {
 
     const donation = await fetchDonationByUserId(userId); 
 
-    if (!donation ) {
-      console.error(`Donacion user ID mismatch: ${userId}`);
+    if (!donation) {
+      console.log("No se encontró donación, llamando a notFound()");
       notFound();
     }
   
