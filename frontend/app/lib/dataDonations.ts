@@ -78,7 +78,6 @@ export async function fetchDonationById(id: number) {
 
 export async function fetchDonationByUserId(userId: number) {
   try {
-
     console.log(`GET ${process.env.NEXT_PUBLIC_API_URL}/mascotas/${userId}/donaciones`);
     
     const response = await fetch(
@@ -92,27 +91,28 @@ export async function fetchDonationByUserId(userId: number) {
       }
     );
 
+    console.log("Response status:", response.status);
+
+    if (response.status === 404) {
+      console.log(`No donation found for user ${userId}`);
+      return null;
+    }
+    
     if (!response.ok) {
-      if (response.status === 404) {
-        return null; 
-      }
       const errorData = await response.json().catch(() => null);
       throw new Error(
         errorData?.message || 
         `Error al obtener datos de donacion: ${response.status} ${response.statusText}`
       );
     }
-
-    const donations = await response.json();
     
-    return donations;
+    const donation = await response.json();
+    console.log("Donation found:", donation);
+    return donation;
 
   } catch (error) {
     console.error('Error en fetchDonationByUserId:', error);
-    if (error instanceof Error) {
-      throw new Error(`No se pudo obtener los datos de donacion: ${error.message}`);
-    }
-    throw new Error('Error desconocido al obtener datos de donacion');
+    return null;
   }
 }
 

@@ -23,8 +23,8 @@ export default async function Page({ params }: { params: { id?: string } }) {
 
     const donation = await fetchDonationByUserId(userId); 
 
-    if (!donation ) {
-      console.error(`Donacion user ID mismatch: ${userId}`);
+    if (!donation) {
+      console.log("No se encontró donación, llamando a notFound()");
       notFound();
     }
   
