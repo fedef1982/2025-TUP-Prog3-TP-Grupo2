@@ -244,11 +244,17 @@ export async function fetchFilteredUsers({
 
     const token = (await cookies()).get('token')?.value;
     if (!token) {
-      throw new Error('No se ha encontrado ningún token de autenticación');
+      console.error('No se ha encontrado ningún token de autenticación');
+      return { users: [], total: 0, totalPages: 0 };
     }
 
     const tokenPl = await getToken();
     const id = tokenPl?.sub; 
+
+    if (!id) {
+      console.error('No se encontró ID de usuario en el token');
+      return { users: [], total: 0, totalPages: 0 };
+    }
 
     const params = new URLSearchParams({
       q: query,
@@ -270,11 +276,20 @@ export async function fetchFilteredUsers({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
+       cache: 'no-store'
     });
 
     if (!response.ok) {
+      // Si es 404, el usuario podría haber sido eliminado
+      if (response.status === 404) {
+        console.log('El usuario actual ya no existe, redirigiendo a login...');
+        // Aquí podrías redirigir al login o manejar el cierre de sesión
+        return { users: [], total: 0, totalPages: 0 };
+      }
+      
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'No se han podido recuperar los usuarios filtrados');
+      console.error('Error en respuesta de fetchFilteredUsers:', errorData);
+      return { users: [], total: 0, totalPages: 0 };
     }
 
     const data = await response.json();
