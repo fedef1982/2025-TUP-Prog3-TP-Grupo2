@@ -1,6 +1,5 @@
 import { Donation, DonationsTable, FilteredDonations, FilteredDonationsParams, CreateDonationDto, CreateDonationState, UpdateDonationDto, UpdateDonationState } from "./definitionsDonations";
 import { getRawToken, getToken, getUserId, JwtPayload } from "./server-utils";
-import jwt from 'jsonwebtoken';
 
 export async function fetchAllDonations(): Promise<Donation[]> {
   try {
@@ -10,8 +9,7 @@ export async function fetchAllDonations(): Promise<Donation[]> {
     if (!token || !userId) {
       throw new Error('Authentication required');
     }
-    console.log(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones`);
-    console.log(token);
+
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuario/${userId}/donaciones`, {
       method: 'GET',
       headers: {
@@ -44,8 +42,6 @@ export async function fetchDonationById(id: number) {
     if (!token || !userId) {
       throw new Error('Autenticación requerida');
     }
-
-    console.log(`GET /usuarios/${userId}/donaciones/${id}`);
     
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/usuarios/${userId}/donaciones/${id}`,
@@ -55,7 +51,7 @@ export async function fetchDonationById(id: number) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        cache: 'no-store' // Importante para datos que cambian
+        cache: 'no-store'
       }
     );
 
@@ -78,8 +74,6 @@ export async function fetchDonationById(id: number) {
 
 export async function fetchDonationByUserId(userId: number) {
   try {
-
-    console.log(`GET ${process.env.NEXT_PUBLIC_API_URL}/mascotas/${userId}/donaciones`);
     
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/mascotas/${userId}/donaciones`,
@@ -92,27 +86,26 @@ export async function fetchDonationByUserId(userId: number) {
       }
     );
 
+    if (response.status === 404) {
+      console.log(`No donation found for user ${userId}`);
+      return null;
+    }
+    
     if (!response.ok) {
-      if (response.status === 404) {
-        return null; 
-      }
       const errorData = await response.json().catch(() => null);
       throw new Error(
         errorData?.message || 
         `Error al obtener datos de donacion: ${response.status} ${response.statusText}`
       );
     }
-
-    const donations = await response.json();
     
-    return donations;
+    const donation = await response.json();
+
+    return donation;
 
   } catch (error) {
     console.error('Error en fetchDonationByUserId:', error);
-    if (error instanceof Error) {
-      throw new Error(`No se pudo obtener los datos de donacion: ${error.message}`);
-    }
-    throw new Error('Error desconocido al obtener datos de donacion');
+    return null;
   }
 }
 

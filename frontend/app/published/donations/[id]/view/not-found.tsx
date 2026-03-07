@@ -14,11 +14,10 @@ export default function NotFound() {
         <div className="flex flex-col items-center gap-4 text-center">
           <FaceFrownIcon className="w-16 h-16 text-gray-400" />
           <h2 className={`${lusitana.className} text-2xl font-semibold text-gray-800`}>
-            Donación no encontrada
+            No existen datos para hacer la donacion para esta publicación
           </h2>
           <p className="text-gray-600 max-w-md">
             No pudimos encontrar la información de donación que estás buscando. 
-            Es posible que el ID proporcionado sea incorrecto o que la donación haya sido eliminada.
           </p>
         </div>
         
