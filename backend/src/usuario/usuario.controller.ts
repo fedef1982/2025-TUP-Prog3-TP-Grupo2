@@ -92,7 +92,7 @@ export class UsersController {
 
   @DocDeleteIdUsuario()
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PUBLICADOR)
   remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: AuthenticatedRequest,

@@ -6,6 +6,7 @@ import {
 import { lusitana } from '@/app/ui/fonts';
 import { fetchUserStats } from '@/app/lib/data';
 import { PawPrint } from 'lucide-react';
+import Link from 'next/link';
 
 const iconMap = {
   totalusers: UsersIcon,
@@ -18,11 +19,19 @@ export default async function UserCardsWrapper() {
   const stats = await fetchUserStats();
   
   return (
-    <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-1">
-      <UserCard title="Usuarios" value={stats.totalUsers} type="totalusers" />
-      <UserCard title="Mascotas" value={stats.totalPets} type="totalpets" />
-      <UserCard title="Publicaciones" value={stats.totalPublications} type="totalpublications" />
-      <UserCard title="Visitas" value={stats.totalVisits} type="totalvisits" />
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 w-full col-span-full">
+      <Link href="/dashboard/users" className="block w-full transition-transform hover:scale-105">
+        <UserCard title="Usuarios" value={stats.totalUsers} type="totalusers" />
+      </Link>
+      <Link href="/dashboard/pets" className="block w-full transition-transform hover:scale-105">
+        <UserCard title="Mascotas" value={stats.totalPets} type="totalpets" />
+      </Link>
+      <Link href="/dashboard/publications" className="block w-full transition-transform hover:scale-105">
+        <UserCard title="Publicaciones" value={stats.totalPublications} type="totalpublications" />
+      </Link>
+      <Link href="/dashboard/visits" className="block w-full transition-transform hover:scale-105">
+        <UserCard title="Visitas" value={stats.totalVisits} type="totalvisits" />
+      </Link>
     </div>
   );
 }
@@ -55,9 +64,9 @@ export function UserCard({
       </div>
       <p
         className={`${lusitana.className} ${valueColor}
-          truncate rounded-xl bg-white px-4 py-8 text-center text-2xl font-semibold`}
+           rounded-xl bg-white px-4 py-8 text-center text-3xl font-semibold`}
       >
-        {value}
+            {value}   
       </p>
     </div>
   );

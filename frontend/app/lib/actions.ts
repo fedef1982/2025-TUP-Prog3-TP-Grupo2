@@ -1,6 +1,6 @@
 'use server';
 
-import { getRawToken, getToken } from "./server-utils";
+import { getRawToken, getToken, getUserId } from "./server-utils";
 import { CreateUserDto, CreateUserState, LoginState, UpdateUserDto, UpdateUserState, User } from './definitions'
 import { cookies } from 'next/headers';
 
@@ -168,12 +168,18 @@ export async function updateUser(
 }
 
 // Delete user
-export async function deleteUser(id: number): Promise<void> {
+export async function deleteUser(id: number): Promise<{ ok: boolean; message?: string; shouldRedirect?: boolean }> {
   try {
     const token = await getRawToken();
     if (!token) {
-      throw new Error('No authentication token found');
+      return { 
+        ok: false, 
+        message: 'No authentication token found' 
+      };
     }
+
+    const currentUserId = await getUserId();
+    const isCurrentUser = currentUserId === id;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuarios/${id}`, {
       method: 'DELETE',
@@ -185,14 +191,22 @@ export async function deleteUser(id: number): Promise<void> {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || 
-        `Failed to delete user with status ${response.status}`
-      );
+      return { 
+        ok: false, 
+        message: errorData.message || `Failed to delete user with status ${response.status}`
+      };
     }
 
+    return { 
+      ok: true,
+      shouldRedirect: isCurrentUser // Indicar si debemos redirigir
+    };
+    
   } catch (error) {
     console.error('Error in deleteUser:', error);
-    throw error;
+    return { 
+      ok: false, 
+      message: error instanceof Error ? error.message : 'Unknown error occurred'
+    };
   }
 }

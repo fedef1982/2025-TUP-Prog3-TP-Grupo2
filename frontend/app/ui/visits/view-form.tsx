@@ -17,6 +17,7 @@ import { useFormStatus } from 'react-dom';
 import { useActionState } from 'react';
 import { approveVisit, rejectVisit } from '@/app/lib/actionsVisits';
 import ViewPublishedForm from '../publications/view-form-publica';
+import ViewPublishedFormVisit from '../publications/view-form-visit';
 
 function formatDate(dateString: string | Date) {
   const date = new Date(dateString);
@@ -178,7 +179,7 @@ export default function ViewVisitForm({
         <h2 className={`${lusitana.className} mb-4 text-xl`}>
           Información de la Publicación
         </h2>
-        <ViewPublishedForm publication={visit.publicacion} />
+        <ViewPublishedFormVisit publication={visit.publicacion} />
       </div>
 
         <ActionButtons 

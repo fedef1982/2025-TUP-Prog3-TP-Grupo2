@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { HeartIcon, PawPrintIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const links = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
@@ -22,11 +23,18 @@ const links = [
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
+        const isActive = isClient ? pathname === link.href : false;
+        
         return (
           <Link
             key={link.name}
@@ -34,7 +42,7 @@ export default function NavLinks() {
             className={clsx(
               'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-200 p-3 text-sm font-medium hover:bg-sky-100 hover:text-violet-600 md:flex-none md:justify-start md:p-2 md:px-3',
               {
-                'bg-sky-100 text-violet-600': pathname === link.href,
+                'bg-sky-100 text-violet-600': isActive,
               },
             )}
           >
