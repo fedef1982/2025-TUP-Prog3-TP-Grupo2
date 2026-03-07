@@ -4,14 +4,15 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link">
+  <a href="./documentacion/AdoptAR_Documentación_PSS.docx.pdf">
     <img src="./frontend/public/adoptar_logo.png" alt="Logo" width="100" height="90">
   </a>
 
   <h3 align="center">AdoptAR</h3>
 
   <p align="center">
-    <a href="https://drive.google.com/drive/folders/1flq5r3eIpIQ1Ilbm2HedpLcvrSB0F0vK?usp=drive_link"><strong>Accede a la documentación »</strong></a>
+    <a href="./documentacion/AdoptAR_Documentación_PSS.docx.pdf">
+    <strong>Acceda a la documentación del proyecto »</strong></a>
   </p>
 </div>
 

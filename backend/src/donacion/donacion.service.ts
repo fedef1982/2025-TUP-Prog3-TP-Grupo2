@@ -38,17 +38,6 @@ export class DonacionService {
     return donacion;
   }
 
-/*   async findOneByUser(usuarioId: number): Promise<Donacion> {
-    const where = { usuario_id: usuarioId };
-    const donacion = await this.donacionModel.findAll({ where });
-    if (!donacion) {
-      throw new NotFoundException(
-        `La donacion con usuario ID ${usuarioId} no existe`,
-      );
-    }
-    return donacion[0];
-  } */
-
   async findOneByUser(usuarioId: number): Promise<Donacion> {
     const donacion = await this.donacionModel.findOne({
       where: { usuario_id: usuarioId },
@@ -60,7 +49,7 @@ export class DonacionService {
       );
     }
     return donacion;
-  } 
+  }
 
   async findOne(
     id: number,
